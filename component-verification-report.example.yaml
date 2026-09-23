@@ -1,0 +1,66 @@
+componentName: "StatTile"
+variantName: null
+gapReportId: "DES-512-gap-1"
+reviewedAt: "2026-09-10T14:20:00Z"
+
+operationalSpec:
+  purpose: "Displays one KPI with its current value and trend direction, at a glance, without requiring interaction."
+  states:
+    - name: "default"
+      description: "Label, value, and trend indicator all visible; neutral trend has no arrow, only a dash."
+      implemented: true
+    - name: "loading"
+      description: "Skeleton placeholder matching the tile's dimensions while the value fetches — per motionUsagePolicy.requireLoadingAnimation."
+      implemented: true
+    - name: "error"
+      description: "Value replaced with 'Unable to load' and a retry affordance; label stays visible so context isn't lost."
+      implemented: true
+    - name: "focus"
+      description: "N/A — tile is not interactive/focusable in this iteration (read-only display). Documented under whenNotToUse."
+      implemented: false
+  props:
+    - name: "label"
+      type: "string"
+      required: true
+      description: "The metric name, e.g. 'Active Users'."
+    - name: "value"
+      type: "string"
+      required: true
+    - name: "trend"
+      type: "'up' | 'down' | 'neutral'"
+      required: false
+      description: "Defaults to 'neutral' if omitted."
+    - name: "deltaLabel"
+      type: "string"
+      required: false
+      description: "e.g. '+4.2% vs last period' — optional supporting text under the value."
+  responsiveBehavior:
+    - breakpoint: "sm"
+      behavior: "4 tiles stack 2x2, not a horizontal scroll — keeps all 4 visible without interaction, per P1 in the ticket brief."
+    - breakpoint: "md"
+      behavior: "4 tiles in a single row, per original layout intent."
+  whenNotToUse: "Not for metrics needing drill-down or comparison over time in place — that's a chart, category data-viz but a different component. Not currently interactive; if a future ticket needs click-to-drill-down, that's a new variant, not a silent addition to this one."
+
+designRationale:
+  - decision: "Trend uses an arrow icon plus color, not color alone."
+    reasoning: "Color can't be the only signal for state — rubric category 2 (Accessibility), and accessibility.requireSemanticHtml implies non-color-dependent state communication."
+    principleOrTokenRef: "design-audit-rubric.md category 2"
+  - decision: "Value uses typography.roles.heading weight, label uses typography.roles.readableSubtext."
+    reasoning: "Establishes the value as the primary thing being scanned, label as supporting context — matches Hierarchy Drives Everything's 'visual weight must match functional importance.'"
+    principleOrTokenRef: "design-principles.md: Hierarchy Drives Everything"
+  - decision: "Gap between tiles is spacing.scale's 24px step, not 20px."
+    reasoning: "No off-scale spacing values, per Consistency Is Non-Negotiable — corrects the 20px value flagged in the earlier audit-report example."
+    principleOrTokenRef: "spacing.scale"
+  - decision: "Tile is not interactive/focusable."
+    reasoning: "No stated requirement in the ticket brief for drill-down (P1 only asks for at-a-glance visibility); adding unneeded interactivity would violate Simplicity Is Architecture's 'every element must justify its existence.'"
+    principleOrTokenRef: "design-principles.md: Simplicity Is Architecture; ticket-brief P1"
+
+verification:
+  allStatesImplemented: false   # focus state N/A, documented rather than skipped silently
+  accessibilityPass: true
+  tokenCompliant: true
+  notes: "Focus state intentionally not implemented since the component is non-interactive by design — see whenNotToUse. Flagging this explicitly rather than leaving allStatesImplemented ambiguous."
+  checkedBy: "human-designer"
+
+verdict: "ready-for-implementation"
+revisionNotes: null

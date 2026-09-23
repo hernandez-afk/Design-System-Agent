@@ -1,0 +1,438 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/design-system-manifest.schema.json",
+  "title": "Design System Manifest",
+  "description": "Project-specific design system data consumed by a generalized design-principles agent skill. Fixed reasoning rules (decision protocol, contrast math, animation physics) stay in the skill itself; this file supplies the 'what exists / what's allowed' data per project.",
+  "type": "object",
+  "required": ["meta", "color", "typography", "spacing", "layout", "components", "accessibility"],
+  "properties": {
+
+    "meta": {
+      "type": "object",
+      "description": "Identity and governance for this design system.",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "description": "Human-readable name of the design system, e.g. 'Acme Product UI'." },
+        "version": { "type": "string", "description": "Semver of this manifest, bump whenever tokens/components change." },
+        "framework": { "type": "string", "description": "e.g. 'react', 'vue', 'web-components', 'swiftui'. Informs how components are imported/rendered." },
+        "stylingEngine": { "type": "string", "description": "e.g. 'tailwind', 'css-modules', 'styled-components', 'css-variables'." },
+        "decisionProtocol": {
+          "type": "string",
+          "enum": ["always-ask", "ask-major-only", "auto-apply"],
+          "default": "always-ask",
+          "description": "Mirrors the bencium skill's 'CRITICAL: always ask before design decisions' rule. 'ask-major-only' lets the agent auto-decide low-stakes details (e.g. spacing within an approved scale) but still ask about color/type/layout direction."
+        },
+        "brandExclusions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Explicit anti-patterns for this project, e.g. ['#3B82F6 SaaS blue', 'glass morphism', 'drop shadows for depth']. Seeds the skill's 'Common Patterns to Avoid' check with project-specific bans."
+        }
+      }
+    },
+
+    "color": {
+      "type": "object",
+      "description": "Color roles, not raw swatches — mirrors the skill's base/accent palette architecture.",
+      "required": ["neutrals", "accents"],
+      "properties": {
+        "neutrals": {
+          "type": "object",
+          "description": "4-5 role-based neutral shades.",
+          "required": ["background", "surface", "border", "textPrimary"],
+          "properties": {
+            "background": { "type": "string" },
+            "surface": { "type": "string" },
+            "border": { "type": "string" },
+            "textPrimary": { "type": "string" },
+            "textSecondary": { "type": "string" },
+            "temperature": { "type": "string", "enum": ["warm", "cool", "neutral"], "description": "Intent behind the grey undertone." }
+          }
+        },
+        "accents": {
+          "type": "object",
+          "description": "1-3 bold action/emphasis colors plus semantic status colors.",
+          "properties": {
+            "primary": { "type": "string" },
+            "secondary": { "type": "string" },
+            "success": { "type": "string" },
+            "warning": { "type": "string" },
+            "error": { "type": "string" },
+            "info": { "type": "string" }
+          }
+        },
+        "contrastStandard": {
+          "type": "string",
+          "enum": ["WCAG-AA", "WCAG-AAA"],
+          "default": "WCAG-AA",
+          "description": "Which contrast ratio table the audit step checks colors against."
+        },
+        "interactionStates": {
+          "type": "object",
+          "description": "Colors that must visually distinguish an element the user is actively interacting with from the rest of the page — this is what lets hover/focus draw the eye.",
+          "properties": {
+            "hover": { "type": "string", "description": "Applied on hover. Must differ from the element's resting color AND from the page background — not just a subtle opacity shift." },
+            "active": { "type": "string", "description": "Applied while pressed/activated." },
+            "focus": { "type": "string", "description": "Applied on keyboard focus — can equal hover but must remain visible without a pointer." }
+          }
+        },
+        "usagePolicy": {
+          "type": "object",
+          "description": "Governs how the two key action colors are allowed to coexist on one screen.",
+          "properties": {
+            "primaryAccentRole": { "type": "string", "default": "accents.primary", "description": "The default action color, used freely." },
+            "secondaryAccentRole": { "type": "string", "default": "accents.secondary", "description": "The contrasting action color, reserved for a single competing action." },
+            "maxSimultaneousSecondaryAccents": {
+              "type": "integer",
+              "default": 1,
+              "description": "Max number of times the secondary accent color may appear on screen at once. Keeps the secondary color meaningful as 'the other choice' rather than diluting into decoration."
+            },
+            "maxPrimaryActionsPerScreen": {
+              "type": "integer",
+              "default": 1,
+              "description": "Every screen has one primary action, full stop — per the Hierarchy Drives Everything principle. Secondary actions must not use primary-accent-weight styling regardless of how important they feel; if two actions both seem primary, that's an information-architecture problem to resolve (see compositionHeuristics), not a reason to raise this number."
+            }
+          }
+        }
+      }
+    },
+
+    "typography": {
+      "type": "object",
+      "required": ["typefaces", "scale"],
+      "properties": {
+        "typefaces": {
+          "type": "object",
+          "description": "Max 2-3 typefaces, role-assigned per the skill's display/text/caption split.",
+          "properties": {
+            "display": { "type": "string", "description": "Headlines, hero text." },
+            "body": { "type": "string", "description": "Paragraphs, long-form content." },
+            "ui": { "type": "string", "description": "Labels, buttons, captions. Can equal 'body'." }
+          }
+        },
+        "weights": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "maxItems": 3,
+          "description": "e.g. [400, 500, 700]"
+        },
+        "scale": {
+          "type": "object",
+          "required": ["baseSizePx", "ratio"],
+          "properties": {
+            "baseSizePx": { "type": "number", "default": 16 },
+            "ratio": { "type": "number", "description": "1.25 = major third, 1.333 = perfect fourth, etc." },
+            "steps": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Named steps to generate, e.g. ['xs','sm','base','lg','xl','2xl','3xl','4xl','5xl']"
+            }
+          }
+        },
+        "lineHeightRatio": { "type": "number", "default": 1.5 },
+        "roles": {
+          "type": "object",
+          "description": "Explicit pairing rules so the agent doesn't have to infer hierarchy — a header and its subtext must read as visually distinct, and a subtext next to an input must read differently than a subtext that's just explanatory prose.",
+          "properties": {
+            "heading": {
+              "type": "string",
+              "default": "typefaces.display",
+              "description": "Must be visually heavier/more prominent than readableSubtext — different family, weight, or size step, not just color."
+            },
+            "readableSubtext": {
+              "type": "string",
+              "default": "typefaces.body",
+              "description": "Explanatory/descriptive text under a heading. Should read as lighter and less visually taxing than the heading — lower weight and/or a muted text color role."
+            },
+            "formLabel": {
+              "type": "string",
+              "default": "typefaces.ui",
+              "description": "Subtext specifically for fields the user must fill in, as opposed to text they only read. Must be styled distinctly from readableSubtext (e.g. different weight, case, or color) so 'this needs input' is visually distinguishable from 'this is just describing something' at a glance."
+            }
+          }
+        }
+      }
+    },
+
+    "spacing": {
+      "type": "object",
+      "required": ["baseUnitPx", "scale"],
+      "properties": {
+        "baseUnitPx": { "type": "number", "default": 4 },
+        "scale": {
+          "type": "array",
+          "items": { "type": "number" },
+          "description": "e.g. [4, 8, 16, 24, 32, 48]"
+        }
+      }
+    },
+
+    "layout": {
+      "type": "object",
+      "properties": {
+        "gridColumns": { "type": "integer", "default": 12 },
+        "gutterPx": { "type": "number" },
+        "breakpoints": {
+          "type": "object",
+          "description": "Content-driven, not device-driven, per the skill's guidance.",
+          "properties": {
+            "sm": { "type": "number" },
+            "md": { "type": "number" },
+            "lg": { "type": "number" },
+            "xl": { "type": "number" }
+          }
+        },
+        "containerMaxWidthPx": { "type": "number" },
+        "alignmentTolerancePx": {
+          "type": "number",
+          "default": 0,
+          "description": "Max acceptable deviation from the grid before it's a violation. Default 0 = every element must land exactly on a grid line/spacing-scale multiple, per the Alignment Is Precision principle — 'off by 1-2px is wrong,' not a rounding allowance."
+        }
+      }
+    },
+
+    "motion": {
+      "type": "object",
+      "description": "Optional — omit to have the agent fall back to the skill's default timing table.",
+      "properties": {
+        "durationsMs": {
+          "type": "object",
+          "properties": {
+            "micro": { "type": "integer", "default": 150 },
+            "state": { "type": "integer", "default": 300 },
+            "page": { "type": "integer", "default": 500 }
+          }
+        },
+        "easing": {
+          "type": "object",
+          "properties": {
+            "entrance": { "type": "string", "default": "ease-out" },
+            "exit": { "type": "string", "default": "ease-in" },
+            "transition": { "type": "string", "default": "ease-in-out" }
+          }
+        },
+        "respectReducedMotion": { "type": "boolean", "default": true }
+      }
+    },
+
+    "components": {
+      "type": "array",
+      "description": "The inventory the agent checks against before proposing a layout — this is what powers gap detection at both the component and variant level. Treat this as a living registry: approved proposals get appended here so future tickets reuse them instead of regenerating one-offs.",
+      "items": {
+        "type": "object",
+        "required": ["name", "category", "status", "variants"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g. 'Button', 'Card', 'StatTile'." },
+          "category": {
+            "type": "string",
+            "enum": ["action", "input", "display", "feedback", "navigation", "layout", "overlay", "data-viz"],
+            "description": "Lets the agent reason generically, e.g. 'need a feedback component here' even for an unfamiliar design system."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["approved", "proposed", "deprecated"],
+            "default": "approved",
+            "description": "'approved' = confirmed, reusable, safe for the agent to reach for. 'proposed' = created for a ticket but not yet signed off — the agent should still surface it as an option before building a near-duplicate, but flag it as pending review. 'deprecated' = exists in code but should no longer be proposed for new designs."
+          },
+          "importPath": { "type": "string", "description": "e.g. '@/components/ui/button'." },
+          "variants": {
+            "type": "array",
+            "description": "Every variant is tracked individually so gap detection can distinguish 'component exists but not in this flavor' from 'component doesn't exist at all'.",
+            "items": {
+              "type": "object",
+              "required": ["name", "status"],
+              "properties": {
+                "name": { "type": "string", "description": "e.g. 'primary', 'destructive', 'compact'." },
+                "status": {
+                  "type": "string",
+                  "enum": ["approved", "proposed", "deprecated"],
+                  "default": "approved"
+                },
+                "props": { "type": "array", "items": { "type": "string" } },
+                "description": { "type": "string" },
+                "addedInTicket": { "type": "string", "description": "Ticket key that originated this variant, e.g. 'DES-482'. Enables traceability and lets a reviewer see why it exists." },
+                "addedDate": { "type": "string", "format": "date" }
+              }
+            }
+          },
+          "props": { "type": "array", "items": { "type": "string" }, "description": "Props shared across all variants." },
+          "description": { "type": "string" },
+          "addedInTicket": { "type": "string", "description": "Ticket key that originated this component, if not part of the original library." },
+          "addedDate": { "type": "string", "format": "date" }
+        }
+      }
+    },
+
+    "registryPolicy": {
+      "type": "object",
+      "description": "Controls how the agent handles gaps and how new entries move from 'proposed' to 'approved' in the components registry.",
+      "properties": {
+        "onMissingComponent": {
+          "type": "string",
+          "enum": ["propose-and-wait", "propose-and-continue", "block"],
+          "default": "propose-and-wait",
+          "description": "'propose-and-wait' pauses the design for human sign-off before using a net-new component. 'propose-and-continue' drafts using a proposed component but marks it clearly as pending. 'block' refuses to proceed until a human adds it to the manifest manually."
+        },
+        "onMissingVariant": {
+          "type": "string",
+          "enum": ["propose-and-wait", "propose-and-continue", "block"],
+          "default": "propose-and-continue",
+          "description": "Missing variants are usually lower-stakes than missing components (e.g. adding a 'compact' size to an existing Card), so this can default less strict than onMissingComponent."
+        },
+        "requireApprovalBeforeReuse": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, a 'proposed' component/variant can only be reused verbatim on a later ticket after a human flips its status to 'approved' — prevents an unreviewed one-off from silently becoming a de facto standard."
+        },
+        "requireOperationalVerification": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, a proposed component/variant needs a component-verification-report with verdict: ready-for-implementation before it can be approved — not just a visual gap report. Confirms it actually works (every state implemented, accessible, responsive) and that its design decisions are explained, not just that it looks plausible in a mockup."
+        },
+        "verificationReviewer": {
+          "type": "string",
+          "enum": ["human-designer", "agent-self-check-pending-human", "agent-only"],
+          "default": "human-designer",
+          "description": "Who signs off the verification report. 'agent-only' skips human review entirely — only sensible for low-stakes variants, never recommended for a genuinely new component given requireOperationalVerification's purpose."
+        },
+        "similarityCheck": {
+          "type": "object",
+          "description": "Config for the algorithm that decides whether a design need should reuse/extend an approved component or become a new one. See component-recommendation-principles.md for the full decision procedure this drives.",
+          "properties": {
+            "reuseThreshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.7,
+              "description": "Weighted similarity score at or above this -> recommend reuse-nearest-approved."
+            },
+            "extendThreshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.4,
+              "description": "Score at or above this (but below reuseThreshold) on a same-component comparison -> recommend extend-existing-variant. Below this -> create-new / missing-component."
+            },
+            "weights": {
+              "type": "object",
+              "description": "Must sum to 1.0. categoryMatch is a hard gate (0 or 1), not weighted — no comparison proceeds across categories.",
+              "properties": {
+                "propOverlap": { "type": "number", "default": 0.5, "description": "Jaccard similarity of required props vs candidate's props." },
+                "variantOverlap": { "type": "number", "default": 0.35, "description": "Jaccard similarity of needed variant traits vs candidate's existing variants." },
+                "semanticNameSimilarity": { "type": "number", "default": 0.15, "description": "Token overlap between suggested name and candidate name — weakest signal, used mainly as a tiebreaker." }
+              }
+            },
+            "onlyCompareApprovedStatus": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, similarity is computed only against status: approved entries. Set false to also compare against 'proposed' entries (surfaces potential duplicate proposals before both go to review)."
+            }
+          }
+        }
+      }
+    },
+
+    "icons": {
+      "type": "object",
+      "properties": {
+        "library": { "type": "string", "description": "e.g. '@phosphor-icons/react', 'lucide-react'." },
+        "importPattern": { "type": "string" }
+      }
+    },
+
+    "accessibility": {
+      "type": "object",
+      "required": ["level"],
+      "properties": {
+        "level": { "type": "string", "enum": ["AA", "AAA"], "default": "AA" },
+        "minTouchTargetPx": { "type": "number", "default": 44 },
+        "requireVisibleFocusStates": { "type": "boolean", "default": true },
+        "requireSemanticHtml": { "type": "boolean", "default": true }
+      }
+    },
+
+    "automation": {
+      "type": "object",
+      "description": "Controls how design-audit-rubric.md is invoked in the pipeline. See audit-report.schema.json for the output this produces.",
+      "properties": {
+        "auditTrigger": {
+          "type": "string",
+          "enum": ["automatic-post-generation", "on-demand"],
+          "default": "automatic-post-generation",
+          "description": "'automatic-post-generation' runs the audit immediately after every draft, before human sign-off is even offered. 'on-demand' only runs when explicitly requested (e.g. before a ticket moves to 'ready for dev')."
+        },
+        "maxAutoReviseAttempts": {
+          "type": "integer",
+          "default": 2,
+          "minimum": 0,
+          "description": "How many times the agent may auto-revise and re-audit on a major-issues verdict before escalating to a human as a blocker. 0 = major-issues always escalates immediately, no self-correction attempted."
+        },
+        "notifyOnAutoRevise": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, the human is informed (but not blocked) each time an auto-revise loop runs, so revisions aren't happening silently even though they don't require action."
+        }
+      }
+    },
+
+    "compositionHeuristics": {
+      "type": "object",
+      "description": "Density and information-architecture thresholds — one underlying principle (don't show more than a person can scan at once; nest the rest) applied at list, input, and page level. See design-audit-rubric.md category 9 for how these are checked.",
+      "properties": {
+        "listPaginationThreshold": {
+          "type": "integer",
+          "default": 10,
+          "description": "A list at or below this length renders in full. Above it, paginate (or otherwise chunk) rather than scroll indefinitely."
+        },
+        "maxInlineInputs": {
+          "type": "integer",
+          "default": 7,
+          "description": "A form/input row with more fields than this must be re-evaluated: can fields be grouped into sections, summarized, deferred to a later step, or genuinely are they all needed right now."
+        },
+        "requireProgressiveDisclosure": {
+          "type": "boolean",
+          "default": true,
+          "description": "Primary screens should show title + main options only; individual specs/details belong on a drill-down view. Directly connects to listPaginationThreshold and maxInlineInputs — nesting is the release valve for both."
+        },
+        "requireTicketPriorityTraceability": {
+          "type": "boolean",
+          "default": true,
+          "description": "Every major layout/content decision should be traceable back to a stated priority in the source ticket, not general assumption. Checked in audit category 7 (Simplicity & Necessity)."
+        }
+      }
+    },
+
+    "navigationHeuristics": {
+      "type": "object",
+      "description": "Rules for how related views/elements must visually connect to each other.",
+      "properties": {
+        "requireNavigationalTies": {
+          "type": "boolean",
+          "default": true,
+          "description": "Related views need a visible, one-click way to move between them: back buttons, breadcrumb trails, or shortcuts. A drill-down without a way back is a violation regardless of how the destination looks."
+        },
+        "breadcrumbThresholdDepth": {
+          "type": "integer",
+          "default": 2,
+          "description": "Minimum navigation depth (levels below a top-level page) at which a breadcrumb trail becomes required rather than optional. Below this depth a simple back button may be sufficient."
+        }
+      }
+    },
+
+    "motionUsagePolicy": {
+      "type": "object",
+      "description": "When motion.durationsMs/easing tokens (already defined) are required to be applied, not just available.",
+      "properties": {
+        "requireLoadingAnimation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Any async wait must use a loading/skeleton animation from motion tokens — filling the wait rather than leaving a static or blank state."
+        },
+        "requireDataVizAnimation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Charts/visualizations should animate into their final state (subject to respectReducedMotion) rather than appearing instantly, to help the change register."
+        }
+      }
+    }
+  }
+}
