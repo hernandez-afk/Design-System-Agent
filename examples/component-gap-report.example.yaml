@@ -4,7 +4,8 @@ generatedAt: "2026-09-09T10:15:00Z"
 
 gaps:
   # Case 1: nothing in the registry fits at all -> new component
-  - gapType: "missing-component"
+  - id: "DES-512-gap-1"
+    gapType: "missing-component"
     targetCategory: "data-viz"
     suggestedName: "StatTile"
     rationale: >
@@ -15,7 +16,8 @@ gaps:
     recommendation: "create-new"
 
   # Case 2: base component exists, this flavor doesn't -> new variant
-  - gapType: "missing-variant"
+  - id: "DES-512-gap-2"
+    gapType: "missing-variant"
     targetCategory: "action"
     existingComponent: "Button"
     suggestedName: "icon-only"
@@ -27,7 +29,8 @@ gaps:
     recommendation: "extend-existing-variant"
 
   # Case 3: agent pushes back — looks like a gap but an approved option already covers it
-  - gapType: "missing-component"
+  - id: "DES-512-gap-3"
+    gapType: "missing-component"
     targetCategory: "feedback"
     suggestedName: "InlineWarningBanner"
     rationale: >

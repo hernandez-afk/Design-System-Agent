@@ -4,8 +4,9 @@
   "title": "Component Verification Report",
   "description": "Required before a proposed component or variant (from a component-gap-report) can flip status to 'approved' in the manifest's components[] registry. Two jobs: (1) confirm it's actually operational, not just visually plausible — every state implemented, accessible, responsive; (2) explain why it was built this way, so a reviewer isn't approving a black box.",
   "type": "object",
-  "required": ["componentName", "gapReportId", "operationalSpec", "designRationale", "verification", "verdict"],
+  "required": ["id", "componentName", "gapReportId", "operationalSpec", "designRationale", "verification", "verdict"],
   "properties": {
+    "id": { "type": "string", "description": "Stable ID for this report, e.g. 'DES-512-gap-1-verify'. Referenced by design-output.verificationReportsFiled." },
     "componentName": { "type": "string" },
     "variantName": { "type": "string", "description": "Set if this verifies a variant of an existing component rather than a whole new component." },
     "gapReportId": { "type": "string", "description": "The component-gap-report entry this verifies." },
@@ -23,10 +24,14 @@
           "items": {
             "type": "object",
             "required": ["name", "description", "implemented"],
+            "if": { "properties": { "notApplicable": { "const": true } }, "required": ["notApplicable"] },
+            "then": { "required": ["notApplicableReason"] },
             "properties": {
               "name": { "type": "string", "enum": ["default", "hover", "focus", "active", "disabled", "loading", "error", "empty", "success"] },
               "description": { "type": "string", "description": "What changes in this state and why." },
-              "implemented": { "type": "boolean", "description": "Whether this state actually exists in the artifact, not just in the spec." }
+              "implemented": { "type": "boolean", "description": "Whether this state actually exists in the artifact, not just in the spec." },
+              "notApplicable": { "type": "boolean", "default": false, "description": "True when this state deliberately does not apply to the component (e.g. focus on a non-interactive display). Requires notApplicableReason. Excluded from verification.allStatesImplemented." },
+              "notApplicableReason": { "type": "string", "description": "Required when notApplicable is true: why the state doesn't apply, citing the ticket, a principle, or whenNotToUse." }
             }
           }
         },
@@ -77,7 +82,7 @@
       "description": "The operational-readiness checklist — did it actually get built out, not just described.",
       "required": ["allStatesImplemented", "accessibilityPass", "tokenCompliant", "checkedBy"],
       "properties": {
-        "allStatesImplemented": { "type": "boolean", "description": "False if any state in operationalSpec.states has implemented: false." },
+        "allStatesImplemented": { "type": "boolean", "description": "False if any state in operationalSpec.states that is not marked notApplicable has implemented: false. States marked notApplicable (with a reason) do not count against this." },
         "accessibilityPass": { "type": "boolean", "description": "Meets accessibility.level from the manifest — contrast, touch target, focus visibility, semantics." },
         "tokenCompliant": { "type": "boolean", "description": "Uses only manifest tokens — no hardcoded values (design-principles.md: Consistency Is Non-Negotiable)." },
         "notes": { "type": "string" },

@@ -37,6 +37,7 @@ color:
     primaryAccentRole: "accents.primary"     # teal-500 — free use
     secondaryAccentRole: "accents.secondary" # amber-500 — reserved
     maxSimultaneousSecondaryAccents: 1
+    maxPrimaryActionsPerScreen: 1            # one unmissable primary action per screen
 
 typography:
   typefaces:
@@ -70,6 +71,7 @@ layout:
     lg: 1024
     xl: 1280
   containerMaxWidthPx: 1200
+  alignmentTolerancePx: 0   # exact — every element lands on the grid
 
 motion:
   durationsMs:
@@ -86,6 +88,16 @@ registryPolicy:
   onMissingComponent: "propose-and-wait"     # new component category entirely -> stop and ask
   onMissingVariant: "propose-and-continue"   # new flavor of an existing component -> draft it, flag as pending
   requireApprovalBeforeReuse: true
+  requireOperationalVerification: true       # gap report alone never approves; a verification report must say ready-for-implementation
+  verificationReviewer: "human-designer"
+  similarityCheck:
+    reuseThreshold: 0.7      # >= this -> reuse the approved component as-is
+    extendThreshold: 0.4     # >= this (same base component) -> extend with a new variant; below -> new component
+    weights:                 # must sum to 1.0; category match is a hard gate, not weighted
+      propOverlap: 0.5
+      variantOverlap: 0.35
+      semanticNameSimilarity: 0.15
+    onlyCompareApprovedStatus: true
 
 components:
   - name: "Button"

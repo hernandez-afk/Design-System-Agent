@@ -1,8 +1,9 @@
 ticket: "DES-512"
 manifestVersion: "1.0.0"
-generatedAt: "2026-09-10T09:55:00Z"
-revisionNumber: 1   # revised once, after audit-report.example.yaml's major-issues verdict
-                     # on the missing loading state — see Step 11 auto-revise loop
+generatedAt: "2026-09-10T15:00:00Z"
+revisionNumber: 1   # revised once, after audit-report.example.yaml's blocker verdict was
+                     # routed to a human, who sent it back with the cited findings (blockers
+                     # are never auto-retried — see Step 11)
 
 artifact:
   format: "react-jsx"
@@ -28,6 +29,11 @@ componentsUsed:
 gapReportsFiled:
   - "DES-512-gap-1"
   - "DES-512-gap-2"
+
+verificationReportsFiled:   # required for proposed components/variants when
+                            # registryPolicy.requireOperationalVerification is true
+  - "DES-512-gap-1-verify"  # see component-verification-report.example.yaml
+  - "DES-512-gap-2-verify"  # see component-verification-report-icon-only.example.yaml
 
 decisionLog:
   - decision: "Date-range filter interaction pattern"

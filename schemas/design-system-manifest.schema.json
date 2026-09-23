@@ -296,14 +296,14 @@
         },
         "similarityCheck": {
           "type": "object",
-          "description": "Config for the algorithm that decides whether a design need should reuse/extend an approved component or become a new one. See component-recommendation-principles.md for the full decision procedure this drives.",
+          "description": "Config for the algorithm that decides whether a design need should reuse/extend an approved component or become a new one. See Step 3 of design-generation-skill.md for the full decision procedure this drives.",
           "properties": {
             "reuseThreshold": {
               "type": "number",
               "minimum": 0,
               "maximum": 1,
               "default": 0.7,
-              "description": "Weighted similarity score at or above this -> recommend reuse-nearest-approved."
+              "description": "Weighted similarity score at or above this -> use the existing approved component/variant as-is, no gap report needed (design-generation-skill.md Step 3)."
             },
             "extendThreshold": {
               "type": "number",
@@ -396,7 +396,7 @@
         "requireTicketPriorityTraceability": {
           "type": "boolean",
           "default": true,
-          "description": "Every major layout/content decision should be traceable back to a stated priority in the source ticket, not general assumption. Checked in audit category 7 (Simplicity & Necessity)."
+          "description": "Every major layout/content decision should be traceable back to a stated priority in the source ticket, not general assumption. Checked in audit category 9 (Composition & Density)."
         }
       }
     },

@@ -1,0 +1,75 @@
+id: "DES-512-gap-2-verify"
+componentName: "Button"
+variantName: "icon-only"
+gapReportId: "DES-512-gap-2"
+reviewedAt: "2026-09-10T14:40:00Z"
+
+operationalSpec:
+  purpose: "Square, icon-centered action with no visible label, for dense toolbars where the icon is unambiguous."
+  states:
+    - name: "default"
+      description: "Icon centered in a square hit area at least accessibility.minTouchTargetPx (44px) on each side."
+      implemented: true
+    - name: "hover"
+      description: "Background shifts to color.interactionStates.hover (teal-600) — a color change, not just opacity."
+      implemented: true
+    - name: "focus"
+      description: "Visible focus ring in color.interactionStates.focus, independent of hover, for keyboard users."
+      implemented: true
+    - name: "active"
+      description: "Background uses color.interactionStates.active (teal-700) while pressed."
+      implemented: true
+    - name: "disabled"
+      description: "Reduced-emphasis icon color from color.neutrals.textSecondary; not focusable, no hover change."
+      implemented: true
+    - name: "loading"
+      description: "Icon swaps for a spinner using motion.durationsMs.micro; hit area size unchanged so the toolbar doesn't shift."
+      implemented: true
+  props:
+    - name: "icon"
+      type: "PhosphorIcon"
+      required: true
+      description: "Icon from icons.library (@phosphor-icons/react)."
+    - name: "aria-label"
+      type: "string"
+      required: true
+      description: "Accessible name — required because there is no visible text label."
+    - name: "size"
+      type: "string"
+      required: false
+      description: "Shared Button prop; every size still meets minTouchTargetPx."
+    - name: "disabled"
+      type: "boolean"
+      required: false
+    - name: "loading"
+      type: "boolean"
+      required: false
+  responsiveBehavior:
+    - breakpoint: "sm"
+      behavior: "Keeps its 44px square hit area; the toolbar wraps rather than shrinking buttons below the touch-target minimum."
+    - breakpoint: "md"
+      behavior: "Same size and spacing; toolbar sits in a single row."
+  whenNotToUse: "Not for primary actions or any action whose icon isn't universally clear — use a labeled Button variant instead. Not a substitute for navigation links."
+
+designRationale:
+  - decision: "aria-label is a required prop, not optional."
+    reasoning: "With no visible text, the accessible name is the only label — rubric category 2 and accessibility.requireSemanticHtml."
+    principleOrTokenRef: "accessibility.requireSemanticHtml; design-audit-rubric.md category 2"
+  - decision: "Hit area stays at least 44px square even when the icon is smaller."
+    reasoning: "Touch targets below the minimum are an accessibility blocker, and the design starts from the smallest breakpoint."
+    principleOrTokenRef: "accessibility.minTouchTargetPx; design-principles.md: Responsive Is the Real Design"
+  - decision: "Hover and focus change the background color, not just opacity."
+    reasoning: "Interactive state must differ from both resting state and page background — rubric category 10."
+    principleOrTokenRef: "color.interactionStates"
+  - decision: "Styled as a secondary-weight action, never primary-accent fill."
+    reasoning: "Toolbar filters support the screen's primary goal (P1) rather than compete with it — at most one primary action per screen."
+    principleOrTokenRef: "color.usagePolicy.maxPrimaryActionsPerScreen; design-principles.md: Hierarchy Drives Everything"
+
+verification:
+  allStatesImplemented: true
+  accessibilityPass: true
+  tokenCompliant: true
+  notes: "Supersedes the DES-481 proposal for the same variant; once approved, the manifest's Button/icon-only entry flips from proposed to approved."
+  checkedBy: "human-designer"
+
+verdict: "ready-for-implementation"

@@ -2,6 +2,20 @@ ticket: "DES-512"
 manifestVersion: "1.0.0"
 generatedAt: "2026-09-10T09:40:00Z"
 overallVerdict: "blocker"
+overallAssessment: >
+  The dashboard KPI summary is functionally close to done but skipped the
+  component-reuse process for one new component, and needs a loading state
+  before it's ready. Decision-protocol note: both consequential decisions in
+  this draft (date-range pattern, KPI layout) were correctly routed through
+  human approval per meta.decisionProtocol.
+
+designSystemUpdatesRequired:
+  - description: "New component: StatTile (data-viz category) — labeled metric with trend indicator, 4 needed for dashboard summary."
+    relatedGapReportId: "DES-512-gap-1"
+    requiresApprovalBeforeImplementation: true
+  - description: "New variant: Button/icon-only (action category) — square, icon-centered, aria-label required."
+    relatedGapReportId: "DES-512-gap-2"
+    requiresApprovalBeforeImplementation: true
 
 categories:
   - category: "reuse-and-component-discipline"
@@ -16,20 +30,42 @@ categories:
           recommendation path.
         location: "Dashboard summary row, 4 KPI cards"
         manifestReference: "components[]"
-        relatedGapReportId: null
+        relatedGapReportId: "DES-512-gap-1"   # the gap report this should have referenced
+      - severity: "major"
+        rubricItem: "registryPolicy.onMissingComponent / onMissingVariant policy was not respected"
+        description: >
+          Toolbar filter buttons use the Button 'icon-only' variant, which is
+          still status: proposed (from DES-481), without marking it pending in
+          the build handoff as registryPolicy.onMissingVariant:
+          propose-and-continue requires.
+        location: "Dashboard toolbar, filter buttons"
+        manifestReference: "registryPolicy.onMissingVariant"
+        relatedGapReportId: "DES-512-gap-2"
+        implementationNote:
+          component: "Toolbar IconButton"
+          property: "data-status"
+          oldValue: "(unset)"
+          newValue: "pending-review"
+          additionalContext: "Do not treat as a stable API until DES-512-gap-2 is approved."
 
   - category: "accessibility"
     verdict: "pass"
     findings: []
 
   - category: "token-and-scale-consistency"
-    verdict: "minor-issues"
+    verdict: "blocker"
     findings:
-      - severity: "minor"
+      - severity: "blocker"   # off-scale values are blockers per rubric category 3 ("no hardcoded values, ever")
         rubricItem: "A spacing value appears that isn't in spacing.scale"
         description: "20px gap used between StatTiles; scale only defines 16 and 24."
         location: "Dashboard summary row"
         manifestReference: "spacing.scale"
+        implementationNote:
+          component: "DashboardSummaryRow"
+          property: "gap"
+          oldValue: "20px"
+          newValue: "24px"
+          designSystemTokenRef: "spacing.scale (24)"
 
   - category: "layout-and-spatial-consistency"
     verdict: "pass"
@@ -55,7 +91,15 @@ categories:
         description: "StatTile values are fetched async on dashboard load but no skeleton/loading state was specified, despite Skeleton being an approved component."
         location: "Dashboard summary row"
         manifestReference: "components[] (Skeleton, category: feedback)"
+        implementationNote:
+          component: "DashboardSummaryRow"
+          property: "loading fallback (per StatTile)"
+          oldValue: "(none)"
+          newValue: "<Skeleton variant=\"default\" />"
+          designSystemTokenRef: "components[] Skeleton (feedback category)"
 
-# Routing: overallVerdict = blocker -> sent back to generation step.
-# The reuse-discipline blocker alone would be enough; the interaction-behavior
-# major would route back on its own even without the blocker.
+# Routing: overallVerdict = blocker -> hard stop, routed to a human (never
+# auto-retried). The human sent it back to generation with these findings,
+# producing revision 1 in design-output.example.yaml. Either blocker alone
+# would force this; the interaction-behavior major on its own would instead
+# have triggered the automatic revise-and-reaudit loop.

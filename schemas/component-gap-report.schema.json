@@ -13,8 +13,9 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["gapType", "targetCategory", "suggestedName", "rationale", "recommendation"],
+        "required": ["id", "gapType", "targetCategory", "suggestedName", "rationale", "recommendation"],
         "properties": {
+          "id": { "type": "string", "description": "Stable ID for this gap entry, e.g. 'DES-512-gap-1'. Referenced by design-output (componentsUsed[].gapReportId, gapReportsFiled), audit-report findings (relatedGapReportId), and component-verification-report (gapReportId)." },
           "gapType": {
             "type": "string",
             "enum": ["missing-component", "missing-variant"],
