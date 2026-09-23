@@ -1,0 +1,57 @@
+ticket: "DES-512"
+manifestVersion: "1.0.0"
+generatedAt: "2026-09-10T09:55:00Z"
+revisionNumber: 1   # revised once, after audit-report.example.yaml's major-issues verdict
+                     # on the missing loading state — see Step 11 auto-revise loop
+
+artifact:
+  format: "react-jsx"
+  location: "/designs/DES-512/dashboard-kpi-summary.jsx"
+
+componentsUsed:
+  - name: "StatTile"
+    variant: "default"
+    status: "proposed"
+    gapReportId: "DES-512-gap-1"   # see component-gap-report.example.yaml, case 1
+  - name: "Button"
+    variant: "icon-only"
+    status: "proposed"
+    gapReportId: "DES-512-gap-2"   # see component-gap-report.example.yaml, case 2
+  - name: "Skeleton"
+    variant: "default"
+    status: "approved"            # added in this revision to resolve the
+                                   # interaction-behavior finding from the prior audit
+  - name: "Card"
+    variant: "default"
+    status: "approved"
+
+gapReportsFiled:
+  - "DES-512-gap-1"
+  - "DES-512-gap-2"
+
+decisionLog:
+  - decision: "Date-range filter interaction pattern"
+    alternativesConsidered:
+      - option: "Preset chips (7d / 30d / 90d)"
+        tradeoff: "Fast, matches maxInlineInputs discipline, but no arbitrary range."
+      - option: "Full custom range picker"
+        tradeoff: "More flexible, but adds a multi-field input cluster and a component not in the registry."
+    chosen: "Preset chips (7d / 30d / 90d)"
+    rationale: "Ticket's openQuestion was resolved by the reporter: presets are sufficient for this iteration. Keeps toolbar within maxInlineInputs and avoids a net-new input component."
+    mode: "human-approved"
+    linkedPriority: "P2"
+
+  - decision: "KPI summary layout — inline row vs. carousel"
+    alternativesConsidered:
+      - option: "Inline row of 4 StatTiles"
+        tradeoff: "All 4 visible at once (serves P1 directly), but tighter on narrow viewports."
+      - option: "Horizontally scrollable carousel"
+        tradeoff: "Scales better to more metrics later, but hides some KPIs without scrolling on first view — conflicts with P1's 'at a glance' requirement."
+    chosen: "Inline row of 4 StatTiles"
+    rationale: "P1 explicitly requires no scrolling to see all 4; carousel violates that outright regardless of its other merits."
+    mode: "human-approved"
+    linkedPriority: "P1"
+
+openQuestionsRemaining: []
+
+auditReportRef: "audit-report-DES-512-rev1"

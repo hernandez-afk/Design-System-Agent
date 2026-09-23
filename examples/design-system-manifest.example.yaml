@@ -1,0 +1,194 @@
+# Example design-system manifest — fill this in per project.
+# Swap this file to reuse the same agent/skill across different design systems.
+
+meta:
+  name: "Acme Product UI"
+  version: "1.0.0"
+  framework: "react"
+  stylingEngine: "tailwind"
+  decisionProtocol: "always-ask"   # always-ask | ask-major-only | auto-apply
+  brandExclusions:
+    - "#3B82F6 default SaaS blue"
+    - "glass morphism"
+    - "drop shadows for depth"
+    - "Inter / Roboto / Space Grotesk as primary display font"
+
+color:
+  neutrals:
+    background: "slate-50"
+    surface: "white"
+    border: "slate-200"
+    textPrimary: "slate-900"
+    textSecondary: "slate-600"
+    temperature: "cool"
+  accents:
+    primary: "teal-500"
+    secondary: "amber-500"
+    success: "green-500"
+    warning: "amber-500"
+    error: "red-500"
+    info: "sky-500"
+  contrastStandard: "WCAG-AA"
+  interactionStates:
+    hover: "teal-600"    # one step darker than accents.primary (teal-500)
+    active: "teal-700"
+    focus: "teal-600"
+  usagePolicy:
+    primaryAccentRole: "accents.primary"     # teal-500 — free use
+    secondaryAccentRole: "accents.secondary" # amber-500 — reserved
+    maxSimultaneousSecondaryAccents: 1
+
+typography:
+  typefaces:
+    display: "Fraunces"
+    body: "Inter"
+    ui: "Inter"
+  weights: [400, 500, 700]
+  scale:
+    baseSizePx: 16
+    ratio: 1.25
+    steps: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl"]
+  lineHeightRatio: 1.5
+  roles:
+    heading: "typefaces.display"        # Fraunces, 700 weight
+    readableSubtext: "typefaces.body"   # Inter, 400 weight, textSecondary color
+    formLabel: "typefaces.ui"           # Inter, 500 weight, uppercase, textPrimary color
+                                          # -> visually distinct from readableSubtext even
+                                          # though both use Inter, so "fill this in" reads
+                                          # differently from "here's context"
+
+spacing:
+  baseUnitPx: 4
+  scale: [4, 8, 16, 24, 32, 48]
+
+layout:
+  gridColumns: 12
+  gutterPx: 24
+  breakpoints:
+    sm: 640
+    md: 768
+    lg: 1024
+    xl: 1280
+  containerMaxWidthPx: 1200
+
+motion:
+  durationsMs:
+    micro: 150
+    state: 300
+    page: 500
+  easing:
+    entrance: "ease-out"
+    exit: "ease-in"
+    transition: "ease-in-out"
+  respectReducedMotion: true
+
+registryPolicy:
+  onMissingComponent: "propose-and-wait"     # new component category entirely -> stop and ask
+  onMissingVariant: "propose-and-continue"   # new flavor of an existing component -> draft it, flag as pending
+  requireApprovalBeforeReuse: true
+
+components:
+  - name: "Button"
+    category: "action"
+    status: "approved"
+    importPath: "@/components/ui/button"
+    props: ["size", "disabled", "loading"]
+    description: "Primary interactive trigger."
+    variants:
+      - name: "primary"
+        status: "approved"
+      - name: "secondary"
+        status: "approved"
+      - name: "ghost"
+        status: "approved"
+      - name: "destructive"
+        status: "approved"
+      # Example of a variant that was created for a specific ticket and is
+      # awaiting sign-off — the agent can reuse it on a NEW ticket only if
+      # requireApprovalBeforeReuse is false, otherwise it re-flags it as pending.
+      - name: "icon-only"
+        status: "proposed"
+        addedInTicket: "DES-481"
+        addedDate: "2026-08-14"
+        description: "Square button, icon centered, no label — requested for toolbar use."
+
+  - name: "Card"
+    category: "display"
+    status: "approved"
+    importPath: "@/components/ui/card"
+    description: "Content container with border + background differentiation, no shadow."
+    variants:
+      - name: "default"
+        status: "approved"
+      - name: "outlined"
+        status: "approved"
+
+  - name: "Input"
+    category: "input"
+    status: "approved"
+    importPath: "@/components/ui/input"
+    variants:
+      - name: "default"
+        status: "approved"
+      - name: "error"
+        status: "approved"
+
+  - name: "Toast"
+    category: "feedback"
+    status: "approved"
+    importPath: "sonner"
+    description: "Non-blocking notification."
+    variants:
+      - name: "default"
+        status: "approved"
+
+  - name: "Skeleton"
+    category: "feedback"
+    status: "approved"
+    importPath: "@/components/ui/skeleton"
+    description: "Loading placeholder, used until content renders."
+    variants:
+      - name: "default"
+        status: "approved"
+
+  - name: "Tabs"
+    category: "navigation"
+    status: "approved"
+    importPath: "@/components/ui/tabs"
+    variants:
+      - name: "default"
+        status: "approved"
+
+  # Deliberately NOT included: any "feedback" or "data-viz" component with a
+  # stat/metric variant. A ticket asking for a stats dashboard should trigger
+  # a missing-COMPONENT gap here (not just a missing variant), since no
+  # category member is a good fit at all.
+
+icons:
+  library: "@phosphor-icons/react"
+  importPattern: "import { IconName } from '@phosphor-icons/react'"
+
+accessibility:
+  level: "AA"
+  minTouchTargetPx: 44
+  requireVisibleFocusStates: true
+  requireSemanticHtml: true
+
+automation:
+  auditTrigger: "automatic-post-generation"
+  maxAutoReviseAttempts: 2
+  notifyOnAutoRevise: true
+
+compositionHeuristics:
+  listPaginationThreshold: 10
+  maxInlineInputs: 7
+  requireProgressiveDisclosure: true
+  requireTicketPriorityTraceability: true
+
+navigationHeuristics:
+  requireNavigationalTies: true
+  breadcrumbThresholdDepth: 2
+
+motionUsagePolicy:
+  requireLoadingAnimation: true
+  requireDataVizAnimation: true

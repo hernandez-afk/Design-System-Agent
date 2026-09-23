@@ -1,0 +1,37 @@
+ticketKey: "DES-512"
+title: "Add KPI summary to main dashboard"
+rawDescription: >
+  Product wants a quick-glance summary row at the top of the dashboard
+  showing 4 key metrics with trend indicators, plus a toolbar for
+  filtering the dashboard by date range.
+
+priorities:
+  - id: "P1"
+    statement: "User can see the 4 core KPIs and their trend at a glance without scrolling."
+    source: "explicit"
+  - id: "P2"
+    statement: "User can filter the whole dashboard by date range from a toolbar."
+    source: "explicit"
+  - id: "P3"
+    statement: "Loading state must not block perception of the rest of the dashboard."
+    source: "inferred"
+
+requiredElements:
+  - description: "4 KPI values with trend arrows, at-a-glance"
+    targetCategory: "data-viz"
+    linkedPriority: "P1"
+    estimatedVolume: "fixed at 4"
+  - description: "toolbar with icon-only buttons for filter actions"
+    targetCategory: "action"
+    linkedPriority: "P2"
+  - description: "loading placeholder while KPI values fetch"
+    targetCategory: "feedback"
+    linkedPriority: "P3"
+
+constraints:
+  - "Must fit above the fold on the existing dashboard layout, no new page."
+
+linkedDesigns: []
+
+openQuestions:
+  - "Does 'date range' need a custom range picker, or are preset ranges (7d/30d/90d) sufficient? Ticket doesn't specify."

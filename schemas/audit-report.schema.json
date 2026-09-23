@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/audit-report.schema.json",
+  "title": "Design Audit Report",
+  "description": "Structured output of running design-audit-rubric.md against a design. Drives the pipeline's approve/revise routing.",
+  "type": "object",
+  "required": ["ticket", "manifestVersion", "overallVerdict", "categories"],
+  "properties": {
+    "ticket": { "type": "string" },
+    "manifestVersion": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "autoReviseAttempt": {
+      "type": "integer",
+      "default": 0,
+      "description": "0 = first audit of this design. Increments each time a major-issues verdict triggers an automatic revise-and-reaudit loop, per automation.maxAutoReviseAttempts."
+    },
+    "escalatedFromMajorIssues": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when this report's overallVerdict is 'blocker' only because maxAutoReviseAttempts was exhausted on repeated major-issues verdicts — distinguishes 'genuinely blocked' from 'agent gave up self-correcting' for the human reviewing it."
+    },
+    "overallVerdict": {
+      "type": "string",
+      "enum": ["pass", "minor-issues", "major-issues", "blocker"]
+    },
+    "overallAssessment": {
+      "type": "string",
+      "description": "1-2 sentences on the current state of the design, for the presentation template's 'Overall Assessment' line. Also where decision-protocol-compliance findings surface, since that category is excluded from the phased sections (see audit-presentation-template.md)."
+    },
+    "designSystemUpdatesRequired": {
+      "type": "array",
+      "description": "Populates the template's 'DESIGN_SYSTEM UPDATES REQUIRED' section. Auto-derived from gap reports linked to reuse-and-component-discipline findings, plus any token-and-scale-consistency finding that needs a genuinely new token.",
+      "items": {
+        "type": "object",
+        "required": ["description", "requiresApprovalBeforeImplementation"],
+        "properties": {
+          "description": { "type": "string", "description": "e.g. 'New token: spacing-lg (20px) for StatTile gap, not currently in spacing.scale.'" },
+          "relatedGapReportId": { "type": "string" },
+          "requiresApprovalBeforeImplementation": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "verdict", "findings"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "reuse-and-component-discipline",
+              "accessibility",
+              "token-and-scale-consistency",
+              "layout-and-spatial-consistency",
+              "decision-protocol-compliance",
+              "anti-pattern-check",
+              "simplicity-and-necessity",
+              "interaction-behavior",
+              "composition-and-density",
+              "navigation-color-and-motion-feedback"
+            ]
+          },
+          "verdict": {
+            "type": "string",
+            "enum": ["pass", "minor-issues", "major-issues", "blocker"]
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["severity", "rubricItem", "description"],
+              "properties": {
+                "severity": { "type": "string", "enum": ["blocker", "major", "minor"] },
+                "rubricItem": { "type": "string", "description": "Short quote/id of the rubric checklist item that was violated." },
+                "description": { "type": "string", "description": "What was found, specific to this design." },
+                "location": { "type": "string", "description": "Where in the design this occurs, e.g. component name, screen, section." },
+                "manifestReference": { "type": "string", "description": "The manifest field this check was evaluated against, e.g. 'accessibility.minTouchTargetPx'." },
+                "relatedGapReportId": { "type": "string", "description": "For reuse-discipline findings, the gap report this should have referenced." },
+                "presentationPhase": {
+                  "type": "integer",
+                  "enum": [1, 2, 3],
+                  "description": "Which phase this renders under in audit-presentation-template.md. Defaults per the category→phase mapping table in that file; set explicitly here to override (e.g. a category-1 accessibility issue that's cosmetic enough to defer to Phase 2 in a specific case)."
+                },
+                "implementationNote": {
+                  "type": "object",
+                  "description": "Required to populate 'IMPLEMENTATION NOTES FOR BUILD AGENT'. A finding can exist without this (e.g. still being diagnosed), but cannot be rendered into that section until populated — no vague instructions allowed through.",
+                  "required": ["component", "property", "oldValue", "newValue"],
+                  "properties": {
+                    "file": { "type": "string", "description": "Exact file path, if known." },
+                    "component": { "type": "string", "description": "Exact component name, e.g. 'PrimaryButton'." },
+                    "property": { "type": "string", "description": "Exact CSS/prop property, e.g. 'border-radius', 'background'." },
+                    "oldValue": { "type": "string" },
+                    "newValue": { "type": "string" },
+                    "designSystemTokenRef": { "type": "string", "description": "e.g. 'DESIGN_SYSTEM spacing-lg' or 'color-brand-primary'." },
+                    "additionalContext": { "type": "string", "description": "Optional supporting fact, e.g. a contrast ratio improvement — only include when it strengthens the instruction, per the WCAG contrast example." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

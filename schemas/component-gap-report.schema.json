@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/component-gap-report.schema.json",
+  "title": "Component Gap Report",
+  "description": "Emitted by the design agent whenever a ticket needs a component or variant the manifest doesn't have (or only has as 'proposed'). A human reviews this report; approved items get promoted into the manifest's components[] registry with status: approved, so later tickets reuse them instead of regenerating near-duplicates.",
+  "type": "object",
+  "required": ["ticket", "manifestVersion", "gaps"],
+  "properties": {
+    "ticket": { "type": "string", "description": "Source Jira ticket key, e.g. 'DES-512'." },
+    "manifestVersion": { "type": "string", "description": "meta.version of the manifest this report was generated against." },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gapType", "targetCategory", "suggestedName", "rationale", "recommendation"],
+        "properties": {
+          "gapType": {
+            "type": "string",
+            "enum": ["missing-component", "missing-variant"],
+            "description": "missing-component: no existing entry fits this category/purpose at all. missing-variant: the base component exists (e.g. Button) but not in the needed flavor (e.g. 'icon-only')."
+          },
+          "targetCategory": {
+            "type": "string",
+            "enum": ["action", "input", "display", "feedback", "navigation", "layout", "overlay", "data-viz"]
+          },
+          "existingComponent": { "type": "string", "description": "For missing-variant gaps: the component this would extend, e.g. 'Button'." },
+          "suggestedName": { "type": "string", "description": "Proposed name for the new component or variant, e.g. 'StatTile' or 'icon-only'." },
+          "rationale": { "type": "string", "description": "Why the ticket needs this and why nothing approved already covers it." },
+          "suggestedProps": { "type": "array", "items": { "type": "string" } },
+          "recommendation": {
+            "type": "string",
+            "enum": ["create-new", "reuse-nearest-approved", "extend-existing-variant"],
+            "description": "The agent's suggestion. 'reuse-nearest-approved' means the gap is real but the agent thinks an approved component can be adapted instead of adding a new one — use this to push back on registry sprawl."
+          },
+          "nearestApprovedAlternative": { "type": "string", "description": "Set when recommendation is reuse-nearest-approved — names the existing component/variant to use instead." }
+        }
+      }
+    }
+  }
+}

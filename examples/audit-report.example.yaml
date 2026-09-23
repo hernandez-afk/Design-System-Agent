@@ -1,0 +1,61 @@
+ticket: "DES-512"
+manifestVersion: "1.0.0"
+generatedAt: "2026-09-10T09:40:00Z"
+overallVerdict: "blocker"
+
+categories:
+  - category: "reuse-and-component-discipline"
+    verdict: "blocker"
+    findings:
+      - severity: "blocker"
+        rubricItem: "Design uses a component/variant with status: proposed ... WITHOUT an accompanying component-gap-report entry"
+        description: >
+          Dashboard header uses a 'StatTile' component that does not exist in
+          the manifest and has no corresponding gap-report entry filed —
+          it was invented inline instead of going through the create-new
+          recommendation path.
+        location: "Dashboard summary row, 4 KPI cards"
+        manifestReference: "components[]"
+        relatedGapReportId: null
+
+  - category: "accessibility"
+    verdict: "pass"
+    findings: []
+
+  - category: "token-and-scale-consistency"
+    verdict: "minor-issues"
+    findings:
+      - severity: "minor"
+        rubricItem: "A spacing value appears that isn't in spacing.scale"
+        description: "20px gap used between StatTiles; scale only defines 16 and 24."
+        location: "Dashboard summary row"
+        manifestReference: "spacing.scale"
+
+  - category: "layout-and-spatial-consistency"
+    verdict: "pass"
+    findings: []
+
+  - category: "decision-protocol-compliance"
+    verdict: "pass"
+    findings: []
+
+  - category: "anti-pattern-check"
+    verdict: "pass"
+    findings: []
+
+  - category: "simplicity-and-necessity"
+    verdict: "pass"
+    findings: []
+
+  - category: "interaction-behavior"
+    verdict: "major-issues"
+    findings:
+      - severity: "major"
+        rubricItem: "No loading/pending state defined for an action that involves latency"
+        description: "StatTile values are fetched async on dashboard load but no skeleton/loading state was specified, despite Skeleton being an approved component."
+        location: "Dashboard summary row"
+        manifestReference: "components[] (Skeleton, category: feedback)"
+
+# Routing: overallVerdict = blocker -> sent back to generation step.
+# The reuse-discipline blocker alone would be enough; the interaction-behavior
+# major would route back on its own even without the blocker.

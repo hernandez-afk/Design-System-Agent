@@ -1,0 +1,37 @@
+ticket: "DES-512"
+manifestVersion: "1.0.0"
+generatedAt: "2026-09-09T10:15:00Z"
+
+gaps:
+  # Case 1: nothing in the registry fits at all -> new component
+  - gapType: "missing-component"
+    targetCategory: "data-viz"
+    suggestedName: "StatTile"
+    rationale: >
+      Ticket asks for a dashboard summary row showing 4 KPIs with trend
+      arrows. No approved or proposed component in the 'display' or
+      'data-viz' categories covers a labeled-metric-with-trend pattern.
+    suggestedProps: ["label", "value", "delta", "trend"]
+    recommendation: "create-new"
+
+  # Case 2: base component exists, this flavor doesn't -> new variant
+  - gapType: "missing-variant"
+    targetCategory: "action"
+    existingComponent: "Button"
+    suggestedName: "icon-only"
+    rationale: >
+      Ticket's toolbar needs square icon-only buttons. Button exists with
+      primary/secondary/ghost/destructive variants but no icon-only variant
+      is approved yet (one was proposed under DES-481 but is still pending review).
+    suggestedProps: ["icon", "aria-label"]
+    recommendation: "extend-existing-variant"
+
+  # Case 3: agent pushes back — looks like a gap but an approved option already covers it
+  - gapType: "missing-component"
+    targetCategory: "feedback"
+    suggestedName: "InlineWarningBanner"
+    rationale: >
+      Ticket asks for a way to warn users about an unsaved-changes state
+      on the page.
+    recommendation: "reuse-nearest-approved"
+    nearestApprovedAlternative: "Toast (persistent/manual-dismiss configuration)"

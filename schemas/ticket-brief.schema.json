@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/ticket-brief.schema.json",
+  "title": "Ticket Brief",
+  "description": "Structured extraction from a Jira ticket, produced before generation starts. Keeps 'what does the ticket actually ask for' explicit and separate from the agent's interpretation, so requireTicketPriorityTraceability (composition-heuristics) has something concrete to check against.",
+  "type": "object",
+  "required": ["ticketKey", "title", "priorities", "requiredElements"],
+  "properties": {
+    "ticketKey": { "type": "string", "description": "e.g. 'DES-512'." },
+    "title": { "type": "string" },
+    "rawDescription": { "type": "string", "description": "Verbatim (paraphrased per copyright practice if fetched from Jira text) ticket description, kept for traceability." },
+    "priorities": {
+      "type": "array",
+      "description": "The core things this design must accomplish, ranked. Every major generation decision must cite one of these.",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'P1'." },
+          "statement": { "type": "string" },
+          "source": { "type": "string", "enum": ["explicit", "acceptance-criterion", "inferred"], "description": "'explicit' = stated directly in the ticket. 'acceptance-criterion' = derived from a listed AC. 'inferred' = the agent's read on unstated intent — flagged separately so it can be confirmed rather than assumed." }
+        }
+      }
+    },
+    "requiredElements": {
+      "type": "array",
+      "description": "Concrete UI needs pulled from the ticket, each destined for the reuse/similarity check against the manifest's components[].",
+      "items": {
+        "type": "object",
+        "required": ["description", "targetCategory"],
+        "properties": {
+          "description": { "type": "string", "description": "e.g. 'a way to show 4 KPIs with trend indicators'." },
+          "targetCategory": { "type": "string", "enum": ["action", "input", "display", "feedback", "navigation", "layout", "overlay", "data-viz"] },
+          "linkedPriority": { "type": "string", "description": "id of the priority this element serves, for traceability." },
+          "estimatedVolume": { "type": "string", "description": "If this is a list/collection, rough expected item count — feeds compositionHeuristics.listPaginationThreshold check, e.g. '~30 rows, grows over time'." }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Explicit constraints from the ticket (platform, deadline-driven scope cuts, must-integrate-with-X, etc.)."
+    },
+    "linkedDesigns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "URLs/references to existing designs mentioned in the ticket (Figma links, prior screens) that this should be visually consistent with."
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ambiguities the agent couldn't resolve from the ticket alone — surfaced to the human before generation starts rather than silently assumed."
+    }
+  }
+}

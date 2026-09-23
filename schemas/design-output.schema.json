@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/design-output.schema.json",
+  "title": "Design Output",
+  "description": "What design-generation-skill.md produces for one ticket. This is what gets audited (design-audit-rubric.md / audit-report.schema.json) and, on approval, what a human reviews.",
+  "type": "object",
+  "required": ["ticket", "manifestVersion", "artifact", "componentsUsed", "decisionLog"],
+  "properties": {
+    "ticket": { "type": "string" },
+    "manifestVersion": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "revisionNumber": { "type": "integer", "default": 0, "description": "0 = first draft. Increments on each auto-revise loop triggered by a major-issues audit verdict." },
+
+    "artifact": {
+      "type": "object",
+      "description": "The actual design deliverable.",
+      "required": ["format", "location"],
+      "properties": {
+        "format": { "type": "string", "enum": ["html", "react-jsx", "figma-spec", "markdown-wireframe"], "description": "Matches meta.framework/stylingEngine where applicable." },
+        "location": { "type": "string", "description": "File path or URL to the rendered artifact." }
+      }
+    },
+
+    "componentsUsed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "variant", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "variant": { "type": "string" },
+          "status": { "type": "string", "enum": ["approved", "proposed"] },
+          "gapReportId": { "type": "string", "description": "Set if status is 'proposed' — links back to the gap report that justified using it." }
+        }
+      }
+    },
+
+    "gapReportsFiled": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs/paths of component-gap-report entries generated during this draft."
+    },
+
+    "verificationReportsFiled": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs/paths of component-verification-report entries generated for any new component/variant used — required alongside gapReportsFiled when registryPolicy.requireOperationalVerification is true. A component used here with status: proposed and no corresponding verification report is a reuse-and-component-discipline blocker in the audit."
+    },
+
+    "decisionLog": {
+      "type": "array",
+      "description": "Every Decision Protocol invocation during generation, regardless of decisionProtocol mode — logged even under auto-apply for auditability.",
+      "items": {
+        "type": "object",
+        "required": ["decision", "alternativesConsidered", "chosen", "mode"],
+        "properties": {
+          "decision": { "type": "string", "description": "What was being decided, e.g. 'information architecture for KPI summary'." },
+          "alternativesConsidered": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["option", "tradeoff"],
+              "properties": {
+                "option": { "type": "string" },
+                "tradeoff": { "type": "string", "description": "What this option prioritizes and what it costs." }
+              }
+            }
+          },
+          "chosen": { "type": "string" },
+          "rationale": { "type": "string" },
+          "mode": { "type": "string", "enum": ["human-approved", "auto-applied"], "description": "Whether a human picked this or the agent proceeded per ask-major-only/auto-apply." },
+          "linkedPriority": { "type": "string", "description": "ticket-brief priority id this decision serves." }
+        }
+      }
+    },
+
+    "openQuestionsRemaining": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Anything still unresolved and explicitly deferred rather than guessed at."
+    },
+
+    "auditReportRef": {
+      "type": "string",
+      "description": "Populated once the automatic audit handoff (Step 11) runs — path/ID of the resulting audit-report."
+    }
+  }
+}

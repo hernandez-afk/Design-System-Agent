@@ -1,26 +1,25 @@
 # Design System Agent
 
-A config-driven agent skill for generating and auditing UI designs. The skill holds fixed *process* (how to reason from a ticket to a layout, when to ask, when to reuse, when to audit); every project-specific value (colors, type, spacing, components) comes from a per-project design-system manifest.
+A config-driven agent skill for generating and auditing UI designs. The skills hold fixed *process* (how to reason from a ticket to a layout, when to ask, when to reuse, when to audit); every project-specific value (colors, type, spacing, components) comes from a per-project design-system manifest.
 
-## Files
+## Folder structure
 
-| File | Purpose |
-|---|---|
-| `design-generation-skill.md` | The generation skill: an 11-step process from ticket brief to design, ending in an automatic audit handoff. |
-| `design-audit-rubric.md` | 10-category audit rubric with blocker / major / minor checks and the verdict-to-automation routing table. |
-| `design-system-manifest.schema.json` | JSON Schema for a project's `design-system-manifest.yaml`: tokens, component registry, registry/similarity policy, automation and heuristic thresholds. |
-| `component-verification-report.schema.json` | JSON Schema for the report that gates a proposed component moving to `approved`. |
-| `component-verification-report.example.yaml` | Worked example: verifying a new `StatTile` component. |
+- **skills/** — the fixed logic (SKILL.md-style files): principles, the generation process, the audit rubric, and the mandatory human-facing report template.
+- **schemas/** — the JSON Schemas defining every data contract that passes between steps.
+- **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 
-## Pipeline
+## Pipeline order
 
-1. **Brief** – structure the ticket into ranked priorities, required elements and open questions; ask if anything is ambiguous.
-2. **Manifest** – load and validate the project manifest; halt if none exists.
-3. **Reuse check** – score each required element against approved components; reuse, extend with a variant, or file a gap report.
-4. **Design** – information architecture, layout (mobile-first, on-grid), typography, color, motion and navigation, all from manifest tokens.
-5. **Audit** – run the rubric automatically. `pass`/`minor-issues` go to human sign-off; `major-issues` auto-revise up to a cap; `blocker` stops and routes to a human.
-6. **Registry growth** – new components need a verification report with `verdict: ready-for-implementation` before they become `approved` and reusable.
+1. **`schemas/ticket-brief.schema.json`** — structured extraction from a Jira ticket. See `examples/ticket-brief.example.yaml`.
+2. **`schemas/design-system-manifest.schema.json`** — the project's design system as data (tokens, components, thresholds, policies). See `examples/design-system-manifest.example.yaml`. This is what makes the rest of the system generalizable to any design system — swap this file, same skills work elsewhere.
+3. **`skills/design-principles.md`** — the fixed philosophy (simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion, structural rationale) that generation and audit both answer to.
+4. **`skills/design-generation-skill.md`** — reads the brief + manifest, runs the reuse/similarity check against the component registry, files gap reports for anything missing, shapes layout/typography/color/motion from manifest tokens, and follows the Decision Protocol on consequential choices. Produces a `design-output` (schema + example included).
+   - Along the way it may file a **`schemas/component-gap-report.schema.json`** (example included) for anything not in the registry, and — before that gap report's component can be approved for reuse — a **`schemas/component-verification-report.schema.json`** (example included) confirming the new component is operational (every state implemented, accessible, token-compliant) and documenting *why* it was built that way.
+5. **`skills/design-audit-rubric.md`** — runs automatically after every generation. 10 categories, `pass`/`minor-issues`/`major-issues`/`blocker` verdicts. `blocker` halts for a human; `major-issues` auto-revises and re-audits up to a configurable cap before escalating. Produces an **`schemas/audit-report.schema.json`** (example included).
+6. **`skills/audit-presentation-template.md`** — the exact, fixed format audit findings are rendered in for a human (Phase 1 Critical / Phase 2 Refinement / Phase 3 Polish / Design System Updates Required / Implementation Notes). See `examples/audit-report-rendered.example.md` for what this looks like filled in.
 
-## Referenced but not yet included
+## Still open
 
-The skill and rubric refer to these files, which aren't in the repo yet: `design-principles.md`, `ticket-brief.schema.json`, `audit-report.schema.json`, `audit-presentation-template.md`, `component-recommendation-principles.md`, plus schemas for `component-gap-report` and `design-output`.
+Jira ingestion (fetching a ticket automatically into a `ticket-brief`, e.g. via an Atlassian MCP connector) hasn't been built yet — right now a brief is assumed to already be structured, or extracted manually from raw ticket text per Step 1 of `design-generation-skill.md`.
+
+Also still missing: `component-recommendation-principles.md`, referenced by `registryPolicy.similarityCheck` in the manifest schema. The similarity procedure itself is currently described in Step 3 of `design-generation-skill.md`.
