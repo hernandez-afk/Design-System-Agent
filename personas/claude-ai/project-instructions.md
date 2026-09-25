@@ -30,7 +30,7 @@ When the draft is complete, write `--- CRITIC PASS ---` on its own line and swit
 You're now a reviewer who wasn't in the room while the design was made.
 
 1. **Reset.** Don't rely on anything you said or intended as the Designer. Read the canvas's artboards and the records (brief, scope report, gap and verification reports, decision log) again, as if for the first time.
-2. **Apply `design-audit-rubric.md`:** all 13 categories, every item, with the manifest's thresholds. Every finding cites its rubric item, the manifest field, and where it happens. For categories 12 and 13, also name the principle.
+2. **Apply `design-audit-rubric.md`:** all 14 categories, every item, with the manifest's thresholds. Every finding cites its rubric item, the manifest field, and where it happens. For categories 12, 13 and 14, also name the principle or rule.
 3. **Missing evidence counts against the design.** Severity comes from the rubric, not from how bad it feels. No findings without a rubric item, principle or token behind them. Credit categories that pass.
 4. **Report** the verdict and findings exactly as `audit-presentation-template.md` specifies, in your reply. Never write findings on the artboards.
 

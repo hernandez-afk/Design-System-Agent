@@ -4,7 +4,7 @@
   "title": "Design Output",
   "description": "What design-generation-skill.md produces for one ticket. This is what gets audited (design-audit-rubric.md / audit-report.schema.json) and, on approval, what a human reviews.",
   "type": "object",
-  "required": ["ticket", "projectId", "manifestVersion", "artifact", "componentsUsed", "decisionLog"],
+  "required": ["ticket", "projectId", "manifestVersion", "artifact", "mobileCheck", "componentsUsed", "decisionLog"],
   "properties": {
     "ticket": { "type": "string" },
     "projectId": { "type": "string", "description": "design-index project this output belongs to. Equals ticket for a new project; for an 'extend-existing' scope outcome it is the existing project's ID." },
@@ -35,6 +35,25 @@
             }
           }
         }
+      }
+    },
+
+    "mobileCheck": {
+      "type": "object",
+      "description": "The mobile pass (generation Step 9b), required on every design. Each item is a claim the critic verifies against the artifact.",
+      "required": ["minViewportPx", "designedAtPhoneFirst", "reflowsWithoutHorizontalScroll", "textScaleTested", "noHoverOnlyInteractions", "touchTargetsAndSpacing", "primaryActionInThumbZone", "safeAreasAndKeyboard", "orientations"],
+      "properties": {
+        "minViewportPx": { "type": "integer" },
+        "designedAtPhoneFirst": { "type": "boolean", "description": "The phone layout exists and was designed first." },
+        "reflowsWithoutHorizontalScroll": { "type": "boolean" },
+        "textScaleTested": { "type": "object", "required": ["percent", "pass"], "properties": { "percent": { "type": "integer" }, "pass": { "type": "boolean" }, "notes": { "type": "string" } } },
+        "noHoverOnlyInteractions": { "type": "boolean" },
+        "touchTargetsAndSpacing": { "type": "boolean" },
+        "primaryActionInThumbZone": { "type": "boolean" },
+        "thumbZoneReason": { "type": "string", "description": "Required when primaryActionInThumbZone is false." },
+        "safeAreasAndKeyboard": { "type": "boolean", "description": "Safe areas respected; the on-screen keyboard never covers the focused field." },
+        "orientations": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Behavior per orientation, e.g. {portrait: '...', landscape: '...'}." },
+        "notes": { "type": "string" }
       }
     },
 

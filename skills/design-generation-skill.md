@@ -26,6 +26,8 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 
 9. **Usable in 3-3-3.** Every core task is understood in 3 seconds, reached in 3 clicks, completed in 3 minutes (thresholds in `usabilityHeuristics.threeThreeThree`). Walked explicitly in Step 9b, never assumed.
 10. **Displays follow human perception, attention, and memory.** Wickens' 13 principles of display design (in `design-principles.md`) are applied in the steps where they bite — noted inline below — and audited in category 13.
+11. **Mobile at all times.** Every design starts at the phone and is verified at `mobile.minViewportPx` first: reflow without sideways scrolling, text scaled to `maxTextScalePercent`, touch first, primary action in thumb reach, safe areas and keyboard respected (Steps 5 and 9b).
+12. **Every component is dynamic.** Fluid, container-aware, content-proof, scalable, input-aware, data-driven and token-driven (`design-principles.md`). A component that only works in the layout it was drawn in isn't finished (Step 3).
 
 ## Required inputs
 
@@ -105,6 +107,7 @@ For each entry in `requiredElements`:
    - `block` → do not draft; tell the human the manifest needs a manual addition first.
 5. **A filed gap report never grants approval by itself.** If `registryPolicy.requireOperationalVerification` is true (default), any component/variant drafted from a `create-new` or `extend-existing-variant` recommendation also needs a `component-verification-report` before its status can move from `proposed` to `approved`:
    - Fill in `operationalSpec` — every state (default, hover, focus, disabled, loading, error, empty, success as applicable), props, and responsive behavior, not just the one state shown in the mockup.
+   - Fill in `dynamicBehavior` — how it sizes (fluid, with min/max), what it does at each container width narrowest first, how it handles short, long (+`mobile.textExpansionPercent`), empty and overflowing content, what happens at `mobile.maxTextScalePercent` text, and how it works by touch, pointer and keyboard. **Design it this way from the start**, not as a retrofit: a component drawn for one fixed layout isn't a candidate for approval.
    - Fill in `designRationale` — for each notable structural decision (why this layout, why this state indicator, why this spacing), cite a principle from `design-principles.md`, a manifest token, or a rubric category. A rationale that just restates the decision without citing a reason ("it looks cleaner") doesn't count — same bar as `implementationNote` in the audit report.
    - Run the `verification` checklist (all states actually implemented, not just specified; accessibility; token compliance).
    - Route to whoever `registryPolicy.verificationReviewer` names. A `verdict: needs-revision` sends it back to drafting with `revisionNotes`; only `ready-for-implementation` allows the status flip.
@@ -123,7 +126,7 @@ Before laying out pixels, decide structure using `compositionHeuristics`. Start 
 
 ### Step 5 — Layout, using manifest tokens only
 
-Design from the smallest `layout.breakpoints` step upward — mobile is the starting point, tablet/desktop are enhancements, per **Responsive Is the Real Design**. Verify primary interactions and touch targets at the smallest step first; larger viewports get *intentional* treatment, not a resize.
+Design from the smallest `layout.breakpoints` step upward, verified at `mobile.minViewportPx` — mobile is the starting point, tablet/desktop are enhancements, per **Responsive Is the Real Design** and **Mobile at All Times**. On phones, place the primary action within thumb reach (lower half or a bottom bar) when `mobile.thumbZonePrimaryAction` is true, keep every interaction reachable without hover, and keep content clear of safe areas and the on-screen keyboard. Every component in the layout is used dynamically: sized by its container and content, never by a fixed width. Verify primary interactions and touch targets at the smallest step first; larger viewports get *intentional* treatment, not a resize.
 
 Grid: `layout.gridColumns` / `layout.gutterPx`, snapped to within `layout.alignmentTolerancePx` (default exact, no exceptions — **Alignment Is Precision**). Breakpoints: `layout.breakpoints`, with explicit behavior at each step (category 4 of the audit rubric checks this isn't left implicit). Container width: `layout.containerMaxWidthPx`.
 
@@ -154,7 +157,7 @@ Any async wait (data fetch, computed result) → loading state using `motion.dur
 
 Any view reached by drilling in needs a way back — button, breadcrumb, or shortcut per `navigationHeuristics.requireNavigationalTies`. Use a breadcrumb trail specifically once depth exceeds `breadcrumbThresholdDepth`; a back button alone is fine above it.
 
-### Step 9b — 3-3-3 walk-through
+### Step 9b — 3-3-3 walk-through and mobile pass
 
 For every `coreTasks` entry, before packaging:
 
@@ -162,11 +165,23 @@ For every `coreTasks` entry, before packaging:
 2. **3 clicks — task path.** Walk from the task's `entryPoint`, writing down every step and marking which are clicks/taps (typing isn't). Over `maxClicksToCoreTask` → shorten the path, or document an `overLimitReason` and each step's `scent` (why the user knows it's the right step). Never shorten a path by breaking `maxInlineInputs`, pagination, or progressive disclosure — if they conflict, it's a Decision Protocol moment.
 3. **3 minutes — completion estimate.** Estimate a first-time user's time step by step, including reading and waiting, and state the basis. Over `maxCoreTaskMinutes` → simplify the task, split it, or document the reason.
 
-Record the results in the design output's `glanceTest` and `taskPaths`.
+4. **Mobile pass.** Check the design against the `mobile` block and record it as `mobileCheck`:
+   - it was designed at phone size first
+   - it reflows at `minViewportPx` with no sideways scrolling
+   - it works with text at `maxTextScalePercent`
+   - nothing is hover-only
+   - touch targets and the spacing between them meet the minimums
+   - the primary action is within thumb reach, or a reason is given
+   - safe areas and the on-screen keyboard are handled
+   - behavior is defined for each orientation in `orientations`
+
+   A failed item goes back to Step 5. It's never recorded as passing.
+
+Record the results in the design output's `glanceTest`, `taskPaths` and `mobileCheck`.
 
 ### Step 10 — Assemble output
 
-Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest` and `taskPaths` from Step 9b, the list of components/variants used (with status), and any gap and verification reports filed.
+Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest`, `taskPaths` and `mobileCheck` from Step 9b, the list of components/variants used (with status), and any gap and verification reports filed.
 
 ### Step 11 — Automatic audit handoff
 

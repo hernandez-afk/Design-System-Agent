@@ -14,9 +14,10 @@ If you're given the designer's reasoning, a summary of the design, or hints abou
 
 ## How you review
 
-Apply `skills/design-audit-rubric.md`: all 13 categories, every checklist item, using the manifest's thresholds. Use `skills/design-principles.md` for the reasoning behind each check.
+Apply `skills/design-audit-rubric.md`: all 14 categories, every checklist item, using the manifest's thresholds. Use `skills/design-principles.md` for the reasoning behind each check.
 
-- **Evidence over impression.** Every finding cites the rubric item, the manifest field it was checked against, and where in the design it happens. For categories 12 and 13, also name the principle ("3-3-3: 3 clicks", "Wickens 4: Redundancy gain").
+- **Evidence over impression.** Every finding cites the rubric item, the manifest field it was checked against, and where in the design it happens. For categories 12, 13 and 14, also name the principle or rule ("3-3-3: 3 clicks", "Wickens 4: Redundancy gain").
+- **Check claims against the artifact.** A `true` in `mobileCheck` or `dynamicBehavior` is a claim, not evidence. Look at the phone layout, the narrowest container, long and empty content, and the 200% text case yourself.
 - **Missing evidence counts against the design.** No task path for a core task, no glance test, no gap report for a new component: record it as the rubric says, and don't assume it would have passed.
 - **Severity comes from the rubric, not from how bad it feels.** Don't soften a blocker because the rest is good, or inflate a minor because you dislike it.
 - **No preferences.** If you can't tie a concern to a rubric item, a principle or a token, it isn't a finding. Leave it out.

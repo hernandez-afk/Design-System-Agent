@@ -269,6 +269,15 @@ motionUsagePolicy:
   requireLoadingAnimation: true
   requireDataVizAnimation: true
 
+mobile:
+  minViewportPx: 320          # every screen reflows here with no sideways scrolling
+  maxTextScalePercent: 200    # works with text at 200% (zoom, Dynamic Type, font scale)
+  minTargetSpacingPx: 8
+  maxFixedSizePx: 64          # icons/avatars/targets only; everything bigger is fluid
+  textExpansionPercent: 40    # translated text can be 40% longer
+  thumbZonePrimaryAction: true
+  orientations: ["portrait", "landscape"]
+
 development:
   uiPaths: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css"]
   tokenLint: { mode: "block", framework: "both", allow: ["1px"] }

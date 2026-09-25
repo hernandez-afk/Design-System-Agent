@@ -117,6 +117,10 @@ categories:
           oldValue: "'30d'"
           newValue: "'30d' with the covered range (e.g. 'Aug 11 – Sep 9') shown on focus and hover, and as supporting text at md and up"
 
+  - category: "mobile-and-dynamic-components"
+    verdict: "pass"
+    findings: []
+
 # Routing: overallVerdict = blocker -> hard stop, routed to a human (never
 # auto-retried). The human sent it back to generation with these findings,
 # producing revision 1 in design-output.example.yaml. Either blocker alone

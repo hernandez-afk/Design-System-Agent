@@ -503,6 +503,21 @@
       }
     },
 
+    "mobile": {
+      "type": "object",
+      "description": "Mobile at all times, and dynamic components (design-principles.md). Every design is verified at a phone width first; every component adapts to its container, content, text size and input. Checked in rubric category 14.",
+      "properties": {
+        "minViewportPx": { "type": "integer", "default": 320, "description": "The narrowest width every screen must reflow to without horizontal scrolling (WCAG 1.4.10)." },
+        "maxTextScalePercent": { "type": "integer", "default": 200, "description": "Text scale every screen and component must survive: browser zoom, iOS Dynamic Type, Android font scale (WCAG 1.4.4)." },
+        "minTargetSpacingPx": { "type": "integer", "default": 8, "description": "Minimum gap between adjacent touch targets." },
+        "maxFixedSizePx": { "type": "integer", "default": 64, "description": "Largest fixed width/height allowed (icons, avatars, touch targets). Anything bigger must be fluid, with min/max limits." },
+        "textExpansionPercent": { "type": "integer", "default": 40, "description": "How much longer translated text can be; components must still work." },
+        "thumbZonePrimaryAction": { "type": "boolean", "default": true, "description": "On phones, the primary action must be within thumb reach (lower half or bottom bar) unless a reason is stated." },
+        "orientations": { "type": "array", "items": { "type": "string", "enum": ["portrait", "landscape"] }, "default": ["portrait", "landscape"], "description": "Orientations every screen must define behavior for." },
+        "nativeTargets": { "type": "array", "items": { "type": "string", "enum": ["ios", "android"] }, "description": "Native apps this system also ships to. px values map 1:1 to pt (iOS) and dp (Android)." }
+      }
+    },
+
     "development": {
       "type": "object",
       "description": "How design context and token rules reach day-to-day development, not just design runs. Used by tools/design_context.py, tools/token_lint.py and the hooks in templates/claude-settings.json.",

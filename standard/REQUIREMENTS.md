@@ -44,6 +44,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 - **Accessibility:** `minTouchTargetPx`, `requireVisibleFocusStates`, `requireSemanticHtml`
 - **Registry:** `registryPolicy` in full, including `similarityCheck`, `requireOperationalVerification` and `verificationReviewer`
 - **Behavior:** `automation`, `compositionHeuristics`, `navigationHeuristics`, `motionUsagePolicy`, `usabilityHeuristics`, `scopePolicy`
+- **Mobile:** `mobile` in full (narrowest width, text scale, target spacing, largest fixed size, text expansion, thumb zone, orientations)
 
 ### Values that pass the agent's own checks
 
@@ -58,7 +59,16 @@ The agent has a default for everything below. Leaving one out works, but the age
 | At most 3 weights | Rubric category 3 | 400 / 600 / 700 |
 | Spacing steps are multiples of `baseUnitPx`, in ascending order, and the gutter is one of them | Alignment is exact (`alignmentTolerancePx: 0`) | 4–64 on a 4px unit, 24px gutter |
 | Breakpoints ascending; touch targets ≥ 44px | Mobile-first layout; rubric category 2 | 640 / 768 / 1024 / 1280; 44px |
+| Designs verified at 360px or narrower; text scale ≥ 200%; target spacing ≥ 8px; a breakpoint at or below 640px | Mobile at all times (rubric category 14) | 320px, 200%, 8px, sm 640 |
 | Similarity and overlap weights each sum to 1, with reuse > extend and merge > related | Otherwise the reuse and scope checks route work wrongly | Defaults |
+
+### Dynamic components
+
+Every component, baseline or new, must be **dynamic**: fluid (no fixed size above `mobile.maxFixedSizePx`), container-aware, content-proof, able to scale with text, touch-first, data-driven and token-driven (`skills/design-principles.md`). The standard enforces this in three places:
+
+- **Approval:** a verification report needs a `dynamicBehavior` section and `dynamicPass: true` before a component can be approved.
+- **Every design:** each design output carries a `mobileCheck`, and rubric category 14 audits it.
+- **Code:** the token lint flags fixed widths and heights above the limit.
 
 ### Baseline components
 

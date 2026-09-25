@@ -33,6 +33,10 @@ TW_ARBITRARY = re.compile(r"(?<![\w-])([a-z-]+)-\[(-?\d+(?:\.\d+)?)px\]")
 HEX = re.compile(r"(?<![\w&])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b")
 CSS_DECL = re.compile(r"(?<![\w-])(margin|padding|gap|row-gap|column-gap|inset|top|right|bottom|left|font-size|border-radius)(?:-[a-z]+)?\s*:\s*([^;}\"']+)", re.I)
 PX = re.compile(r"(-?\d+(?:\.\d+)?)px")
+# fixed sizes: width/height, not min-/max- (limits are how fluid components stay in bounds)
+TW_SIZE = re.compile(r"(?<![\w-])(w|h|size)-(\d+(?:\.5)?)(?![\w./-])")
+CSS_SIZE = re.compile(r"(?<![\w-])(width|height)\s*:\s*(\d+(?:\.\d+)?)px", re.I)
+LIMIT_PROPS = {"min-w", "max-w", "min-h", "max-h"}
 
 
 def allowed_values(m):
@@ -51,11 +55,13 @@ def allowed_values(m):
     type_px = {round(t.get("baseSizePx", 16) * t.get("ratio", 1.25) ** (i - base_i)) for i in range(len(steps))}
     radius = {r["px"] for r in (m.get("radius", {}) or {}).get("tokens", [])} | {0, 9999}
     extra = {float(a[:-2]) for a in m.get("development", {}).get("tokenLint", {}).get("allow", []) if a.endswith("px")}
-    return names, hexes, spacing, type_px, radius, extra
+    max_fixed = m.get("mobile", {}).get("maxFixedSizePx", 64)
+    return names, hexes, spacing, type_px, radius, extra, max_fixed
 
 
 def lint(path, m, shown=None):
-    names, hexes, spacing, type_px, radius, extra = allowed_values(m)
+    names, hexes, spacing, type_px, radius, extra, max_fixed = allowed_values(m)
+    fixed_why = f"fixed size above mobile.maxFixedSizePx ({max_fixed}px): components must be fluid — use w-full, %, or min-/max- limits"
     framework = m.get("development", {}).get("tokenLint", {}).get("framework", "both")
     problems = []
     in_block = False
@@ -84,11 +90,23 @@ def lint(path, m, shown=None):
                 px = float(s) * 4
                 if px not in spacing and px not in extra:
                     flag(f"{s} ({px:g}px)", f"spacing not in spacing.scale {sorted(spacing - {0})}")
+            for prop, units in TW_SIZE.findall(line):
+                if float(units) * 4 > max_fixed:
+                    flag(f"{prop}-{units} ({float(units) * 4:g}px)", fixed_why)
             for prop, v in TW_ARBITRARY.findall(line):
                 px, ok = abs(float(v)), spacing | type_px | radius | extra
+                if prop in LIMIT_PROPS:
+                    continue
+                if prop in ("w", "h", "size"):
+                    if px > max_fixed:
+                        flag(f"{prop}-[{v}px]", fixed_why)
+                    continue
                 if px not in ok:
                     flag(f"{prop}-[{v}px]", "arbitrary value not in the spacing, type or radius scale")
         if framework in ("css", "both"):
+            for prop, v in CSS_SIZE.findall(line):
+                if float(v) > max_fixed:
+                    flag(f"{prop.lower()}: {v}px", fixed_why)
             for prop, value in CSS_DECL.findall(line):
                 prop = prop.lower()
                 ok = type_px if prop == "font-size" else radius if prop == "border-radius" else spacing
@@ -113,7 +131,7 @@ def lint_files(files, root, m):
             problems += lint(f, m, rel)
     if not problems:
         return mode, ""
-    return mode, "Off-token values (design system: {} v{}):\n{}\nReplace each with a token from the manifest.".format(
+    return mode, "Off-token values (design system: {} v{}):\n{}\nReplace each with a token from the manifest, and make fixed sizes fluid.".format(
         m["meta"]["name"], m["meta"]["version"], "\n".join(problems))
 
 

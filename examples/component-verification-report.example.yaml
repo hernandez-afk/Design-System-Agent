@@ -43,6 +43,30 @@ operationalSpec:
       behavior: "4 tiles in a single row, per original layout intent."
   whenNotToUse: "Not for metrics needing drill-down or comparison over time in place — that's a chart, category data-viz but a different component. Not currently interactive; if a future ticket needs click-to-drill-down, that's a new variant, not a silent addition to this one."
 
+dynamicBehavior:
+  sizing: "Fills its grid cell; min 144px wide, no max. Height from content (label, value, delta)."
+  containerAdaptation:
+    - containerWidth: "< 160px"
+      behavior: "Delta label moves under the value; value drops one type step so it never wraps."
+    - containerWidth: "160–280px"
+      behavior: "Default: label, value, trend arrow and delta on two lines."
+    - containerWidth: "> 280px"
+      behavior: "Same layout; extra width becomes padding, the tile doesn't stretch its text."
+  contentHandling:
+    short: "Short labels keep the tile at its minimum height, so a row of tiles stays aligned."
+    long: "Labels wrap to two lines, then truncate with the full label in the tile's accessible name and a tooltip on focus/hover; +40% translated labels tested."
+    empty: "No value → the error state ('Unable to load' + retry); no delta → the delta line is omitted, not left blank."
+    overflow: "Very large values abbreviate (1.2M) with the exact value in the accessible name."
+  textScaling:
+    testedAtPercent: 200
+    result: "Tiles grow taller and the 2×2 phone grid becomes 1 column below 160px per tile; nothing clips."
+  inputModes:
+    touch: "Read-only; no touch targets inside the tile."
+    pointer: "Tooltip on truncated labels."
+    keyboard: "Not focusable (read-only), except the retry button in the error state."
+  orientationAndSafeArea: "Landscape phones show all four tiles in one row when each gets ≥ 160px; otherwise 2×2."
+  dataDriven: "Label, value, trend and delta all come in through props; nothing is hard-coded."
+
 designRationale:
   - decision: "Trend uses an arrow icon plus color, not color alone."
     reasoning: "Color can't be the only signal for state — rubric category 2 (Accessibility), and accessibility.requireSemanticHtml implies non-color-dependent state communication."
@@ -61,6 +85,7 @@ verification:
   allStatesImplemented: true    # focus is marked notApplicable (with a reason), so it doesn't count against this
   accessibilityPass: true
   tokenCompliant: true
+  dynamicPass: true
   notes: "Focus state intentionally not implemented since the component is non-interactive by design — marked notApplicable with a reason rather than skipped silently. See whenNotToUse."
   checkedBy: "human-designer"
 

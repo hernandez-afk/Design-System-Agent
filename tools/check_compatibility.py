@@ -41,7 +41,7 @@ EXPLICIT = [
     "registryPolicy.onMissingComponent", "registryPolicy.onMissingVariant", "registryPolicy.requireApprovalBeforeReuse",
     "registryPolicy.requireOperationalVerification", "registryPolicy.verificationReviewer", "registryPolicy.similarityCheck",
     "automation", "compositionHeuristics", "navigationHeuristics", "motionUsagePolicy",
-    "usabilityHeuristics", "scopePolicy", "platform.targets",
+    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile",
 ]
 
 # The components the rubric's checks assume exist, with the variants they need.
@@ -149,6 +149,20 @@ def check(m, schemas, claude_md, index_path):
         gaps.append("Breakpoints aren't ascending sm < md < lg < xl.")
     if (get(m, "accessibility.minTouchTargetPx") or 44) < 44:
         gaps.append("minTouchTargetPx is below 44px.")
+
+    # mobile at all times
+    mob = get(m, "mobile") or {}
+    if mob.get("minViewportPx", 320) > 360:
+        gaps.append(f"mobile.minViewportPx is {mob['minViewportPx']}px: designs must be verified at 360px or narrower (320px recommended).")
+    if mob.get("maxTextScalePercent", 200) < 200:
+        gaps.append("mobile.maxTextScalePercent is below 200% (WCAG 1.4.4).")
+    if mob.get("minTargetSpacingPx", 8) < 8:
+        gaps.append("mobile.minTargetSpacingPx is below 8px.")
+    if bps and min(bps) > 640:
+        gaps.append("The smallest breakpoint is above 640px, so there's no phone layout step.")
+    phone = get(m, "platform.claudeDesign.canvasBoards.phone.w")
+    if "claude-design" in (get(m, "platform.targets") or []) and phone and phone > 430:
+        gaps.append(f"The Claude Design phone artboard is {phone}px wide; phones are 430px or narrower.")
 
     for path in ("registryPolicy.similarityCheck.weights", "scopePolicy.overlapCheck.weights"):
         w = get(m, path)

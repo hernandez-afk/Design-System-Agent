@@ -94,6 +94,7 @@ Every finding in the machine report has `severity` (blocker/major/minor) and `ca
 | `display-design-wickens` — principles 1–5, 8, 9, 11, 13 | **1** | Perception, attention, and memory failures make the screen hard to use, not just less polished. |
 | `display-design-wickens` — principles 6, 7 | **2** | Graphics and motion that fight the user's model — refinement once the screen works. |
 | `display-design-wickens` — principles 10, 12 | **3** | Extra channels and previews — polish that reduces errors at the margins. |
+| `mobile-and-dynamic-components` | **1** | If it doesn't work on a phone, it doesn't work. Orientation-only findings render in Phase 2. |
 | `decision-protocol-compliance` | *(excluded from phases)* | This is a process finding about the agent's own behavior, not a visual/UX defect in the design itself. Surface it as a caveat in `Overall Assessment` instead of forcing it into a phase it doesn't belong in. |
 
 A finding's own `severity` still determines ordering *within* a phase (blockers/majors listed before minors) and still drives whether the pipeline auto-revises or halts — the phase mapping only affects how it's grouped for human reading.

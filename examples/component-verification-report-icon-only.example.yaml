@@ -51,6 +51,27 @@ operationalSpec:
       behavior: "Same size and spacing; toolbar sits in a single row."
   whenNotToUse: "Not for primary actions or any action whose icon isn't universally clear — use a labeled Button variant instead. Not a substitute for navigation links."
 
+dynamicBehavior:
+  sizing: "Fixed 44×44px hit area (within mobile.maxFixedSizePx); the icon inside scales with text size."
+  containerAdaptation:
+    - containerWidth: "Toolbar narrower than its buttons"
+      behavior: "The toolbar wraps to a second row; buttons never shrink below 44px or overlap."
+    - containerWidth: "Wide toolbar"
+      behavior: "Buttons keep their size, 8px apart (mobile.minTargetSpacingPx); extra space stays at the end."
+  contentHandling:
+    short: "No visible text; the aria-label carries the name."
+    long: "Long aria-labels (including +40% translations) only affect the tooltip, which wraps."
+    empty: "An icon and aria-label are required props, so an empty button can't render."
+  textScaling:
+    testedAtPercent: 200
+    result: "The icon grows with text size up to the 44px box; tooltip text wraps. Nothing clips."
+  inputModes:
+    touch: "44px target, 8px from neighbors; long-press shows the label."
+    pointer: "Hover shows the label as a tooltip and changes the background color."
+    keyboard: "Focusable in toolbar order, visible focus ring; Enter/Space activate."
+  orientationAndSafeArea: "Same in both orientations; a bottom toolbar sits above the home indicator (safe-area inset)."
+  dataDriven: "Icon, aria-label and the action come in through props."
+
 designRationale:
   - decision: "aria-label is a required prop, not optional."
     reasoning: "With no visible text, the accessible name is the only label — rubric category 2 and accessibility.requireSemanticHtml."
@@ -69,6 +90,7 @@ verification:
   allStatesImplemented: true
   accessibilityPass: true
   tokenCompliant: true
+  dynamicPass: true
   notes: "Supersedes the DES-481 proposal for the same variant; once approved, the manifest's Button/icon-only entry flips from proposed to approved."
   checkedBy: "human-designer"
 

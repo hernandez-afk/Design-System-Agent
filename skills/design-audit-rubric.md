@@ -210,6 +210,30 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 ---
 
+## 14. Mobile & Dynamic Components
+
+*Every design works on a phone, and every component adapts to its container, content, text size and input. Thresholds from the manifest's `mobile` block; evidence from the design output's `mobileCheck` and each new component's `dynamicBehavior`. Verify the claims against the artifact itself; a `true` in `mobileCheck` isn't evidence on its own.*
+
+**Mobile at all times**
+- [ ] **Blocker:** No phone-size design, or the design wasn't verified at `minViewportPx`, or there's no `mobileCheck`.
+- [ ] **Blocker:** Content scrolls sideways at `minViewportPx`. Two-dimensional content (data tables, maps) scrolling inside its own container is the only exception.
+- [ ] **Major:** Text is clipped, overlapping or hidden at `maxTextScalePercent`.
+- [ ] **Major:** An interaction exists only on hover, or only via a keyboard shortcut, with no touch path.
+- [ ] **Major:** Adjacent touch targets are closer than `minTargetSpacingPx`.
+- [ ] **Major:** On phones, the primary action is out of thumb reach with no `thumbZoneReason`, when `thumbZonePrimaryAction` is true.
+- [ ] **Major:** Content sits under a safe area (notch, home indicator), or the on-screen keyboard covers the field being typed into.
+- [ ] **Minor:** An orientation listed in `mobile.orientations` has no defined behavior.
+
+**Dynamic components**
+- [ ] **Blocker:** A new or proposed component has no `dynamicBehavior` in its verification report, or `verification.dynamicPass` is false, and it's being used or approved anyway.
+- [ ] **Major:** A component has a fixed width or height above `maxFixedSizePx` where its container or content can vary. It must be fluid, with min/max limits.
+- [ ] **Major:** A component breaks with long content (translated text up to `textExpansionPercent` longer, long unbroken words) or with empty content.
+- [ ] **Major:** A component adapts only to viewport breakpoints, so it breaks when placed in a narrower container (a sidebar, a card, a split view).
+- [ ] **Major:** Copy, numbers or options are hard-coded inside a component instead of passed in.
+- [ ] **Minor:** Truncated content has no way to see it in full.
+
+---
+
 ## Scoring & Verdict
 
 | Verdict | Condition | Automation behavior |
@@ -240,3 +264,4 @@ This audit runs **automatically immediately after every generation**, before a d
 | Scope & Cross-Artifact Integrity | New (design index) | Yes — `scopePolicy`, design index |
 | 3-3-3 Usability | 3-3-3 rule | Yes — `usabilityHeuristics.threeThreeThree`, brief `coreTasks` |
 | Display Design (Wickens) | Wickens et al., 13 principles of display design | Partially — `usabilityHeuristics.displayDesign` |
+| Mobile & Dynamic Components | WCAG 1.4.4 / 1.4.10, platform guidelines | Yes — `mobile`, `accessibility.minTouchTargetPx` |

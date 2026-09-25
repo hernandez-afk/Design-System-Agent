@@ -103,3 +103,33 @@ Every core task in the ticket brief (`coreTasks`) must pass all three:
 13. **Consistency.** The same thing looks and behaves the same everywhere, including across other designs in the design index. (This deepens *Consistency Is Non-Negotiable* above; the component registry and scope check exist to enforce it.)
 
 **Applied:** principles 1–5 shape generation Steps 5–8 (layout, typography, color, motion); 6–7 shape data-viz and motion (Step 8); 8–9 shape information architecture (Step 4); 10–12 shape feedback and navigation (Steps 8–9); 13 is enforced by Steps 2b and 3. All 13 are audited in rubric category 13.
+
+---
+
+# Mobile at All Times, and Dynamic Components
+
+Every design and every component must work on a phone, always. It's not a breakpoint to check at the end; it's where the design starts and what it's judged on first. Thresholds live in the manifest's `mobile` block; the checks are rubric category 14.
+
+## Mobile at all times
+
+1. **The phone is the first and required design.** Every screen is designed at the smallest breakpoint first and verified at `mobile.minViewportPx` (default 320px, the narrowest common phone width). Larger screens are enhancements of it.
+2. **Reflow, never scroll sideways.** At `minViewportPx`, content fits the width with no horizontal scrolling (WCAG 1.4.10). The only exceptions are content that is two-dimensional by nature, like a data table or a map, and it scrolls inside its own container.
+3. **Text can grow.** Everything still works when text is scaled to `mobile.maxTextScalePercent` (default 200%, WCAG 1.4.4, and iOS Dynamic Type or Android font scale): nothing clipped, overlapping or hidden.
+4. **Touch first.** Targets are at least `accessibility.minTouchTargetPx`, with at least `mobile.minTargetSpacingPx` between adjacent targets. No interaction exists only on hover; hover and keyboard shortcuts enhance a touch path that already works.
+5. **Thumb reach.** On phones, the primary action sits where a thumb can reach it (the lower half of the screen, or a bottom bar) unless there's a stated reason.
+6. **The device's edges are real.** Content respects safe areas (notches, home indicators, rounded corners). The on-screen keyboard never covers the field being typed into. Portrait is required; landscape is defined, even if only as "same layout, scrolls."
+
+## Components are dynamic
+
+A component is **dynamic** when it adapts to its conditions instead of assuming one layout. Every component this agent creates or approves must be:
+
+1. **Fluid:** it sizes from its container and content, with min/max limits, not fixed widths or heights. The only fixed sizes are icons, avatars and touch-target minimums, up to `mobile.maxFixedSizePx`.
+2. **Container-aware:** it adapts to the width it's given (container queries, or the native equivalent), so the same component works in a narrow sidebar and a wide page, not just at viewport breakpoints.
+3. **Content-proof:** it handles short, long, empty and overflowing content, long unbroken words, and translated text up to `mobile.textExpansionPercent` longer (default 40%). Truncated text stays reachable in full.
+4. **Scalable:** it uses relative units for text and spacing around text, so it survives the text-scale test above.
+5. **Input-aware:** it works by touch, pointer and keyboard, with touch as the baseline.
+6. **Data-driven:** content and data come in through props. No copy, numbers or options are hard-coded inside the component.
+7. **Token-driven and themeable:** every value comes from a token, so it works in every theme.
+8. **State-complete:** every state is implemented, as the verification report already requires.
+
+**Applied:** new components can't be approved without a `dynamicBehavior` section in their verification report; every design output carries a `mobileCheck`; generation Steps 3, 5 and 9b apply these rules; the token lint flags fixed sizes above `maxFixedSizePx`; audited in rubric category 14.

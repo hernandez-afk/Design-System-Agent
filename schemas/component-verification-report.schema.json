@@ -4,7 +4,7 @@
   "title": "Component Verification Report",
   "description": "Required before a proposed component or variant (from a component-gap-report) can flip status to 'approved' in the manifest's components[] registry. Two jobs: (1) confirm it's actually operational, not just visually plausible — every state implemented, accessible, responsive; (2) explain why it was built this way, so a reviewer isn't approving a black box.",
   "type": "object",
-  "required": ["id", "componentName", "gapReportId", "operationalSpec", "designRationale", "verification", "verdict"],
+  "required": ["id", "componentName", "gapReportId", "operationalSpec", "dynamicBehavior", "designRationale", "verification", "verdict"],
   "properties": {
     "id": { "type": "string", "description": "Stable ID for this report, e.g. 'DES-512-gap-1-verify'. Referenced by design-output.verificationReportsFiled." },
     "componentName": { "type": "string" },
@@ -63,6 +63,56 @@
       }
     },
 
+    "dynamicBehavior": {
+      "type": "object",
+      "description": "How the component adapts, per the dynamic-components rules in design-principles.md. No component is approved without it: this is what makes every component work on mobile and everywhere else.",
+      "required": ["sizing", "containerAdaptation", "contentHandling", "textScaling", "inputModes"],
+      "properties": {
+        "sizing": { "type": "string", "description": "How it sizes: e.g. 'fills its container; min 160px, max 320px wide; height from content'. Fixed sizes only for icons/targets up to mobile.maxFixedSizePx." },
+        "containerAdaptation": {
+          "type": "array",
+          "description": "What it does at each container width it can be placed in, narrowest first.",
+          "items": {
+            "type": "object",
+            "required": ["containerWidth", "behavior"],
+            "properties": {
+              "containerWidth": { "type": "string", "description": "e.g. '< 240px', '240–480px', '> 480px'." },
+              "behavior": { "type": "string" }
+            }
+          }
+        },
+        "contentHandling": {
+          "type": "object",
+          "required": ["short", "long", "empty"],
+          "properties": {
+            "short": { "type": "string" },
+            "long": { "type": "string", "description": "Including translated text up to mobile.textExpansionPercent longer, and long unbroken words." },
+            "empty": { "type": "string" },
+            "overflow": { "type": "string", "description": "How truncated content stays reachable in full." }
+          }
+        },
+        "textScaling": {
+          "type": "object",
+          "required": ["testedAtPercent", "result"],
+          "properties": {
+            "testedAtPercent": { "type": "integer", "description": "Should be at least mobile.maxTextScalePercent." },
+            "result": { "type": "string", "description": "What changes, and confirmation nothing clips or overlaps." }
+          }
+        },
+        "inputModes": {
+          "type": "object",
+          "required": ["touch", "pointer", "keyboard"],
+          "properties": {
+            "touch": { "type": "string" },
+            "pointer": { "type": "string" },
+            "keyboard": { "type": "string" }
+          }
+        },
+        "orientationAndSafeArea": { "type": "string", "description": "Landscape behavior, and safe-area/keyboard handling if it sits near a screen edge." },
+        "dataDriven": { "type": "string", "description": "Confirms content comes in through props, with nothing hard-coded." }
+      }
+    },
+
     "designRationale": {
       "type": "array",
       "description": "Why this component looks and behaves the way it does — one entry per notable structural decision. Every entry must cite a principle, token, or manifest field, not a preference (same bar as implementationNote in audit-report.schema.json).",
@@ -80,10 +130,11 @@
     "verification": {
       "type": "object",
       "description": "The operational-readiness checklist — did it actually get built out, not just described.",
-      "required": ["allStatesImplemented", "accessibilityPass", "tokenCompliant", "checkedBy"],
+      "required": ["allStatesImplemented", "accessibilityPass", "tokenCompliant", "dynamicPass", "checkedBy"],
       "properties": {
         "allStatesImplemented": { "type": "boolean", "description": "False if any state in operationalSpec.states that is not marked notApplicable has implemented: false. States marked notApplicable (with a reason) do not count against this." },
         "accessibilityPass": { "type": "boolean", "description": "Meets accessibility.level from the manifest — contrast, touch target, focus visibility, semantics." },
+        "dynamicPass": { "type": "boolean", "description": "Works at the narrowest container and at mobile.minViewportPx, survives maxTextScalePercent and textExpansionPercent, handles empty content, and works by touch alone." },
         "tokenCompliant": { "type": "boolean", "description": "Uses only manifest tokens — no hardcoded values (design-principles.md: Consistency Is Non-Negotiable)." },
         "notes": { "type": "string" },
         "checkedBy": {

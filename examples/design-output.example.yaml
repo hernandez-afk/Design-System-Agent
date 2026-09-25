@@ -11,6 +11,20 @@ artifact:
   format: "react-jsx"
   location: "/designs/DES-512/dashboard-kpi-summary.jsx"
 
+mobileCheck:  # mobile at all times — verified at 320px first
+  minViewportPx: 320
+  designedAtPhoneFirst: true
+  reflowsWithoutHorizontalScroll: true
+  textScaleTested: { percent: 200, pass: true, notes: "KPI grid goes 2×2 → 1 column; toolbar chips wrap to two rows." }
+  noHoverOnlyInteractions: true
+  touchTargetsAndSpacing: true
+  primaryActionInThumbZone: false
+  thumbZoneReason: "The date-range chips filter the numbers directly below them; moving them to a bottom bar would separate the control from what it changes (Wickens 9, proximity compatibility). They stay above the KPI row, within one-handed reach on 390px phones but not at the very top edge."
+  safeAreasAndKeyboard: true
+  orientations:
+    portrait: "Toolbar above a 2×2 KPI grid."
+    landscape: "Toolbar and all four KPI tiles in one row when each tile gets ≥ 160px; otherwise 2×2."
+
 glanceTest:   # 3-3-3: 3 seconds
   - screen: "Dashboard"
     breakpoint: "sm"

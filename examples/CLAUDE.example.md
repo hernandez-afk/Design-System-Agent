@@ -85,6 +85,18 @@ Never meet the click limit by cramming.
 - Attention: low access cost · related info close together · multiple channels
 - Memory: show, don't make people remember · preview consequences · consistency
 
+**Mobile at all times:**
+- Design the phone first and verify at 320px: no sideways scrolling.
+- Everything still works with text at 200%.
+- Touch first: targets ≥ 44px and ≥ 8px apart; nothing is hover-only.
+- On phones, the primary action is within thumb reach.
+- Respect safe areas and the on-screen keyboard.
+
+**Every component is dynamic:**
+- Fluid: sized by its container and content, with min/max limits. No fixed size above 64px.
+- Works in any container width, with short, long (+40% translated), empty or overflowing content, by touch, pointer and keyboard.
+- Content comes in through props, never hard-coded.
+
 **Accessibility:** AA; touch targets ≥ 44px; visible focus; semantic HTML.
 
 **Density:** paginate lists over 10 items; group forms over 7 fields; details go on a drill-down view.
