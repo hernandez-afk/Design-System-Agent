@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/scope-overlap-report.schema.json",
+  "title": "Scope Overlap Report",
+  "description": "Produced by the scope placement check (design-generation-skill.md Step 2b) before any new design starts. Compares an incoming brief (from a PRD, ticket, or feature request) against every project in the design index and decides whether the work is genuinely new, belongs to an existing design, relates to one that must stay consistent, or should be split across several. The same idea as the component similarity check, one level up: reuse whole designs before creating new ones.",
+  "type": "object",
+  "required": ["id", "briefRef", "generatedAt", "candidates", "elementRouting", "recommendation"],
+  "properties": {
+    "id": { "type": "string", "description": "e.g. 'PRD-031-scope-1'." },
+    "briefRef": { "type": "string", "description": "ticketKey of the brief being placed." },
+    "generatedAt": { "type": "string", "format": "date-time" },
+
+    "candidates": {
+      "type": "array",
+      "description": "Every design-index project that scored above zero, highest first. Projects scoring 0 are omitted.",
+      "items": {
+        "type": "object",
+        "required": ["projectId", "score", "classification", "evidence"],
+        "properties": {
+          "projectId": { "type": "string" },
+          "termOverlap": { "type": "number", "minimum": 0, "maximum": 1, "description": "Jaccard of brief.scopeTerms vs project.scopeTerms." },
+          "surfaceOverlap": { "type": "number", "minimum": 0, "maximum": 1, "description": "Jaccard of brief.surfaces vs project.surfaces (a parent surface matches its children, e.g. 'dashboard' matches 'dashboard/toolbar')." },
+          "priorityOverlap": { "type": "number", "minimum": 0, "maximum": 1, "description": "Fraction of the brief's priorities that an existing project priority already serves. Judged by the agent, so every match must be listed in evidence." },
+          "score": { "type": "number", "minimum": 0, "maximum": 1, "description": "Weighted per scopePolicy.overlapCheck.weights in the manifest." },
+          "classification": {
+            "type": "string",
+            "enum": ["belongs-to-existing", "related", "unrelated"],
+            "description": "score >= mergeThreshold -> belongs-to-existing; score >= relatedThreshold -> related; else unrelated. A deprecated project is never classified belongs-to-existing."
+          },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Concrete matches that produced the score — shared terms, shared surfaces, and each brief-priority → project-priority pairing. No score without evidence."
+          }
+        }
+      }
+    },
+
+    "elementRouting": {
+      "type": "array",
+      "description": "Per-element placement. A brief can be partly new and partly someone else's scope — routing each requiredElement individually is how a split is detected.",
+      "items": {
+        "type": "object",
+        "required": ["element", "route"],
+        "properties": {
+          "element": { "type": "string", "description": "The requiredElements[].description or priority id being routed." },
+          "route": {
+            "type": "string",
+            "enum": ["this-project", "existing-project", "reuse-pattern-from"],
+            "description": "'existing-project' = this work should be done as a revision of targetProjectId. 'reuse-pattern-from' = do it here, but reuse targetProjectId's approved decision/components so the two stay consistent."
+          },
+          "targetProjectId": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+
+    "recommendation": {
+      "type": "string",
+      "enum": ["new-project", "extend-existing", "split", "new-project-with-shared-patterns"],
+      "description": "'new-project' = nothing overlaps meaningfully. 'extend-existing' = the whole brief belongs to targetProjectId. 'split' = some elements belong elsewhere (see elementRouting). 'new-project-with-shared-patterns' = new, but must reuse decisions/components from related projects."
+    },
+    "targetProjectId": { "type": "string", "description": "Set when recommendation is extend-existing." },
+    "reusedDecisions": {
+      "type": "array",
+      "description": "Decision-log entries from related projects that this brief should inherit rather than re-decide — e.g. the approved date-range filter pattern.",
+      "items": {
+        "type": "object",
+        "required": ["projectId", "decision"],
+        "properties": {
+          "projectId": { "type": "string" },
+          "decision": { "type": "string" },
+          "chosen": { "type": "string" }
+        }
+      }
+    },
+    "humanDecision": {
+      "type": "object",
+      "description": "Filled in once the recommendation has been confirmed or overridden, per scopePolicy.onOverlap.",
+      "properties": {
+        "outcome": { "type": "string", "enum": ["accepted", "overridden"] },
+        "finalRecommendation": { "type": "string", "enum": ["new-project", "extend-existing", "split", "new-project-with-shared-patterns"] },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

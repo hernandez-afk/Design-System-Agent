@@ -1,0 +1,40 @@
+# A PRD that reads like one new project, but whose work is owned by two
+# existing designs. See scope-overlap-report.example.yaml for how it's placed.
+ticketKey: "PRD-031"
+title: "Q4 reporting improvements"
+sourceType: "prd"
+sourceRef: "/docs/prd/PRD-031-q4-reporting.md"
+rawDescription: >
+  Finance wants to narrow reports to a date range, export a report as CSV,
+  and see revenue next to the other core KPIs on the dashboard.
+
+scopeTerms: ["date-range filter", "report", "report filter", "csv export", "kpi", "revenue"]
+surfaces: ["reports/toolbar", "reports/detail", "dashboard"]
+
+priorities:
+  - id: "P1"
+    statement: "User can filter the report list by date range."
+    source: "explicit"
+  - id: "P2"
+    statement: "User can export an open report as CSV."
+    source: "explicit"
+  - id: "P3"
+    statement: "User can see revenue alongside the other core KPIs on the dashboard."
+    source: "explicit"
+
+requiredElements:
+  - description: "Date-range filter on the Reports toolbar"
+    targetCategory: "input"
+    linkedPriority: "P1"
+  - description: "CSV export action on report detail"
+    targetCategory: "action"
+    linkedPriority: "P2"
+  - description: "Revenue KPI tile in the dashboard summary row"
+    targetCategory: "data-viz"
+    linkedPriority: "P3"
+
+constraints:
+  - "Ship with the Q4 finance close."
+
+scopeOverlapReportRef: "PRD-031-scope-1"
+openQuestions: []

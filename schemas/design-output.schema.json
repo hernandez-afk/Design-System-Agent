@@ -4,9 +4,11 @@
   "title": "Design Output",
   "description": "What design-generation-skill.md produces for one ticket. This is what gets audited (design-audit-rubric.md / audit-report.schema.json) and, on approval, what a human reviews.",
   "type": "object",
-  "required": ["ticket", "manifestVersion", "artifact", "componentsUsed", "decisionLog"],
+  "required": ["ticket", "projectId", "manifestVersion", "artifact", "componentsUsed", "decisionLog"],
   "properties": {
     "ticket": { "type": "string" },
+    "projectId": { "type": "string", "description": "design-index project this output belongs to. Equals ticket for a new project; for an 'extend-existing' scope outcome it is the existing project's ID." },
+    "scopeOverlapReportRef": { "type": "string", "description": "The scope-overlap-report that placed this work. Required whenever scopePolicy.requireScopeCheck is true." },
     "manifestVersion": { "type": "string" },
     "generatedAt": { "type": "string", "format": "date-time" },
     "revisionNumber": { "type": "integer", "default": 0, "description": "0 = first draft. Increments on each auto-revise loop triggered by a major-issues audit verdict." },
@@ -49,7 +51,7 @@
 
     "decisionLog": {
       "type": "array",
-      "description": "Every Decision Protocol invocation during generation, regardless of decisionProtocol mode — logged even under auto-apply for auditability.",
+      "description": "Every Decision Protocol invocation during generation, regardless of decisionProtocol mode — logged even under auto-apply for auditability. Decisions inherited from a related project (scope-overlap-report.reusedDecisions) are logged here too, with mode 'inherited'.",
       "items": {
         "type": "object",
         "required": ["decision", "alternativesConsidered", "chosen", "mode"],
@@ -68,7 +70,8 @@
           },
           "chosen": { "type": "string" },
           "rationale": { "type": "string" },
-          "mode": { "type": "string", "enum": ["human-approved", "auto-applied"], "description": "Whether a human picked this or the agent proceeded per ask-major-only/auto-apply." },
+          "mode": { "type": "string", "enum": ["human-approved", "auto-applied", "inherited"], "description": "Whether a human picked this, the agent proceeded per ask-major-only/auto-apply, or it was reused from a related project's approved decision (set inheritedFrom)." },
+          "inheritedFrom": { "type": "string", "description": "When mode is inherited: the design-index project ID the decision came from." },
           "linkedPriority": { "type": "string", "description": "ticket-brief priority id this decision serves." }
         }
       }

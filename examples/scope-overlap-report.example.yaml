@@ -1,0 +1,69 @@
+# Scope placement for PRD-031 against design-index.example.yaml (as it stood
+# before this report). Weights and thresholds from the manifest's scopePolicy:
+#   score = 0.4 × termOverlap + 0.35 × surfaceOverlap + 0.25 × priorityOverlap
+#   >= 0.6 belongs-to-existing, >= 0.3 related
+id: "PRD-031-scope-1"
+briefRef: "PRD-031"
+generatedAt: "2026-09-24T10:00:00Z"
+
+candidates:
+  - projectId: "DES-470"   # Reports page (shipped)
+    termOverlap: 0.25      # {report, report filter} of 8 distinct terms
+    surfaceOverlap: 0.5    # reports/toolbar, reports/detail matched; 4 distinct surfaces
+    priorityOverlap: 0.33  # 1 of 3 brief priorities served
+    score: 0.36
+    classification: "related"
+    evidence:
+      - "Shared terms: 'report', 'report filter'."
+      - "Shared surfaces: 'reports/toolbar', 'reports/detail' — both owned by DES-470."
+      - "PRD-031 P1 (filter reports by date range) ← DES-470 P2 (narrow the report list by type and owner) — same filter bar, new dimension."
+
+  - projectId: "DES-512"   # Dashboard KPI summary (approved)
+    termOverlap: 0.25      # {kpi, date-range filter} of 8 distinct terms
+    surfaceOverlap: 0.25   # dashboard matched; 4 distinct surfaces
+    priorityOverlap: 0.67  # 2 of 3 brief priorities served
+    score: 0.35
+    classification: "related"
+    evidence:
+      - "Shared terms: 'kpi', 'date-range filter'."
+      - "Shared surface: 'dashboard' — owned by DES-512."
+      - "PRD-031 P3 (revenue with the other core KPIs) ← DES-512 P1 (see the core KPIs at a glance)."
+      - "PRD-031 P1 (filter by date range) ← DES-512 P2 (filter the dashboard by date range) — pattern already decided."
+
+  - projectId: "DES-301"   # Legacy stats widget (deprecated)
+    termOverlap: 0.14      # {kpi} of 7 distinct terms
+    surfaceOverlap: 0.33   # dashboard matched; 3 distinct surfaces
+    priorityOverlap: 0
+    score: 0.17
+    classification: "unrelated"
+    evidence:
+      - "Shared term: 'kpi'; shared surface: 'dashboard'. Deprecated — never a merge target; listed so reintroducing the old widget is visible."
+
+# Neither whole-brief score reaches mergeThreshold, which is exactly why
+# elements are routed one by one: every element lands on a surface an
+# existing project already owns.
+elementRouting:
+  - element: "Date-range filter on the Reports toolbar"
+    route: "existing-project"
+    targetProjectId: "DES-470"
+    reason: "reports/toolbar is DES-470's surface. The filter interaction itself is inherited from DES-512 (see reusedDecisions) so both date filters behave identically."
+  - element: "CSV export action on report detail"
+    route: "existing-project"
+    targetProjectId: "DES-470"
+    reason: "reports/detail is DES-470's surface."
+  - element: "Revenue KPI tile in the dashboard summary row"
+    route: "existing-project"
+    targetProjectId: "DES-512"
+    reason: "The summary row is DES-512's; a fifth tile is a revision of that design, reusing the approved StatTile."
+
+recommendation: "split"   # nothing left for a new project — PRD-031 becomes two revisions
+
+reusedDecisions:
+  - projectId: "DES-512"
+    decision: "Date-range filter interaction pattern"
+    chosen: "Preset chips (7d / 30d / 90d)"
+
+humanDecision:
+  outcome: "accepted"
+  finalRecommendation: "split"
+  note: "No new design project for PRD-031. DES-470 and DES-512 briefs revised (v2); both projects linked as shares-pattern for the date-range filter."

@@ -89,6 +89,7 @@ Every finding in the machine report has `severity` (blocker/major/minor) and `ca
 | `navigation-color-and-motion-feedback` — two-key-color discipline | **2** | Refines the experience; doesn't block task completion. |
 | `simplicity-and-necessity` | **1** | Cognitive load and ticket-fit are usability concerns. |
 | `interaction-behavior` | **3** | Matches Phase 3's own description (loading/error states, motion, micro-interactions) almost exactly. |
+| `scope-and-artifact-integrity` | **1** | Parallel or drifting designs are a consistency failure across the whole product, not one screen. Stale-dependency findings name the upstream artifact that changed. |
 | `decision-protocol-compliance` | *(excluded from phases)* | This is a process finding about the agent's own behavior, not a visual/UX defect in the design itself. Surface it as a caveat in `Overall Assessment` instead of forcing it into a phase it doesn't belong in. |
 
 A finding's own `severity` still determines ordering *within* a phase (blockers/majors listed before minors) and still drives whether the pipeline auto-revises or halts — the phase mapping only affects how it's grouped for human reading.

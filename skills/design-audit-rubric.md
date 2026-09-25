@@ -148,6 +148,22 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 ---
 
+## 11. Scope & Cross-Artifact Integrity
+
+*The design-level counterpart of category 1: category 1 stops duplicate components, this stops duplicate or drifting designs. Thresholds and policy from `scopePolicy`; data from the design index and the scope-overlap-report.*
+
+- [ ] **Blocker:** No `scope-overlap-report` exists for the brief, when `scopePolicy.requireScopeCheck` is true — the design was started without checking whether another project already owns the work.
+- [ ] **Blocker:** The design builds, as new, an element the scope report routed to `existing-project` (or a whole brief classified `belongs-to-existing`) with no recorded `humanDecision` overriding it — a parallel design of work another project owns.
+- [ ] **Major:** `scopePolicy.onOverlap` was not respected (e.g. `ask` configured but the agent designed before the human accepted or overrode the recommendation).
+- [ ] **Major:** A decision listed in `reusedDecisions` was re-decided differently without a Decision Protocol entry explaining why, and without the sharing project being flagged — two designs that share a pattern now drift apart.
+- [ ] **Major:** The design output depends on an upstream artifact (brief, scope report, verification report) whose current version is newer than the one recorded in `dependsOn` — it was built from stale input.
+- [ ] **Minor:** Candidate scores in the scope report have no `evidence`, or the brief's `scopeTerms` are generic ("page", "button", "user") enough to make the overlap check meaningless.
+- [ ] **Minor:** The design index wasn't updated after the run (new artifacts unregistered, or relationships from the scope report recorded on only one side).
+
+**Evidence required:** the `scopeOverlapReportRef` on the design output, and for every `existing-project` route, either the element's absence from this design or a `humanDecision` override.
+
+---
+
 ## Scoring & Verdict
 
 | Verdict | Condition | Automation behavior |
@@ -175,3 +191,4 @@ This audit runs **automatically immediately after every generation**, before a d
 | Interaction Behavior | renaissance-architecture | Partially — `motion.respectReducedMotion` |
 | Composition & Density | New | Yes — `compositionHeuristics` |
 | Navigation, Color Discipline & Motion Feedback | New | Yes — `navigationHeuristics`, `color.interactionStates`, `color.usagePolicy`, `motionUsagePolicy` |
+| Scope & Cross-Artifact Integrity | New (design index) | Yes — `scopePolicy`, design index |

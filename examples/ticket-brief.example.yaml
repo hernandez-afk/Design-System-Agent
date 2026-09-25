@@ -1,5 +1,9 @@
 ticketKey: "DES-512"
 title: "Add KPI summary to main dashboard"
+sourceType: "jira-ticket"
+scopeTerms: ["kpi", "trend indicator", "date-range filter", "dashboard summary"]
+surfaces: ["dashboard", "dashboard/toolbar"]
+scopeOverlapReportRef: "DES-512-scope-1"
 rawDescription: >
   Product wants a quick-glance summary row at the top of the dashboard
   showing 4 key metrics with trend indicators, plus a toolbar for

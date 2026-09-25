@@ -201,6 +201,21 @@ navigationHeuristics:
   requireNavigationalTies: true
   breadcrumbThresholdDepth: 2
 
+scopePolicy:
+  designIndexPath: "design-index.yaml"
+  requireScopeCheck: true
+  overlapCheck:
+    mergeThreshold: 0.6      # >= this -> the brief belongs to that existing project
+    relatedThreshold: 0.3    # >= this -> related: link, and reuse shared decisions/components
+    weights:                 # must sum to 1.0
+      termOverlap: 0.4
+      surfaceOverlap: 0.35
+      priorityOverlap: 0.25
+  onOverlap: "ask"           # ask | auto-route | block
+  changePropagation:
+    flagDependentsOnChange: true
+    flagSharedPatternProjects: true
+
 motionUsagePolicy:
   requireLoadingAnimation: true
   requireDataVizAnimation: true

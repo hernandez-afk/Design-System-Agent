@@ -1,4 +1,6 @@
 ticket: "DES-512"
+projectId: "DES-512"                # new project — see design-index.example.yaml
+scopeOverlapReportRef: "DES-512-scope-1"
 manifestVersion: "1.0.0"
 generatedAt: "2026-09-10T15:00:00Z"
 revisionNumber: 1   # revised once, after audit-report.example.yaml's blocker verdict was

@@ -418,6 +418,44 @@
       }
     },
 
+    "scopePolicy": {
+      "type": "object",
+      "description": "How the agent places incoming briefs against existing designs (design-index) and keeps linked artifacts in sync. See design-generation-skill.md Step 2b and Step 12, and rubric category 11.",
+      "properties": {
+        "designIndexPath": { "type": "string", "default": "design-index.yaml", "description": "Where the project's design index lives." },
+        "requireScopeCheck": { "type": "boolean", "default": true, "description": "If true, no design starts until a scope-overlap-report exists for its brief." },
+        "overlapCheck": {
+          "type": "object",
+          "properties": {
+            "mergeThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.6, "description": "Score at or above this -> the brief (or element) belongs to that existing project." },
+            "relatedThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.3, "description": "Score at or above this (below mergeThreshold) -> related: link the projects and reuse shared decisions/components so they stay consistent." },
+            "weights": {
+              "type": "object",
+              "description": "Must sum to 1.0.",
+              "properties": {
+                "termOverlap": { "type": "number", "default": 0.4 },
+                "surfaceOverlap": { "type": "number", "default": 0.35 },
+                "priorityOverlap": { "type": "number", "default": 0.25 }
+              }
+            }
+          }
+        },
+        "onOverlap": {
+          "type": "string",
+          "enum": ["ask", "auto-route", "block"],
+          "default": "ask",
+          "description": "'ask' = present the scope-overlap-report and wait for a human to accept or override before designing. 'auto-route' = follow the recommendation and log it. 'block' = stop until a human re-scopes the brief."
+        },
+        "changePropagation": {
+          "type": "object",
+          "properties": {
+            "flagDependentsOnChange": { "type": "boolean", "default": true, "description": "When an artifact's version bumps, mark every artifact that directly depends on an older version of it as needs-review in the design index. The flag cascades further only when a flagged artifact is actually revised (its own version bumps) — this keeps one upstream edit from flagging the whole project." },
+            "flagSharedPatternProjects": { "type": "boolean", "default": true, "description": "When a decision marked as shared (relation: shares-pattern) changes, also flag the design-output of every project sharing it." }
+          }
+        }
+      }
+    },
+
     "motionUsagePolicy": {
       "type": "object",
       "description": "When motion.durationsMs/easing tokens (already defined) are required to be applied, not just available.",

@@ -1,0 +1,115 @@
+# The design index after PRD-031 was placed (scope-overlap-report.example.yaml).
+# PRD-031's work was routed into DES-470 and DES-512, so both briefs moved to
+# version 2 — and every artifact built from version 1 is now flagged needs-review.
+updatedAt: "2026-09-24T10:30:00Z"
+
+projects:
+  - id: "DES-512"
+    title: "Dashboard KPI summary"
+    status: "approved"
+    scopeSummary: "At-a-glance KPI row with trends at the top of the dashboard, plus a date-range filter toolbar."
+    scopeTerms: ["kpi", "trend indicator", "date-range filter", "dashboard summary", "revenue"]   # 'revenue' merged in from PRD-031
+    surfaces: ["dashboard", "dashboard/toolbar"]
+    priorities:
+      - id: "P1"
+        statement: "User can see the core KPIs and their trend at a glance without scrolling."
+      - id: "P2"
+        statement: "User can filter the whole dashboard by date range from a toolbar."
+      - id: "P3"
+        statement: "Loading state must not block perception of the rest of the dashboard."
+    componentsUsed: ["StatTile", "Button/icon-only", "Skeleton", "Card"]
+    relatedProjects:
+      - projectId: "DES-470"
+        relation: "shares-pattern"
+        note: "Same date-range filter (preset chips). A change here must be mirrored there."
+        scopeOverlapReportId: "PRD-031-scope-1"
+    artifacts:
+      - id: "DES-512"
+        type: "ticket-brief"
+        version: 2            # revenue KPI added via PRD-031 (examples/ticket-brief.example.yaml shows v1)
+        reviewStatus: "current"
+      - id: "DES-512-scope-1"
+        type: "scope-overlap-report"
+        version: 1
+        dependsOn: [{ artifactId: "DES-512", version: 1 }]
+        reviewStatus: "needs-review"
+        reviewReason: "Brief DES-512 v1 → v2: 'revenue' added to scope terms (PRD-031-scope-1)."
+      - id: "DES-512-gaps"
+        type: "component-gap-report"
+        path: "examples/component-gap-report.example.yaml"
+        version: 1
+        dependsOn: [{ artifactId: "DES-512", version: 1 }]
+        reviewStatus: "needs-review"
+        reviewReason: "Brief DES-512 v1 → v2: new revenue tile — confirm it's covered by the approved StatTile and needs no new gap."
+      - id: "DES-512-gap-1-verify"
+        type: "component-verification-report"
+        path: "examples/component-verification-report.example.yaml"
+        version: 1
+        dependsOn: [{ artifactId: "DES-512-gaps", version: 1 }]
+        reviewStatus: "current"   # its gap report was flagged, not revised — no cascade yet
+      - id: "DES-512-gap-2-verify"
+        type: "component-verification-report"
+        path: "examples/component-verification-report-icon-only.example.yaml"
+        version: 1
+        dependsOn: [{ artifactId: "DES-512-gaps", version: 1 }]
+        reviewStatus: "current"
+      - id: "design-output-DES-512"
+        type: "design-output"
+        path: "examples/design-output.example.yaml"
+        version: 2            # revision 1 of the design
+        dependsOn:
+          - { artifactId: "DES-512", version: 1 }
+          - { artifactId: "DES-512-scope-1", version: 1 }
+          - { artifactId: "DES-512-gap-1-verify", version: 1 }
+          - { artifactId: "DES-512-gap-2-verify", version: 1 }
+        reviewStatus: "needs-review"
+        reviewReason: "Brief DES-512 v1 → v2: summary row needs a fifth (revenue) tile; check it still fits P1's no-scrolling requirement at sm."
+      - id: "audit-report-DES-512-rev1"
+        type: "audit-report"
+        version: 1
+        dependsOn: [{ artifactId: "design-output-DES-512", version: 2 }]
+        reviewStatus: "current"   # re-flagged automatically once the design output is revised
+
+  - id: "DES-470"
+    title: "Reports page"
+    status: "shipped"
+    scopeSummary: "List of saved reports with a filter bar, and a detail view for each report."
+    scopeTerms: ["report", "report list", "report filter", "saved report", "date-range filter", "csv export"]   # last two merged in from PRD-031
+    surfaces: ["reports", "reports/toolbar", "reports/detail"]
+    priorities:
+      - id: "P1"
+        statement: "User can find a saved report quickly."
+      - id: "P2"
+        statement: "User can narrow the report list by type and owner."
+    componentsUsed: ["Card", "Tabs", "Input", "Button/primary"]
+    relatedProjects:
+      - projectId: "DES-512"
+        relation: "shares-pattern"
+        note: "Date-range filter inherited from DES-512 — do not re-decide it here."
+        scopeOverlapReportId: "PRD-031-scope-1"
+    artifacts:
+      - id: "DES-470"
+        type: "ticket-brief"
+        version: 2            # date-range filter + CSV export added via PRD-031
+        reviewStatus: "current"
+      - id: "design-output-DES-470"
+        type: "design-output"
+        version: 3
+        dependsOn: [{ artifactId: "DES-470", version: 1 }]
+        reviewStatus: "needs-review"
+        reviewReason: "Brief DES-470 v1 → v2: add the date-range filter (inherited from DES-512) to reports/toolbar and a CSV export action to reports/detail."
+
+  - id: "DES-301"
+    title: "Legacy stats widget"
+    status: "deprecated"
+    scopeSummary: "Old single-number stat widget on the dashboard, replaced by DES-512's StatTile row."
+    scopeTerms: ["kpi", "stat widget"]
+    surfaces: ["dashboard"]
+    relatedProjects:
+      - projectId: "DES-512"
+        relation: "superseded-by"
+    artifacts:
+      - id: "design-output-DES-301"
+        type: "design-output"
+        version: 1
+        reviewStatus: "current"

@@ -1,11 +1,11 @@
 ---
 name: design-generation
-description: Config-driven UI/UX generation. Reads a ticket brief and a project's design-system-manifest.yaml, drafts a design using only that project's approved tokens and components, follows the decision protocol on consequential choices, and hands off automatically to design-audit-rubric.md before anything is presented as final.
+description: Config-driven UI/UX generation. Reads a ticket brief (from a Jira ticket or PRD) and a project's design-system-manifest.yaml, checks the design index for existing designs that already own the scope, drafts a design using only that project's approved tokens and components, follows the decision protocol on consequential choices, and hands off automatically to design-audit-rubric.md before anything is presented as final.
 ---
 
 # Design Generation Skill
 
-Generates a design from a ticket. Contains no hardcoded design opinions (colors, fonts, component names) — everything project-specific comes from the manifest. What's fixed here is *process*: how to reason from a brief to a layout, when to ask, when to check for reuse, and when to hand off to audit. The **philosophy** governing every step below is `design-principles.md` — simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion-as-physics, structural rationale. Where a step references one of those principles, it's enforcing a rule, not applying a style.
+Generates a design from a ticket or PRD. Contains no hardcoded design opinions (colors, fonts, component names) — everything project-specific comes from the manifest. What's fixed here is *process*: how to reason from a brief to a layout, when to ask, when to check for reuse (of whole designs as well as components), how to keep linked artifacts in sync, and when to hand off to audit. The **philosophy** governing every step below is `design-principles.md` — simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion-as-physics, structural rationale. Where a step references one of those principles, it's enforcing a rule, not applying a style.
 
 ## Core Design Principles
 
@@ -24,7 +24,8 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 
 | Input | Schema | If missing |
 |---|---|---|
-| Ticket brief | `ticket-brief.schema.json` | If given raw ticket text instead, extract into this shape first — see Step 1. If a Jira MCP tool is available, fetch the ticket directly. |
+| Ticket brief | `ticket-brief.schema.json` | If given raw ticket or PRD text instead, extract into this shape first — see Step 1. If a Jira MCP tool is available, fetch the ticket directly. |
+| Design index | `design-index.schema.json` | At `scopePolicy.designIndexPath`. If none exists yet, this is the first project — create one in Step 12, and record the scope check as `new-project` with no candidates. |
 | Design-system manifest | `design-system-manifest.schema.json` | **Halt and ask** for one. Never fall back to generic/default design opinions — that defeats the entire point of this skill existing. |
 
 ---
@@ -33,7 +34,9 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 
 ### Step 1 — Resolve the brief
 
-If not already structured, extract a `ticket-brief` from the raw ticket: identify `priorities` (rank them — don't treat every line as equally important), pull `requiredElements` with a best-guess `targetCategory` each, and flag anything genuinely ambiguous as `openQuestions`.
+If not already structured, extract a `ticket-brief` from the raw ticket: identify `priorities` (rank them — don't treat every line as equally important), pull `requiredElements` with a best-guess `targetCategory` each, set `sourceType`, extract `scopeTerms` (specific domain terms, not generic words) and `surfaces` (which screens/areas it changes, using the design index's surface names), and flag anything genuinely ambiguous as `openQuestions`.
+
+A PRD usually describes more than one screen or feature. Extract the whole thing into one brief first — Step 2b decides whether it is one design, part of an existing one, or several.
 
 **If `openQuestions` is non-empty, ask before generating.** This isn't optional politeness — `compositionHeuristics.requireTicketPriorityTraceability` makes every downstream decision accountable to the brief, so an unresolved ambiguity here propagates into every later step.
 
@@ -45,6 +48,24 @@ Parse `design-system-manifest.yaml`, validate against its schema. Pull out, in p
 - `meta.decisionProtocol` — how much to ask vs. auto-apply
 
 If the manifest is missing a section this ticket needs (e.g. no `motion` block but the ticket needs a loading state), don't invent values — ask, or use the schema's stated defaults and flag that a default was used.
+
+### Step 2b — Scope placement check (against the design index)
+
+The component reuse check (Step 3) stops the registry from filling with near-duplicate components. This step does the same one level up: it stops the product from filling with near-duplicate *designs*. Before any drafting, decide where this brief's work actually belongs. Skipped only if `scopePolicy.requireScopeCheck` is false.
+
+1. Load the design index. For every project in it, compute
+   `score = (weights.termOverlap × Jaccard(brief.scopeTerms, project.scopeTerms)) + (weights.surfaceOverlap × Jaccard(brief.surfaces, project.surfaces)) + (weights.priorityOverlap × priorityOverlap)`,
+   where `priorityOverlap` is the fraction of the brief's priorities that one of the project's priorities already serves. A parent surface matches its children (`reports` matches `reports/toolbar`). Every term, surface, and priority match goes into the candidate's `evidence` — no score without evidence.
+2. Classify each candidate: `≥ mergeThreshold` → **belongs-to-existing**; `≥ relatedThreshold` → **related**; otherwise **unrelated**. A `deprecated` project is never a merge target, but a match against one is still surfaced — it may mean retired work is being reintroduced.
+3. Route each `requiredElement` individually. Whole-brief scores hide partial overlap, which is the common PRD case — one PRD, two features, one of which another design already owns. For each element: `existing-project` when the element lands on a surface an existing (non-deprecated) project owns — it's a revision of that design, whoever asked for it; `reuse-pattern-from` when it's on a new surface but its terms match a pattern a related project already decided — do it here, but inherit that decision and those components so the two stay consistent; otherwise `this-project`.
+4. Recommend:
+   - **new-project** — no element routes elsewhere and no candidate is related.
+   - **extend-existing** — the whole brief belongs to one project. The design becomes a new revision of that project (`design-output.projectId` = that project), and if it is `approved`/`shipped` it goes back through audit as a revision.
+   - **split** — some elements route to other projects. Design only the `this-project` elements here; hand the rest back as separate briefs against their target projects.
+   - **new-project-with-shared-patterns** — new, but related projects' decisions listed in `reusedDecisions` are inherited, not re-decided. They are logged in the decision log with `mode: inherited`.
+5. Write a `scope-overlap-report` and apply `scopePolicy.onOverlap`: `ask` → **stop and present it**; the human accepts or overrides (recorded in `humanDecision`). `auto-route` → proceed and log. `block` → stop until a human re-scopes the brief. A `new-project` recommendation with no related candidates never needs to stop.
+
+An inherited decision is not re-opened just because this brief could have chosen differently. If the brief genuinely needs a different answer, that's a Decision Protocol moment that also flags the other project (Step 12), because two designs that share a pattern must not drift apart silently.
 
 ### Step 3 — Reuse check (per required element)
 
@@ -107,7 +128,7 @@ Any view reached by drilling in needs a way back — button, breadcrumb, or shor
 
 ### Step 10 — Assemble output
 
-Produce a `design-output` (schema below) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`), the decision log from any Decision Protocol invocations, the list of components/variants used (with status), and any gap reports filed.
+Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the list of components/variants used (with status), and any gap and verification reports filed.
 
 ### Step 11 — Automatic audit handoff
 
@@ -118,6 +139,15 @@ Per `automation.auditTrigger` (default `automatic-post-generation`): **immediate
 - `blocker` → stop. Surface the specific rubric findings to a human. Do not auto-retry.
 
 **Whenever audit findings are shown to a human — on `blocker` escalation, or alongside a `pass`/`minor-issues` design that still has Phase 2/3 findings worth noting — render them using `audit-presentation-template.md`, exactly, no deviations.** This applies regardless of `overallVerdict`: even a `pass` design can carry Phase 2/3 findings worth surfacing. The template is the human-facing output; `audit-report.schema.json` remains the underlying data structure driving the automation logic above.
+
+### Step 12 — Update the design index and propagate changes
+
+Every artifact this run produced or changed is registered on its project in the design index, with `dependsOn` listing the exact upstream versions it was built from (the design output depends on the brief and scope report; the audit depends on the design output; verification reports depend on their gap report). Then:
+
+1. **Register the project** if this was `new-project` or `split` (the `this-project` part): `scopeSummary`, `scopeTerms`, `surfaces`, `priorities`, `componentsUsed` from this run. For `extend-existing`, merge the new terms/surfaces/priorities into the existing project instead.
+2. **Record relationships** from the scope report on both sides: `extends`/`extended-by` or `shares-pattern`, with the `scopeOverlapReportId`.
+3. **Propagate** per `scopePolicy.changePropagation`. When any artifact's version is bumped, every artifact that directly depends on an older version of it becomes `reviewStatus: needs-review` with a `reviewReason` naming what changed. The flag cascades further only when a flagged artifact is actually revised — its version bump then flags its own dependents. If a decision shared with other projects changed, their design outputs are flagged too.
+4. **Never auto-regenerate a flagged artifact.** Flagging is the job; the human (or a fresh run of this skill on that project) decides whether the change matters. An artifact marked `needs-review` cannot be presented as current.
 
 ---
 
@@ -140,3 +170,6 @@ Governed by `meta.decisionProtocol`:
 - Does not treat a filed gap report as sufficient approval for a new component — `requireOperationalVerification` still gates the status flip to `approved`.
 - Does not present itself as final before the audit handoff runs, when `auditTrigger` is `automatic-post-generation`.
 - Does not silently drop ticket requirements that don't fit cleanly — surfaces them as `openQuestions` or explicit trade-offs instead.
+- Does not start a new design for work the design index shows another project already owns — the scope placement check routes it there, or asks.
+- Does not re-decide a pattern a related project already settled — it inherits it, or raises the conflict with both projects flagged.
+- Does not leave downstream artifacts silently stale after a change — they are flagged `needs-review`, never quietly regenerated.

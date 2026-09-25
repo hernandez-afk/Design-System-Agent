@@ -2,11 +2,28 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://example.com/schemas/ticket-brief.schema.json",
   "title": "Ticket Brief",
-  "description": "Structured extraction from a Jira ticket, produced before generation starts. Keeps 'what does the ticket actually ask for' explicit and separate from the agent's interpretation, so requireTicketPriorityTraceability (composition-heuristics) has something concrete to check against.",
+  "description": "Structured extraction from a Jira ticket, PRD, or feature request, produced before generation starts. Keeps 'what does the ticket actually ask for' explicit and separate from the agent's interpretation, so requireTicketPriorityTraceability (composition-heuristics) has something concrete to check against.",
   "type": "object",
-  "required": ["ticketKey", "title", "priorities", "requiredElements"],
+  "required": ["ticketKey", "title", "sourceType", "priorities", "requiredElements", "scopeTerms", "surfaces"],
   "properties": {
-    "ticketKey": { "type": "string", "description": "e.g. 'DES-512'." },
+    "ticketKey": { "type": "string", "description": "e.g. 'DES-512' or 'PRD-031'." },
+    "sourceType": {
+      "type": "string",
+      "enum": ["jira-ticket", "prd", "feature-request", "other"],
+      "description": "Where this brief came from. A PRD often spans several designs, so it is the most common source of scope overlap — see the scope placement check."
+    },
+    "sourceRef": { "type": "string", "description": "Link or path to the source ticket/PRD." },
+    "scopeTerms": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Normalized domain terms this brief is about (lowercase, singular, specific — e.g. 'date-range filter', not 'filter'). Compared against design-index projects' scopeTerms in the scope placement check."
+    },
+    "surfaces": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Screens/areas of the product this brief would change, e.g. ['reports', 'reports/toolbar']. Use the same surface names as the design index."
+    },
+    "scopeOverlapReportRef": { "type": "string", "description": "ID of the scope-overlap-report produced for this brief, once the scope placement check has run." },
     "title": { "type": "string" },
     "rawDescription": { "type": "string", "description": "Verbatim (paraphrased per copyright practice if fetched from Jira text) ticket description, kept for traceability." },
     "priorities": {
