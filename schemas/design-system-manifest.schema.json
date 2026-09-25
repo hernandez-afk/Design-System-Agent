@@ -22,6 +22,14 @@
           "default": "always-ask",
           "description": "Mirrors the bencium skill's 'CRITICAL: always ask before design decisions' rule. 'ask-major-only' lets the agent auto-decide low-stakes details (e.g. spacing within an approved scale) but still ask about color/type/layout direction."
         },
+        "claudeMd": {
+          "type": "object",
+          "description": "The project's CLAUDE.md, which Claude Code loads into every session. It carries a summary of this manifest (tokens, brand rules, critique criteria) so even quick edits that don't run the design agent follow the design system. Built from templates/CLAUDE.md.",
+          "properties": {
+            "path": { "type": "string", "default": "CLAUDE.md", "description": "Where the file lives, relative to the repo root. Claude Code loads CLAUDE.md from the project root automatically." },
+            "required": { "type": "boolean", "default": true, "description": "If true, the design-generation skill halts when the file is missing or its version stamp doesn't match meta.version, and offers to regenerate it from this manifest." }
+          }
+        },
         "brandExclusions": {
           "type": "array",
           "items": { "type": "string" },

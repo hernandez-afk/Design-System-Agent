@@ -152,6 +152,8 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 *The design-level counterpart of category 1: category 1 stops duplicate components, this stops duplicate or drifting designs. Thresholds and policy from `scopePolicy`; data from the design index and the scope-overlap-report.*
 
+- [ ] **Blocker:** The project has no `CLAUDE.md` with the design-system sections (tokens, brand rules, critique criteria), or its version stamp doesn't match the manifest's `meta.version`, when `meta.claudeMd.required` is true — every session outside this skill would be working from missing or stale rules.
+- [ ] **Major:** `CLAUDE.md` and the manifest disagree on a value (a token, a brand exclusion, a threshold), or `CLAUDE.md` still contains unresolved `{{…}}` placeholders.
 - [ ] **Blocker:** No `scope-overlap-report` exists for the brief, when `scopePolicy.requireScopeCheck` is true — the design was started without checking whether another project already owns the work.
 - [ ] **Blocker:** The design builds, as new, an element the scope report routed to `existing-project` (or a whole brief classified `belongs-to-existing`) with no recorded `humanDecision` overriding it — a parallel design of work another project owns.
 - [ ] **Major:** `scopePolicy.onOverlap` was not respected (e.g. `ask` configured but the agent designed before the human accepted or overrode the recommendation).
@@ -160,7 +162,7 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Minor:** Candidate scores in the scope report have no `evidence`, or the brief's `scopeTerms` are generic ("page", "button", "user") enough to make the overlap check meaningless.
 - [ ] **Minor:** The design index wasn't updated after the run (new artifacts unregistered, or relationships from the scope report recorded on only one side).
 
-**Evidence required:** the `scopeOverlapReportRef` on the design output, and for every `existing-project` route, either the element's absence from this design or a `humanDecision` override.
+**Evidence required:** the `CLAUDE.md` version stamp, the `scopeOverlapReportRef` on the design output, and for every `existing-project` route, either the element's absence from this design or a `humanDecision` override.
 
 ---
 

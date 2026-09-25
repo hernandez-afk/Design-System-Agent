@@ -1,0 +1,74 @@
+<!-- design-system-manifest: {{meta.name}} v{{meta.version}} -->
+<!-- Generated from design-system-manifest.yaml by the design-generation skill.
+     Regenerate it whenever the manifest's version changes; the skill refuses to run while the versions differ.
+     The manifest is the source of truth. This file is the always-loaded summary. -->
+
+# Design system: {{meta.name}}
+
+Every UI change in this repo follows these rules, including quick edits that don't run the full design agent. The full data (every token, component, variant and threshold) is in `{{manifestPath}}`. For new screens or features, use the **design-generation** skill.
+
+## Tokens
+
+Use only these values. Never hard-code a color, spacing, size, radius or duration.
+
+**Color roles**
+- Neutrals: background `{{color.neutrals.background}}`, surface `{{color.neutrals.surface}}`, border `{{color.neutrals.border}}`, text `{{color.neutrals.textPrimary}}`, muted text `{{color.neutrals.textSecondary}}`
+- Accents: primary `{{color.accents.primary}}`, secondary `{{color.accents.secondary}}` (at most {{color.usagePolicy.maxSimultaneousSecondaryAccents}} on screen at once)
+- Status: success `{{color.accents.success}}`, warning `{{color.accents.warning}}`, error `{{color.accents.error}}`, info `{{color.accents.info}}`
+- Interaction: hover `{{color.interactionStates.hover}}`, active `{{color.interactionStates.active}}`, focus `{{color.interactionStates.focus}}`
+- Contrast: {{color.contrastStandard}}
+
+**Typography**
+- Display `{{typography.typefaces.display}}`, body `{{typography.typefaces.body}}`, UI `{{typography.typefaces.ui}}`; weights {{typography.weights}}
+- Scale: base {{typography.scale.baseSizePx}}px × {{typography.scale.ratio}}, steps {{typography.scale.steps}}; line height {{typography.lineHeightRatio}}
+- Roles: {{typography.roles — one line each: heading, readable subtext, form label, and how they differ}}
+
+**Spacing & layout**
+- Spacing scale (px): {{spacing.scale}}; base unit {{spacing.baseUnitPx}}px
+- Grid: {{layout.gridColumns}} columns, {{layout.gutterPx}}px gutter, max width {{layout.containerMaxWidthPx}}px, alignment tolerance {{layout.alignmentTolerancePx}}px
+- Breakpoints (design mobile first): {{layout.breakpoints}}
+
+**Motion**
+- Durations: micro {{motion.durationsMs.micro}}ms, state {{motion.durationsMs.state}}ms, page {{motion.durationsMs.page}}ms
+- Easing: entrance `{{motion.easing.entrance}}`, exit `{{motion.easing.exit}}`, transition `{{motion.easing.transition}}`; respect reduced motion: {{motion.respectReducedMotion}}
+
+**Components.** Reuse these before building anything new:
+{{one line per approved component: Name (import path): approved variants; list proposed variants separately as "pending review — don't reuse"}}
+
+## Brand rules
+
+- Never: {{meta.brandExclusions, one per line}}
+- Icons: {{icons.library}} only
+- Decisions: `{{meta.decisionProtocol}}`. {{one line on what that means: always-ask = offer 2–3 options with trade-offs before any layout, color or structure decision}}
+- One primary action per screen. Secondary actions never get primary-accent styling.
+- New components or variants go through a gap report and a verification report. Never invent one inline.
+
+## Critique criteria
+
+Use these whenever you review, critique or change a design, not only in formal audits.
+
+**Principles** (full text in `design-principles.md`): simplicity is architecture · hierarchy drives everything · consistency is non-negotiable · alignment is precision · whitespace is a feature · responsive is the real design · design the feeling · no cosmetic fixes without structural reasoning.
+
+**3-3-3 rule**, for every core task:
+- understood in {{usabilityHeuristics.threeThreeThree.glanceSeconds}} s at `{{usabilityHeuristics.threeThreeThree.glanceBreakpoint}}`
+- reached in ≤ {{usabilityHeuristics.threeThreeThree.maxClicksToCoreTask}} clicks
+- finished in ≤ {{usabilityHeuristics.threeThreeThree.maxCoreTaskMinutes}} min
+
+Never meet the click limit by cramming.
+
+**Wickens' 13 display principles:**
+- Perception: legible (≥ {{usabilityHeuristics.displayDesign.minReadableTextPx}}px) · no more than {{usabilityHeuristics.displayDesign.maxAbsoluteJudgmentLevels}} unlabeled levels · follow convention · two cues for critical states · similar-looking means similar
+- Mental model: pictorial realism · the moving part
+- Attention: low access cost · related info close together · multiple channels
+- Memory: show, don't make people remember · preview consequences · consistency
+
+**Accessibility:** {{accessibility.level}}; touch targets ≥ {{accessibility.minTouchTargetPx}}px; visible focus; semantic HTML.
+
+**Density:** paginate lists over {{compositionHeuristics.listPaginationThreshold}} items; group forms over {{compositionHeuristics.maxInlineInputs}} fields; details go on a drill-down view.
+
+**Severity:**
+- **Blocker:** off-token value, invented component, more than one primary action, skipped decision or scope check, contrast or touch-target failure
+- **Major:** hurts usability or consistency
+- **Minor:** polish
+
+**How to write a critique.** Every point uses the form `[Screen/Component]: [what's wrong] → [what it should be] → [why it matters]`, citing a token, principle or rubric category. Implementation notes give the exact component, property, old value → new value. Never write a bare preference like "make it pop" or "feels cleaner".

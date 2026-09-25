@@ -30,6 +30,7 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 | Ticket brief | `ticket-brief.schema.json` | If given raw ticket or PRD text instead, extract into this shape first — see Step 1. If a Jira MCP tool is available, fetch the ticket directly. |
 | Design index | `design-index.schema.json` | At `scopePolicy.designIndexPath`. If none exists yet, this is the first project — create one in Step 12, and record the scope check as `new-project` with no candidates. |
 | Design-system manifest | `design-system-manifest.schema.json` | **Halt and ask** for one. Never fall back to generic/default design opinions — that defeats the entire point of this skill existing. |
+| Project `CLAUDE.md` | `templates/CLAUDE.md` | At `meta.claudeMd.path` (default `CLAUDE.md`, repo root). **Halt**, and offer to generate it from the manifest — see Step 2. Required unless `meta.claudeMd.required` is false. |
 
 ---
 
@@ -51,6 +52,14 @@ Parse `design-system-manifest.yaml`, validate against its schema. Pull out, in p
 - `meta.decisionProtocol` — how much to ask vs. auto-apply
 
 If the manifest is missing a section this ticket needs (e.g. no `motion` block but the ticket needs a loading state), don't invent values — ask, or use the schema's stated defaults and flag that a default was used.
+
+**Then check the project's `CLAUDE.md`.** Claude Code loads it into every session, so it's what keeps *every* interaction on-system — including quick edits, reviews, and questions that never run this skill. It must hold the design system's tokens, brand rules, and critique criteria, and its first line must carry the version stamp `<!-- design-system-manifest: <meta.name> v<meta.version> -->`.
+
+- **Missing** → halt. Offer to generate it: fill `templates/CLAUDE.md` from the manifest (every `{{…}}` placeholder resolved, no placeholder left behind), show it to the human, and write it only once they approve. It's added to the repo root, not overwritten — if a `CLAUDE.md` already exists without the design-system sections, merge them in and keep everything else.
+- **Stamp doesn't match `meta.version`** → halt. The tokens in it are stale, and anything that reads it would design against an old system. Offer to regenerate the design-system sections from the current manifest; show the diff before writing.
+- **Present and matching** → continue. If it and the manifest ever disagree on a value, the manifest wins, and the mismatch is itself a finding (rubric category 11).
+
+Whenever this run changes the manifest (a component moves to `approved`, a token is added), bump `meta.version` and regenerate `CLAUDE.md` in the same change, so the two never drift.
 
 ### Step 2b — Scope placement check (against the design index)
 
@@ -194,3 +203,4 @@ Governed by `meta.decisionProtocol`:
 - Does not start a new design for work the design index shows another project already owns — the scope placement check routes it there, or asks.
 - Does not re-decide a pattern a related project already settled — it inherits it, or raises the conflict with both projects flagged.
 - Does not leave downstream artifacts silently stale after a change — they are flagged `needs-review`, never quietly regenerated.
+- Does not run without a project `CLAUDE.md` whose version stamp matches the manifest — it halts and offers to generate or regenerate it instead.

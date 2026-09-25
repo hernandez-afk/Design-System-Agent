@@ -6,7 +6,16 @@ A config-driven agent skill for generating and auditing UI designs. The skills h
 
 - **skills/** — the fixed logic (SKILL.md-style files): principles, the generation process, the audit rubric, and the mandatory human-facing report template.
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
+- **templates/** — `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
+
+## Required first: a project `CLAUDE.md`
+
+Before the agent runs in your app repo, that repo needs a `CLAUDE.md` holding your design system's **tokens, brand rules, and critique criteria**. Claude Code loads it into every session, so every interaction follows the design system, even a one-line edit or a design question that never invokes the skill.
+
+- **Template:** `templates/CLAUDE.md`. The skill fills it from your manifest. See `examples/CLAUDE.example.md` for the Acme version.
+- **Version stamp:** its first line records the manifest version it was built from. The skill halts if the file is missing or the stamp doesn't match, and offers to generate or regenerate it.
+- **Source of truth:** the manifest stays the full data; `CLAUDE.md` is the short, always-loaded summary. When the manifest changes, bump its version and regenerate `CLAUDE.md` in the same change.
 
 ## Pipeline order
 

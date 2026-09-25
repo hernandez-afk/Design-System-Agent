@@ -7,6 +7,9 @@ meta:
   framework: "react"
   stylingEngine: "tailwind"
   decisionProtocol: "always-ask"   # always-ask | ask-major-only | auto-apply
+  claudeMd:
+    path: "CLAUDE.md"     # always-loaded summary of this manifest — see examples/CLAUDE.example.md
+    required: true        # the skill halts if it is missing or its version stamp differs from meta.version
   brandExclusions:
     - "#3B82F6 default SaaS blue"
     - "glass morphism"
