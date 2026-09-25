@@ -34,6 +34,7 @@ Map the brief onto `schemas/ticket-brief.schema.json` (`sourceType: page-brief` 
 | Constraints | `constraints` |
 | Acceptance criteria | `acceptanceCriteria`, each linked to a priority or task |
 | Out of scope | `outOfScope` |
+| Where it fits | `connections` (arrives from, goes next, pages that should link here): the start of the user flow (Step 2c) |
 | Related pages and designs | `scopeTerms` and `surfaces` hints for the scope check |
 | Open questions | `openQuestions` |
 

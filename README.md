@@ -53,6 +53,17 @@ The brief is then optimized in a standard way (**`skills/brief-optimization.md`*
 
 Your team's own terms can be added to the vocabulary in the manifest (`briefPolicy.vocabulary`). See `examples/page-brief.example.md` → `examples/brief-optimization-report.example.yaml` → `examples/ticket-brief-page.example.yaml`.
 
+## The user flow: how a page connects to the product
+
+Before any screen is laid out, the agent maps the **user flow** (generation Step 2c, `schemas/user-flow.schema.json`):
+
+- **Entry points:** every way in (another page, an email link, a notification), what each link carries, and what happens when the user is signed out
+- **One flow per core task:** every step and wait, how the user knows it's done, and the error, cancel, empty, not-found and permission paths
+- **The way back and the way on:** no dead ends, including from deep links with no history
+- **Integration changes:** anything an existing page needs to link to the new one. Changes to another design's page are proposed to that design's owner, never made quietly, and the design can't ship until they're accepted.
+
+`python3 tools/flow_check.py flow.yaml --index design-index.yaml --brief brief.yaml` checks all of this, and `--mermaid` draws the flow. The design index keeps a **navigation map** of every link between pages, updated as each design ships. See `examples/user-flow.example.yaml`: the Notification preferences page, entered from an email link and from the Settings page (DES-420), which needs a new row.
+
 ## The standard: minimum requirements and a reference design system
 
 **`standard/`** holds **Baseline**, a neutral design system that meets every requirement, and **`standard/REQUIREMENTS.md`**, which says what's required and why:
@@ -77,7 +88,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
-- **tools/** — `brief_lint.py` (is a page brief ready?), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

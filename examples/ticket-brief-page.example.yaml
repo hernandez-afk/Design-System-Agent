@@ -11,6 +11,11 @@ rawDescription: >
   Let team admins choose which events send them email, so they stop getting
   alerts they ignore and trust the ones they get.
 
+connections:
+  arrivesFrom: ["'Manage notifications' link in notification emails", "Settings → Notifications"]
+  goesNext: ["Settings", "leaving the page"]
+  mustLinkHere: ["Settings (a Notifications row)"]
+
 scopeTerms: ["notification preference", "email notification", "digest frequency", "test email"]
 surfaces: ["settings/notifications"]
 

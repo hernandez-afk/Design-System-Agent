@@ -69,7 +69,7 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 
 ## New pages
 
-Start from a page brief (`templates/page-brief.md`): purpose, ranked goals, tasks with where they start, content with amounts, states, and testable acceptance criteria. Check it with `python3 .claude/design-agent/tools/brief_lint.py <brief>`. The design agent optimizes it to fit this design system, and shows every change for approval before designing.
+Start from a page brief (`templates/page-brief.md`): purpose, ranked goals, tasks with where they start, content with amounts, states, and testable acceptance criteria. Check it with `python3 .claude/design-agent/tools/brief_lint.py <brief>`. The design agent optimizes it to fit this design system, and shows every change for approval before designing. It then maps the user flow: how users get to the page and where they go next. A new link on another design's page is that design's change: it's proposed to its owner, never edited in quietly.
 
 ## Working on existing UI
 

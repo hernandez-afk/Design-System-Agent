@@ -92,6 +92,27 @@ The component reuse check (Step 3) stops the registry from filling with near-dup
 
 An inherited decision is not re-opened just because this brief could have chosen differently. If the brief genuinely needs a different answer, that's a Decision Protocol moment that also flags the other project (Step 12), because two designs that share a pattern must not drift apart silently.
 
+### Step 2c — Map the user flow and how it plugs in
+
+Before any screen is laid out, write a `user-flow` (`user-flow.schema.json`) showing how each core task actually happens and how this design connects to the rest of the product. Start from the brief's `connections` and the design index's `navigation` map.
+
+1. **Screens.** List every screen and state the flows touch:
+   - this design's new screens
+   - existing product pages, with the design that owns each
+   - system screens (sign-in, OS dialogs)
+   - external sources (an email, a push notification)
+2. **Entry points.** Every way in: the link or row the user taps, what state the link carries (the item to highlight, a filter), what happens when they're signed out (they must land back where they were going), and the typical device. People arriving from an email are usually on a phone.
+3. **One flow per core task.** From its entry point:
+   - every step, marking clicks and async waits
+   - how the user knows it's done
+   - the alternate paths: error (required for every async step), cancel, empty, signed out, not found, no permission
+4. **The way back and the way on.** Every new screen needs a way back that works even from a deep link with no history (`navigationHeuristics`), and a defined next place to go. No dead ends.
+5. **Integration changes.** Anything outside this design that has to change for it to connect, like a new row on another page or a deep link in an email template, is an integration change owned by whoever owns that page:
+   - **A change to another design's page is a revision of that design**, the same way the scope check routes work. It's proposed to that design's owner, never made quietly.
+   - The design can't ship while one is `proposed` or `rejected`.
+
+Run `python3 tools/flow_check.py <flow> --index <design index> --brief <brief>` and fix every error before Step 3. The flow's steps are what Step 9b counts clicks from, and what the design implements in Steps 4–9. If an assumption behind the flow changes, like how saving works, revise the flow first.
+
 ### Step 3 — Reuse check (per required element)
 
 For each entry in `requiredElements`:
@@ -165,7 +186,7 @@ Any view reached by drilling in needs a way back — button, breadcrumb, or shor
 For every `coreTasks` entry, before packaging:
 
 1. **3 seconds — glance test.** At `threeThreeThree.glanceBreakpoint`, list the first two or three things the eye lands on. Pass only if the screen's purpose and its primary action are both visible without scrolling and without reading body text. A fail is a hierarchy problem — go back to Steps 4–7, don't add explanatory copy.
-2. **3 clicks — task path.** Walk from the task's `entryPoint`, writing down every step and marking which are clicks/taps (typing isn't). Over `maxClicksToCoreTask` → shorten the path, or document an `overLimitReason` and each step's `scent` (why the user knows it's the right step). Never shorten a path by breaking `maxInlineInputs`, pagination, or progressive disclosure — if they conflict, it's a Decision Protocol moment.
+2. **3 clicks — task path.** Walk the task's flow from Step 2c, from its entry point, writing down every step and marking which are clicks/taps (typing isn't). Over `maxClicksToCoreTask` → shorten the path, or document an `overLimitReason` and each step's `scent` (why the user knows it's the right step). Never shorten a path by breaking `maxInlineInputs`, pagination, or progressive disclosure — if they conflict, it's a Decision Protocol moment.
 3. **3 minutes — completion estimate.** Estimate a first-time user's time step by step, including reading and waiting, and state the basis. Over `maxCoreTaskMinutes` → simplify the task, split it, or document the reason.
 
 4. **Mobile pass.** Check the design against the `mobile` block and record it as `mobileCheck`:
@@ -184,7 +205,7 @@ Record the results in the design output's `glanceTest`, `taskPaths` and `mobileC
 
 ### Step 10 — Assemble output
 
-Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest`, `taskPaths` and `mobileCheck` from Step 9b, `acceptanceResults` (every acceptance criterion: met or not, with where in the design), the list of components/variants used (with status), and any gap and verification reports filed.
+Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `userFlowRef` from Step 2c, the `glanceTest`, `taskPaths` and `mobileCheck` from Step 9b, `acceptanceResults` (every acceptance criterion: met or not, with where in the design), the list of components/variants used (with status), and any gap and verification reports filed.
 
 ### Step 11 — Automatic audit handoff
 
@@ -202,8 +223,9 @@ Every artifact this run produced or changed is registered on its project in the 
 
 1. **Register the project** if this was `new-project` or `split` (the `this-project` part): `scopeSummary`, `scopeTerms`, `surfaces`, `priorities`, `componentsUsed` from this run, and **`codePaths`**: the globs for the code that implements it. Ask if you don't know where it will live. Without `codePaths`, nobody editing that code later gets this design's context. For `extend-existing`, merge the new terms/surfaces/priorities into the existing project instead.
 2. **Record relationships** from the scope report on both sides: `extends`/`extended-by` or `shares-pattern`, with the `scopeOverlapReportId`.
-3. **Propagate** per `scopePolicy.changePropagation`. When any artifact's version is bumped, every artifact that directly depends on an older version of it becomes `reviewStatus: needs-review` with a `reviewReason` naming what changed. The flag cascades further only when a flagged artifact is actually revised — its version bump then flags its own dependents. If a decision shared with other projects changed, their design outputs are flagged too.
-4. **Never auto-regenerate a flagged artifact.** Flagging is the job; the human (or a fresh run of this skill on that project) decides whether the change matters. An artifact marked `needs-review` cannot be presented as current.
+3. **Connect the flow.** Add the flow's links to the index's `navigation` map: `proposed` until the integration change behind each one is accepted, then `live`. Record `links-to` / `linked-from` between this project and every design whose page it enters from. Flag each of those designs' outputs `needs-review`, with the integration change as the reason, so their owners see it.
+4. **Propagate** per `scopePolicy.changePropagation`. When any artifact's version is bumped, every artifact that directly depends on an older version of it becomes `reviewStatus: needs-review` with a `reviewReason` naming what changed. The flag cascades further only when a flagged artifact is actually revised — its version bump then flags its own dependents. If a decision shared with other projects changed, their design outputs are flagged too.
+5. **Never auto-regenerate a flagged artifact.** Flagging is the job; the human (or a fresh run of this skill on that project) decides whether the change matters. An artifact marked `needs-review` cannot be presented as current.
 
 ---
 

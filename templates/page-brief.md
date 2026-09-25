@@ -17,7 +17,15 @@
 
 - **Who:** [who uses it, and how often]
 - **Device:** [mostly phone, desktop, or both. Every page is designed phone-first anyway, so say what's typical.]
-- **Arrives from:** [where users come from: a menu item, a link in an email, a notification]
+
+## Where it fits
+
+- **Arrives from:** [every way in: a menu or settings row, a link in an email, a notification, another page]
+- **Goes next:** [where users go once they're done]
+- **Pages that should link here:** [existing pages that need a new link or button to this page]
+
+<!-- This becomes the user flow (generation Step 2c). Links on other pages are
+     changes to those pages' designs, so name them here rather than assuming them. -->
 
 ## Goals (ranked)
 

@@ -69,6 +69,15 @@
         }
       }
     },
+    "connections": {
+      "type": "object",
+      "description": "Where the page fits in the product, from the page brief's 'Where it fits' section. The starting point for the user flow (Step 2c).",
+      "properties": {
+        "arrivesFrom": { "type": "array", "items": { "type": "string" } },
+        "goesNext": { "type": "array", "items": { "type": "string" } },
+        "mustLinkHere": { "type": "array", "items": { "type": "string" }, "description": "Existing pages that should link to this one." }
+      }
+    },
     "outOfScope": {
       "type": "array",
       "items": { "type": "string" },

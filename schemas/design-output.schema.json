@@ -8,6 +8,7 @@
   "properties": {
     "ticket": { "type": "string" },
     "projectId": { "type": "string", "description": "design-index project this output belongs to. Equals ticket for a new project; for an 'extend-existing' scope outcome it is the existing project's ID." },
+    "userFlowRef": { "type": "string", "description": "The user-flow (Step 2c) this design implements. Its taskPaths are counted from that flow's steps." },
     "scopeOverlapReportRef": { "type": "string", "description": "The scope-overlap-report that placed this work. Required whenever scopePolicy.requireScopeCheck is true." },
     "manifestVersion": { "type": "string" },
     "generatedAt": { "type": "string", "format": "date-time" },

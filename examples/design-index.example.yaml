@@ -3,6 +3,17 @@
 # version 2 — and every artifact built from version 1 is now flagged needs-review.
 updatedAt: "2026-09-24T10:30:00Z"
 
+# The product's navigation map: every link between surfaces. A new design's
+# user flow (Step 2c) starts from here; Step 12 adds its links.
+navigation:
+  links:
+    - { from: "dashboard", to: "reports", label: "All reports", kind: "nav", projectId: "DES-512" }
+    - { from: "reports", to: "reports/detail", label: "Report row", kind: "nav", projectId: "DES-470" }
+    - { from: "reports/detail", to: "reports", label: "Breadcrumb: Reports", kind: "back", projectId: "DES-470" }
+    - { from: "app-menu", to: "settings", label: "Settings", kind: "nav", projectId: "DES-420" }
+    - { from: "settings", to: "settings/team", label: "Team", kind: "nav", projectId: "DES-420" }
+    - { from: "settings", to: "settings/billing", label: "Billing", kind: "nav", projectId: "DES-420" }
+
 projects:
   - id: "DES-512"
     title: "Dashboard KPI summary"
@@ -115,4 +126,26 @@ projects:
       - id: "design-output-DES-301"
         type: "design-output"
         version: 1
+        reviewStatus: "current"
+
+  - id: "DES-420"
+    title: "Settings hub"
+    status: "shipped"
+    scopeSummary: "The Settings landing page: a list of setting areas, each row opening its own page."
+    scopeTerms: ["settings", "setting area", "team settings", "billing settings"]
+    surfaces: ["settings", "app-menu"]
+    codePaths: ["src/app/settings/page.tsx", "src/app/settings/_components/**"]
+    priorities:
+      - id: "P1"
+        statement: "Admins can find the setting they want in one tap from the Settings page."
+    componentsUsed: ["Card", "Button/ghost"]
+    artifacts:
+      - id: "DES-420"
+        type: "ticket-brief"
+        version: 1
+        reviewStatus: "current"
+      - id: "design-output-DES-420"
+        type: "design-output"
+        version: 2
+        dependsOn: [{ artifactId: "DES-420", version: 1 }]
         reviewStatus: "current"

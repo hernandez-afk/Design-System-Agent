@@ -8,7 +8,12 @@ Let team admins choose which events send them email, so they stop getting alerts
 
 - **Who:** team admins, a few times a month, usually right after getting an email they didn't want
 - **Device:** mostly phone. Most arrive from the "Manage notifications" link at the bottom of an email.
-- **Arrives from:** the email link, or Settings → Notifications
+
+## Where it fits
+
+- **Arrives from:** the "Manage notifications" link in every notification email, or Settings → Notifications
+- **Goes next:** back to Settings, or they just close the page
+- **Pages that should link here:** the Settings page needs a Notifications row
 
 ## Goals (ranked)
 

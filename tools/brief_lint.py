@@ -17,7 +17,7 @@ import re
 import sys
 
 REQUIRED = ["Purpose", "Goals (ranked)", "What users need to do", "Content and data", "Acceptance criteria"]
-RECOMMENDED = ["Users and context", "States", "Out of scope", "Related pages and designs"]
+RECOMMENDED = ["Users and context", "Where it fits", "States", "Out of scope", "Related pages and designs"]
 
 VAGUE = {
     "pop": "hierarchy: the one primary action, accents.primary contrast",

@@ -7,6 +7,27 @@
   "required": ["projects"],
   "properties": {
     "updatedAt": { "type": "string", "format": "date-time" },
+    "navigation": {
+      "type": "object",
+      "description": "The product's navigation map: every link between surfaces, so a new design can see how it connects and what already links where. Updated in generation Step 12 from each design's user flow.",
+      "properties": {
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "label", "kind"],
+            "properties": {
+              "from": { "type": "string", "description": "A surface, or an external source like 'email'." },
+              "to": { "type": "string", "description": "A surface." },
+              "label": { "type": "string", "description": "What the user sees or taps." },
+              "kind": { "type": "string", "enum": ["nav", "deep-link", "redirect", "back"] },
+              "projectId": { "type": "string", "description": "The design that added the link." },
+              "status": { "type": "string", "enum": ["proposed", "live"], "default": "live" }
+            }
+          }
+        }
+      }
+    },
     "projects": {
       "type": "array",
       "items": {
@@ -63,8 +84,8 @@
                 "projectId": { "type": "string" },
                 "relation": {
                   "type": "string",
-                  "enum": ["extends", "extended-by", "shares-pattern", "supersedes", "superseded-by"],
-                  "description": "'shares-pattern' = separate projects that must stay consistent on a shared interaction (e.g. the same date-range filter)."
+                  "enum": ["extends", "extended-by", "shares-pattern", "supersedes", "superseded-by", "links-to", "linked-from"],
+                  "description": "'shares-pattern' = separate projects that must stay consistent on a shared interaction (e.g. the same date-range filter). 'links-to' / 'linked-from' = one design is an entry point into the other, so a change to either can break the flow."
                 },
                 "note": { "type": "string" },
                 "scopeOverlapReportId": { "type": "string" }
@@ -81,7 +102,7 @@
                 "id": { "type": "string", "description": "The artifact's own ID, e.g. 'DES-512-gap-1' or 'audit-report-DES-512-rev1'." },
                 "type": {
                   "type": "string",
-                  "enum": ["prd", "ticket-brief", "scope-overlap-report", "design-output", "component-gap-report", "component-verification-report", "audit-report"]
+                  "enum": ["prd", "page-brief", "ticket-brief", "brief-optimization-report", "scope-overlap-report", "user-flow", "design-output", "component-gap-report", "component-verification-report", "audit-report"]
                 },
                 "path": { "type": "string", "description": "File path or URL." },
                 "version": { "type": "integer", "minimum": 1, "description": "Bump on every change. A dependent's dependsOn[].version records which version it was built against." },

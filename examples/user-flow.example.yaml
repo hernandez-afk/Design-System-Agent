@@ -1,0 +1,83 @@
+# User flow for DES-530 Notification preferences (generation Step 2c), checked
+# against the product's design index (design-index.example.yaml).
+# Check:   python3 tools/flow_check.py examples/user-flow.example.yaml --index examples/design-index.example.yaml --brief examples/ticket-brief-page.example.yaml
+# Diagram: add --mermaid
+id: "DES-530-flow-1"
+projectId: "DES-530"
+briefRef: "DES-530"
+generatedAt: "2026-09-26T11:00:00Z"
+assumptions:
+  - "Changes save instantly (the author's answer to open question 1), so each setting is a Switch and there's no Save button."
+
+screens:
+  - { id: "X1", name: "Notification email", kind: "external" }
+  - { id: "SYS1", name: "Sign in", kind: "system", route: "/sign-in?returnTo={url}" }
+  - { id: "S0", name: "Settings hub", kind: "existing", surface: "settings", owningProject: "DES-420", route: "/settings" }
+  - { id: "S1", name: "Notification preferences", kind: "new", surface: "settings/notifications", route: "/settings/notifications?event={type}" }
+
+entryPoints:
+  - id: "E1"
+    from: "X1"
+    to: "S1"
+    trigger: "'Manage notifications' link in the email footer"
+    carriesState: "The email's event type: that setting is scrolled into view and highlighted on arrival."
+    whenSignedOut: "Sign in (SYS1), then straight back to S1 with the same event still highlighted."
+    typicalDevice: "phone"
+  - id: "E2"
+    from: "S0"
+    to: "S1"
+    trigger: "'Notifications' row on the Settings page"
+    carriesState: "Nothing."
+    typicalDevice: "any"
+
+flows:
+  - taskId: "T1"
+    entryPoint: "E1"
+    steps:
+      - { screen: "S1", action: "Arrive with the email's event type highlighted and in view", isClick: false, async: true }
+      - { screen: "S1", action: "Tap its email switch to turn it off", isClick: true, async: true }
+    done: "The switch shows off, and a toast confirms 'Email off for <event>' with Undo. The admin stays on the page."
+    alternatePaths:
+      - { kind: "signed-out", when: "The admin isn't signed in", then: "SYS1, then back to S1 with the event highlighted.", to: "SYS1" }
+      - { kind: "error", when: "Settings fail to load", then: "InlineAlert/error with Retry in place of the list; the breadcrumb still works." }
+      - { kind: "error", when: "Saving the switch fails", then: "The switch returns to on; InlineAlert/error names the event, with Retry." }
+      - { kind: "not-found", when: "The event type in the link no longer exists", then: "The page opens normally, with InlineAlert/info: 'That alert no longer exists.'" }
+      - { kind: "permission", when: "The person isn't an admin", then: "The page opens read-only, with InlineAlert/info saying only admins can change notifications, and who they are." }
+
+  - taskId: "T2"
+    entryPoint: "E2"
+    steps:
+      - { screen: "S0", action: "Tap 'Notifications'", isClick: true, next: "S1" }
+      - { screen: "S1", action: "Tap 'Weekly' under digest frequency", isClick: true, async: true }
+    done: "Weekly is selected, and a toast confirms 'Digests: weekly'."
+    alternatePaths:
+      - { kind: "error", when: "Saving fails", then: "The previous frequency is re-selected; InlineAlert/error with Retry." }
+
+  - taskId: "T3"
+    entryPoint: "E2"
+    steps:
+      - { screen: "S0", action: "Tap 'Notifications'", isClick: true, next: "S1" }
+      - { screen: "S1", action: "Tap 'Send test email'", isClick: true, async: true }
+    done: "A toast confirms 'Test email sent to <address>'."
+    alternatePaths:
+      - { kind: "error", when: "Sending fails", then: "InlineAlert/error with Retry; the button is ready again." }
+
+backNavigation:
+  - { screen: "S1", back: "Breadcrumb 'Settings › Notifications' → S0, always, including from the email deep link (no history).", to: "S0" }
+
+exits:
+  - { from: "S1", to: "S0", when: "Done: back to Settings" }
+
+integrationChanges:
+  - id: "IC1"
+    screen: "S0"
+    change: "Add a 'Notifications' row to the Settings list, between Team and Billing, with a one-line summary of what's on."
+    owner: "DES-420"
+    kind: "new-entry-point"
+    status: "proposed"
+  - id: "IC2"
+    screen: "X1"
+    change: "Add a 'Manage notifications' link to the footer of every notification email, deep-linking to /settings/notifications?event={type}."
+    owner: "email templates — engineering (not a designed surface)"
+    kind: "deep-link"
+    status: "accepted"

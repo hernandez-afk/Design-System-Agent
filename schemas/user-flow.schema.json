@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/user-flow.schema.json",
+  "title": "User Flow",
+  "description": "How a design's core tasks actually flow, and how the design plugs into the product: where users enter from, every step and decision, the error/cancel/empty paths, the way back, where they go next, and what existing pages must change to connect to it. Produced in generation Step 2c, before any screen is laid out. Checked by tools/flow_check.py and rubric category 10.",
+  "type": "object",
+  "required": ["id", "projectId", "briefRef", "screens", "entryPoints", "flows", "integrationChanges"],
+  "properties": {
+    "id": { "type": "string", "description": "e.g. 'DES-530-flow-1'." },
+    "projectId": { "type": "string" },
+    "briefRef": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "assumptions": { "type": "array", "items": { "type": "string" }, "description": "Answers to brief questions the flow depends on. If one changes, the flow is revised." },
+
+    "screens": {
+      "type": "array",
+      "description": "Every screen or state the flows pass through: this design's, existing product pages, and system screens (sign-in, an email client, the OS share sheet).",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "kind"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'S1'." },
+          "name": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["new", "existing", "system", "external"],
+            "description": "'new' = designed in this project. 'existing' = a product page owned by a design in the index. 'system' = a platform screen nobody designs here (sign-in, OS dialogs). 'external' = outside the product (an email, a notification)."
+          },
+          "surface": { "type": "string", "description": "Design-index surface name, e.g. 'settings/notifications'. Required for 'new' and 'existing'." },
+          "owningProject": { "type": "string", "description": "For 'existing': the design-index project that owns the surface." },
+          "route": { "type": "string", "description": "URL or deep link, e.g. '/settings/notifications?event={type}'." }
+        }
+      }
+    },
+
+    "entryPoints": {
+      "type": "array",
+      "description": "Every way into this design. Each one on an existing page needs an integration change for that page's design.",
+      "items": {
+        "type": "object",
+        "required": ["id", "from", "to", "trigger"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'E1'." },
+          "from": { "type": "string", "description": "A screen id." },
+          "to": { "type": "string", "description": "A screen id in this design." },
+          "trigger": { "type": "string", "description": "What the user taps or follows, e.g. \"'Manage notifications' link in the email footer\"." },
+          "carriesState": { "type": "string", "description": "What the link passes along, e.g. 'the event type, so it's highlighted on arrival'." },
+          "whenSignedOut": { "type": "string", "description": "What happens if the user isn't signed in: must return them to where they were going." },
+          "typicalDevice": { "type": "string", "enum": ["phone", "desktop", "any"] }
+        }
+      }
+    },
+
+    "flows": {
+      "type": "array",
+      "description": "One per core task in the brief. The steps here are what the design output's taskPaths are counted from.",
+      "items": {
+        "type": "object",
+        "required": ["taskId", "entryPoint", "steps", "done", "alternatePaths"],
+        "properties": {
+          "taskId": { "type": "string" },
+          "entryPoint": { "type": "string", "description": "An entryPoints id." },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["screen", "action", "isClick"],
+              "properties": {
+                "screen": { "type": "string" },
+                "action": { "type": "string" },
+                "isClick": { "type": "boolean" },
+                "async": { "type": "boolean", "description": "True if the step waits on the network or a computation; it then needs a loading state and an error path." },
+                "next": { "type": "string", "description": "Screen id the step leads to, if it changes screen." }
+              }
+            }
+          },
+          "done": { "type": "string", "description": "How the user knows the task is complete, and where they are then." },
+          "alternatePaths": {
+            "type": "array",
+            "description": "Error, cancel, empty, signed-out and 'no longer exists' paths. Every async step needs an error path.",
+            "items": {
+              "type": "object",
+              "required": ["kind", "when", "then"],
+              "properties": {
+                "kind": { "type": "string", "enum": ["error", "cancel", "empty", "signed-out", "not-found", "permission", "offline"] },
+                "when": { "type": "string" },
+                "then": { "type": "string" },
+                "to": { "type": "string", "description": "Screen id, if the path leaves the current screen (e.g. sign-in)." }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "backNavigation": {
+      "type": "array",
+      "description": "The way back from every 'new' screen, including when it was reached by a deep link with no history.",
+      "items": {
+        "type": "object",
+        "required": ["screen", "back"],
+        "properties": {
+          "screen": { "type": "string" },
+          "back": { "type": "string", "description": "e.g. \"Breadcrumb 'Settings' → S2 (always, including from a deep link)\"." },
+          "to": { "type": "string", "description": "Screen id it goes to." }
+        }
+      }
+    },
+
+    "exits": {
+      "type": "array",
+      "description": "Where users go next once they're done.",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "when"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "when": { "type": "string" }
+        }
+      }
+    },
+
+    "integrationChanges": {
+      "type": "array",
+      "description": "What must change outside this design for it to connect: a link, an entry point, a deep link. A change to another design's page is a revision of that design, owned by it, never a silent edit.",
+      "items": {
+        "type": "object",
+        "required": ["id", "screen", "change", "owner", "status"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'IC1'." },
+          "screen": { "type": "string" },
+          "change": { "type": "string" },
+          "owner": { "type": "string", "description": "The owning design-index project, or who owns a non-designed surface (e.g. 'email templates — engineering')." },
+          "kind": { "type": "string", "enum": ["new-entry-point", "changed-entry-point", "deep-link", "redirect", "removed-link"] },
+          "status": {
+            "type": "string",
+            "enum": ["proposed", "accepted", "rejected", "done"],
+            "description": "'proposed' until the owner accepts it. The design can't ship with an entry point whose change is rejected or still proposed."
+          }
+        }
+      }
+    }
+  }
+}

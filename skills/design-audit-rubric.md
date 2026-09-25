@@ -136,6 +136,14 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** A drill-down/detail view has no back button, breadcrumb, or shortcut back to its parent, when `requireNavigationalTies` is true.
 - [ ] **Minor:** Navigation depth exceeds `breadcrumbThresholdDepth` with only a back button and no breadcrumb trail — fine at shallow depth, insufficient deeper in.
 
+**User flow & integration** (the design's `user-flow`, Step 2c)
+- [ ] **Blocker:** A core task has no flow, or a flow starts from an entry point that doesn't exist: not a listed screen, not an owned surface in the design index, and not external or system.
+- [ ] **Blocker:** The design adds or relies on an entry point on another design's page with no integration change owned by that design, or with one that's `rejected`. That's a silent edit to someone else's design.
+- [ ] **Major:** A screen is a dead end, can't be reached, or has no way back when reached by a deep link with no history.
+- [ ] **Major:** An async step has no error path, or a flow that starts outside the product has no signed-out path that returns the user to where they were going.
+- [ ] **Major:** The design output's `taskPaths` don't match the flow's steps (different clicks, different screens).
+- [ ] **Minor:** An integration change is still `proposed` at sign-off, or the design index's `navigation` map wasn't updated with the flow's links.
+
 **Interactive state contrast** (`color.interactionStates`)
 - [ ] **Major:** A hoverable/interactive element doesn't change color (not just opacity/shadow) on hover, relative to both its own resting state and the surrounding page.
 - [ ] **Major:** No visible focus color defined or applied for keyboard navigation, independent of hover.
