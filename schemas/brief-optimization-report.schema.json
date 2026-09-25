@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/brief-optimization-report.schema.json",
+  "title": "Brief Optimization Report",
+  "description": "What skills/brief-optimization.md changed when turning a page brief, PRD or ticket into a design-ready ticket brief, and why. Shown to the author before generation; nothing in the optimized brief is hidden from them.",
+  "type": "object",
+  "required": ["id", "sourceRef", "briefRef", "manifestVersion", "generatedAt", "changes", "conflicts", "readiness"],
+  "properties": {
+    "id": { "type": "string", "description": "e.g. 'DES-530-brief-1'." },
+    "sourceRef": { "type": "string", "description": "The author's document (path or link). Never modified." },
+    "briefRef": { "type": "string", "description": "ticketKey of the optimized ticket brief." },
+    "manifestVersion": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "lint": {
+      "type": "object",
+      "description": "tools/brief_lint.py's result, if it ran.",
+      "properties": {
+        "result": { "type": "string", "enum": ["ready", "needs-work", "not-ready"] },
+        "findings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "description": "Every rewrite, from the author's wording to the optimized wording.",
+      "items": {
+        "type": "object",
+        "required": ["kind", "original", "optimized", "reason"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["vague-term", "solution-to-need", "testable-criterion", "added-state", "added-volume", "ranked-goal", "component-hint", "inferred"],
+            "description": "Which optimization rule produced it (skills/brief-optimization.md, 'Fit it to the design system')."
+          },
+          "section": { "type": "string", "description": "Section of the source it came from." },
+          "original": { "type": "string" },
+          "optimized": { "type": "string" },
+          "reason": { "type": "string", "description": "The rule, token or threshold behind it, e.g. 'vocabulary map: pop → hierarchy; color.usagePolicy.maxPrimaryActionsPerScreen'." },
+          "confirmed": { "type": "boolean", "description": "Set once the author accepts it. Inferred items must be confirmed before the brief is ready." }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "description": "Requests that break a design-system rule. Never resolved silently.",
+      "items": {
+        "type": "object",
+        "required": ["request", "rule", "proposedResolution"],
+        "properties": {
+          "request": { "type": "string" },
+          "rule": { "type": "string", "description": "The manifest field or principle it conflicts with." },
+          "proposedResolution": { "type": "string" },
+          "accepted": { "type": "boolean" }
+        }
+      }
+    },
+    "componentHints": {
+      "type": "array",
+      "description": "Approved components that likely cover each required element: input to the reuse check (Step 3), not a decision.",
+      "items": {
+        "type": "object",
+        "required": ["element", "candidates"],
+        "properties": {
+          "element": { "type": "string" },
+          "candidates": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "relatedDesigns": { "type": "array", "items": { "type": "string" }, "description": "Design-index projects the brief's terms or surfaces touch; the scope check (Step 2b) decides." },
+    "openQuestions": { "type": "array", "items": { "type": "string" } },
+    "readiness": {
+      "type": "string",
+      "enum": ["ready", "needs-answers", "not-ready"],
+      "description": "'ready' only when no questions are open, every conflict is accepted, and every inferred change is confirmed."
+    },
+    "approvedBy": { "type": "string", "description": "Who approved the optimized brief, when briefPolicy.approvalBeforeGeneration is true." }
+  }
+}

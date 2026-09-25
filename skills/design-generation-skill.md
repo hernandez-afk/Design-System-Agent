@@ -33,7 +33,7 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 
 | Input | Schema | If missing |
 |---|---|---|
-| Ticket brief | `ticket-brief.schema.json` | If given raw ticket or PRD text instead, extract into this shape first — see Step 1. If a Jira MCP tool is available, fetch the ticket directly. |
+| Ticket brief | `ticket-brief.schema.json` | For a new page, the author writes a page brief (`templates/page-brief.md`); a PRD or ticket text works too. Step 1 optimizes any of them into this shape (`brief-optimization.md`). If a Jira MCP tool is available, fetch the ticket directly. |
 | Design index | `design-index.schema.json` | At `scopePolicy.designIndexPath`. If none exists yet, this is the first project — create one in Step 12, and record the scope check as `new-project` with no candidates. |
 | Design-system manifest | `design-system-manifest.schema.json` | **Halt and ask** for one. Never fall back to generic/default design opinions — that defeats the entire point of this skill existing. |
 | Project context | `templates/CLAUDE.md` | **Claude Code:** `CLAUDE.md` at `meta.claudeMd.path` (default repo root). **Claude Design:** the default Design System's `project/README.md`, exported from this manifest (`platform-adapters.md`). **Halt**, and offer to generate it — see Step 2. Required unless `meta.claudeMd.required` is false. |
@@ -46,7 +46,10 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 
 Work out whether this run is in Claude Code, Claude Design, or both (`platform-adapters.md`, "Detecting the platform"), and check it's one of the manifest's `platform.targets`. If it isn't, stop and say so: a manifest set up only for Claude Code has no resolved colors for a Design System, and a Claude Design-only setup has no `CLAUDE.md`. Every later step uses that platform's column of the adapter map.
 
-### Step 1 — Resolve the brief
+### Step 1 — Resolve and optimize the brief
+
+**Run `brief-optimization.md`** when `briefPolicy.requireOptimization` is true (the default). It lints the brief, extracts it into the ticket-brief shape, and fits it to the design system: vague words become rules, solutions become needs, conflicts with the design system are surfaced, acceptance criteria are made testable, and missing states and amounts become questions. It produces a `brief-optimization-report`, and, with `approvalBeforeGeneration`, **waits for the author to approve the optimized brief.** The rest of this step describes what the optimized brief must contain.
+
 
 If not already structured, extract a `ticket-brief` from the raw ticket: identify `priorities` (rank them — don't treat every line as equally important), pull `requiredElements` with a best-guess `targetCategory` each, set `sourceType`, extract `scopeTerms` (specific domain terms, not generic words) and `surfaces` (which screens/areas it changes, using the design index's surface names), list the `coreTasks` users come to do (each with an `entryPoint`), and flag anything genuinely ambiguous as `openQuestions`.
 
@@ -181,7 +184,7 @@ Record the results in the design output's `glanceTest`, `taskPaths` and `mobileC
 
 ### Step 10 — Assemble output
 
-Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest`, `taskPaths` and `mobileCheck` from Step 9b, the list of components/variants used (with status), and any gap and verification reports filed.
+Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest`, `taskPaths` and `mobileCheck` from Step 9b, `acceptanceResults` (every acceptance criterion: met or not, with where in the design), the list of components/variants used (with status), and any gap and verification reports filed.
 
 ### Step 11 — Automatic audit handoff
 

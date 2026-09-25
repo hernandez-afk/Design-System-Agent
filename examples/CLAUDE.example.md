@@ -58,6 +58,10 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 - One primary action per screen. Secondary actions never get `teal-500` fill.
 - New components or variants go through a gap report and a verification report. Never invent one inline.
 
+## New pages
+
+Start from a page brief (`templates/page-brief.md`): purpose, ranked goals, tasks with where they start, content with amounts, states, and testable acceptance criteria. Check it with `python3 .claude/design-agent/tools/brief_lint.py <brief>`. The design agent optimizes it to fit this design system, and shows every change for approval before designing.
+
 ## Working on existing UI
 
 - **Before changing UI code, know which design owns it.** Run `python3 .claude/design-agent/tools/design_context.py <file>`, or rely on the hook, which shows it on the first edit. Follow that design's decisions and components.

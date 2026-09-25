@@ -41,7 +41,7 @@ EXPLICIT = [
     "registryPolicy.onMissingComponent", "registryPolicy.onMissingVariant", "registryPolicy.requireApprovalBeforeReuse",
     "registryPolicy.requireOperationalVerification", "registryPolicy.verificationReviewer", "registryPolicy.similarityCheck",
     "automation", "compositionHeuristics", "navigationHeuristics", "motionUsagePolicy",
-    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile",
+    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy",
 ]
 
 # The components the rubric's checks assume exist, with the variants they need.
@@ -55,7 +55,9 @@ BASELINE = {
     "Breadcrumb": ("navigation", ["default"], "navigational ties past breadcrumbThresholdDepth (cat. 10)"),
     "Pagination": ("navigation", ["default"], "lists over listPaginationThreshold (cat. 9)"),
 }
-RECOMMENDED = {"Toast": "non-blocking confirmations", "EmptyState": "empty states in verification reports", "Tabs": "peer views"}
+RECOMMENDED = {"Toast": "non-blocking confirmations", "EmptyState": "empty states in verification reports", "Tabs": "peer views",
+               "Switch": "on/off settings", "Checkbox": "choices applied on submit", "RadioGroup": "one of a few visible options",
+               "Select": "one of many options"}
 
 
 def get(d, path):

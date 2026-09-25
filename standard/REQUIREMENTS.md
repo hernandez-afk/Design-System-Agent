@@ -85,7 +85,7 @@ Each exists because a rubric check assumes it. Without it, the agent must file a
 | Breadcrumb | navigation | default | Navigational ties past `breadcrumbThresholdDepth` (cat. 10) |
 | Pagination | navigation | default | Lists over `listPaginationThreshold` (cat. 9) |
 
-**Recommended:** Toast (non-blocking confirmations), EmptyState (the empty state every verification report asks about), Tabs (peer views).
+**Recommended:** Toast (non-blocking confirmations), EmptyState (the empty state every verification report asks about), Tabs (peer views), and the choice controls Switch, Checkbox, RadioGroup and Select, which almost every form needs. Without them, a brief's settings or choices produce a gap report on the first page that has them.
 
 ### Per platform
 

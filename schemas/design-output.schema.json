@@ -57,6 +57,20 @@
       }
     },
 
+    "acceptanceResults": {
+      "type": "array",
+      "description": "One entry per acceptanceCriteria item in the brief: met or not, with evidence the critic can check.",
+      "items": {
+        "type": "object",
+        "required": ["criterionId", "met", "evidence"],
+        "properties": {
+          "criterionId": { "type": "string" },
+          "met": { "type": "boolean" },
+          "evidence": { "type": "string", "description": "Where in the design it's met: a board, a task path, a state." }
+        }
+      }
+    },
+
     "glanceTest": {
       "type": "array",
       "description": "3-3-3 rule, part 1: per screen, what a first-time user sees first at usabilityHeuristics.threeThreeThree.glanceBreakpoint, without scrolling.",

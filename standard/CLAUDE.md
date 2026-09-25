@@ -40,6 +40,10 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 **Components.** Reuse these before building anything new:
 - Button (`@/components/ui/button`): primary, secondary, ghost, destructive
 - Input (`@/components/ui/input`): default, error
+- Switch (`@/components/ui/switch`): default, on/off that takes effect immediately
+- Checkbox (`@/components/ui/checkbox`): default, choices applied on submit
+- RadioGroup (`@/components/ui/radio-group`): default, one of up to 5 visible options
+- Select (`@/components/ui/select`): default, one of 6 or more options (native picker on phones)
 - Card (`@/components/ui/card`): default, outlined (border + surface, no shadow)
 - InlineAlert (`@/components/ui/inline-alert`): info, success, warning, error (icon + text + color)
 - Toast (`@/components/ui/toast`): default
@@ -62,6 +66,10 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 - Decisions: `always-ask`. Before any layout, color or structure decision, offer 2–3 options with trade-offs and wait.
 - One primary action per screen. Secondary actions never get primary-accent styling.
 - New components or variants go through a gap report and a verification report. Never invent one inline.
+
+## New pages
+
+Start from a page brief (`templates/page-brief.md`): purpose, ranked goals, tasks with where they start, content with amounts, states, and testable acceptance criteria. Check it with `python3 .claude/design-agent/tools/brief_lint.py <brief>`. The design agent optimizes it to fit this design system, and shows every change for approval before designing.
 
 ## Working on existing UI
 

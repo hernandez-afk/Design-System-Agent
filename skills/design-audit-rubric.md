@@ -121,6 +121,9 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** A form/input row exceeds `compositionHeuristics.maxInlineInputs` fields with no grouping, summarization, or deferral evaluated — and no documented reason all fields are needed at once.
 - [ ] **Major:** A primary/landing screen exposes individual item specs/details inline rather than title + main options, when `requireProgressiveDisclosure` is true — details belong on a drill-down.
 - [ ] **Blocker:** A major layout or content decision has no traceable link back to a stated priority in the source ticket, when `requireTicketPriorityTraceability` is true — i.e. the design solved a problem the ticket didn't ask about, or missed the one it did.
+- [ ] **Blocker:** The design fails an acceptance criterion from the brief, or includes something the brief lists as out of scope.
+- [ ] **Major:** An acceptance criterion has no `acceptanceResults` entry, or its evidence doesn't point to anything in the design.
+- [ ] **Major:** The design was generated from a brief that wasn't optimized, or before the author approved it, when `briefPolicy.requireOptimization` / `approvalBeforeGeneration` is true.
 - [ ] **Minor:** Progressive disclosure was applied somewhere but inconsistently (e.g. one list paginates, a structurally identical list elsewhere doesn't).
 
 ---

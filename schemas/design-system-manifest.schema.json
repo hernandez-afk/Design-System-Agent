@@ -503,6 +503,21 @@
       }
     },
 
+    "briefPolicy": {
+      "type": "object",
+      "description": "How briefs (page briefs, PRDs, tickets) are optimized before design. See skills/brief-optimization.md.",
+      "properties": {
+        "requireOptimization": { "type": "boolean", "default": true, "description": "Every brief goes through brief optimization (generation Step 1) before design." },
+        "approvalBeforeGeneration": { "type": "boolean", "default": true, "description": "The author approves the optimized brief and its report before anything is designed." },
+        "requireAcceptanceCriteria": { "type": "boolean", "default": true, "description": "A brief without testable acceptance criteria is not ready." },
+        "vocabulary": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Your product's own terms mapped to design-system meaning, added to the built-in vocabulary map, e.g. {\"hero\": \"Card/feature at the top of the page\", \"alert\": \"InlineAlert, not Toast\"}."
+        }
+      }
+    },
+
     "mobile": {
       "type": "object",
       "description": "Mobile at all times, and dynamic components (design-principles.md). Every design is verified at a phone width first; every component adapts to its container, content, text size and input. Checked in rubric category 14.",

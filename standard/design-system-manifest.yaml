@@ -152,6 +152,42 @@ components:
       - { name: "default", status: "approved" }
       - { name: "error", status: "approved", description: "Error text + icon + border color." }
 
+  - name: "Switch"
+    category: "input"
+    status: "approved"
+    importPath: "@/components/ui/switch"
+    props: ["label", "checked", "onChange", "disabled", "description"]
+    description: "On/off that takes effect immediately. Label says what's on; the whole row is the touch target."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "Checkbox"
+    category: "input"
+    status: "approved"
+    importPath: "@/components/ui/checkbox"
+    props: ["label", "checked", "onChange", "disabled", "indeterminate"]
+    description: "Choices applied when a form is submitted. Label is part of the touch target."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "RadioGroup"
+    category: "input"
+    status: "approved"
+    importPath: "@/components/ui/radio-group"
+    props: ["label", "options", "value", "onChange", "disabled"]
+    description: "One of up to 5 options, all visible: one tap, nothing to open (Wickens 8)."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "Select"
+    category: "input"
+    status: "approved"
+    importPath: "@/components/ui/select"
+    props: ["label", "options", "value", "onChange", "disabled", "error"]
+    description: "One of 6 or more options. Uses the platform's native picker on phones."
+    variants:
+      - { name: "default", status: "approved" }
+
   - name: "Card"
     category: "display"
     status: "approved"
@@ -268,6 +304,12 @@ navigationHeuristics:
 motionUsagePolicy:
   requireLoadingAnimation: true
   requireDataVizAnimation: true
+
+briefPolicy:
+  requireOptimization: true          # every brief goes through skills/brief-optimization.md
+  approvalBeforeGeneration: true     # the author approves the optimized brief first
+  requireAcceptanceCriteria: true
+  vocabulary: {}                     # your own terms, e.g. { hero: "Card/feature at the top of the page" }
 
 mobile:
   minViewportPx: 320          # every screen reflows here with no sideways scrolling

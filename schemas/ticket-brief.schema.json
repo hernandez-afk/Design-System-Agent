@@ -9,8 +9,8 @@
     "ticketKey": { "type": "string", "description": "e.g. 'DES-512' or 'PRD-031'." },
     "sourceType": {
       "type": "string",
-      "enum": ["jira-ticket", "prd", "feature-request", "other"],
-      "description": "Where this brief came from. A PRD often spans several designs, so it is the most common source of scope overlap — see the scope placement check."
+      "enum": ["jira-ticket", "prd", "page-brief", "feature-request", "other"],
+      "description": "Where this brief came from. 'page-brief' = written from templates/page-brief.md. A PRD often spans several designs, so it is the most common source of scope overlap — see the scope placement check."
     },
     "sourceRef": { "type": "string", "description": "Link or path to the source ticket/PRD." },
     "scopeTerms": {
@@ -49,10 +49,32 @@
           "description": { "type": "string", "description": "e.g. 'a way to show 4 KPIs with trend indicators'." },
           "targetCategory": { "type": "string", "enum": ["action", "input", "display", "feedback", "navigation", "layout", "overlay", "data-viz"] },
           "linkedPriority": { "type": "string", "description": "id of the priority this element serves, for traceability." },
+          "states": { "type": "array", "items": { "type": "string", "enum": ["loading", "empty", "error", "success", "partial"] }, "description": "States this element must show, from the brief's States section." },
           "estimatedVolume": { "type": "string", "description": "If this is a list/collection, rough expected item count — feeds compositionHeuristics.listPaginationThreshold check, e.g. '~30 rows, grows over time'." }
         }
       }
     },
+    "acceptanceCriteria": {
+      "type": "array",
+      "description": "Testable statements the design must meet, from the brief (optimized by skills/brief-optimization.md). Each is checked against the design output in the audit (rubric category 9).",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'AC1'." },
+          "statement": { "type": "string", "description": "Subject, action and measurable result, e.g. 'An admin can turn off email for one event type in 2 taps or fewer, at 320px.'" },
+          "linkedPriority": { "type": "string" },
+          "linkedTask": { "type": "string" },
+          "source": { "type": "string", "enum": ["explicit", "rewritten", "inferred"], "description": "'rewritten' = the author's criterion made testable; 'inferred' = added from a design-system requirement and confirmed by the author." }
+        }
+      }
+    },
+    "outOfScope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "What the page deliberately doesn't do. The design must not include these."
+    },
+    "optimizationReportRef": { "type": "string", "description": "The brief-optimization-report that produced this brief from its source." },
     "coreTasks": {
       "type": "array",
       "description": "The tasks users come to this design to do. Each is walked against the 3-3-3 rule (design-principles.md) — understood in 3 seconds, reached in 3 clicks, completed in 3 minutes.",

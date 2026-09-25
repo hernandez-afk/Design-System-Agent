@@ -36,6 +36,23 @@ python3 tools/token_lint.py examples/app/src/app/dashboard/DashboardSummaryRow.t
 
 The first shows DES-512's decisions, components and review flags. The second catches the `gap-5` (20px) spacing bug and an off-brand blue.
 
+## Starting a new page: the page brief
+
+Describe a new page in plain language using **`templates/page-brief.md`**: purpose, ranked goals, what users need to do, content, states, constraints and acceptance criteria. You don't need to know the design system.
+
+The brief is then optimized in a standard way (**`skills/brief-optimization.md`**, generation Step 1) so it fits the design system and the output can be checked against it:
+
+- **Lint:** `python3 tools/brief_lint.py brief.md` catches missing sections, placeholders, vague words, solution-first wording, lists with no amounts, missing states and untestable criteria.
+- **Fit to the design system:**
+  - vague words become rules ("pop" → the one primary action; "easy" → the 3-3-3 limits)
+  - solutions become needs ("a dropdown" → "choose one of 3 frequencies"), so the reuse check picks the component
+  - conflicts with the design system are listed for you to accept, never resolved silently
+  - acceptance criteria are made testable, using the manifest's thresholds
+- **Report and approve:** a `brief-optimization-report` shows every change, conflict and question. Nothing is designed until you approve it.
+- **Checked in the output:** the design output lists each acceptance criterion as met or not, with evidence, and the audit blocks a design that fails one.
+
+Your team's own terms can be added to the vocabulary in the manifest (`briefPolicy.vocabulary`). See `examples/page-brief.example.md` → `examples/brief-optimization-report.example.yaml` → `examples/ticket-brief-page.example.yaml`.
+
 ## The standard: minimum requirements and a reference design system
 
 **`standard/`** holds **Baseline**, a neutral design system that meets every requirement, and **`standard/REQUIREMENTS.md`**, which says what's required and why:
@@ -60,8 +77,8 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
-- **tools/** — `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
-- **templates/** — `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
+- **tools/** — `brief_lint.py` (is a page brief ready?), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 
 ## Platforms: Claude Code and Claude Design

@@ -1,0 +1,91 @@
+# The optimized brief for examples/page-brief.example.md. Every change from the
+# author's wording is listed in brief-optimization-report.example.yaml. This
+# brief isn't designed from until the report's open questions are answered and
+# the author approves it (briefPolicy.approvalBeforeGeneration).
+ticketKey: "DES-530"
+title: "Notification preferences"
+sourceType: "page-brief"
+sourceRef: "examples/page-brief.example.md"
+optimizationReportRef: "DES-530-brief-1"
+rawDescription: >
+  Let team admins choose which events send them email, so they stop getting
+  alerts they ignore and trust the ones they get.
+
+scopeTerms: ["notification preference", "email notification", "digest frequency", "test email"]
+surfaces: ["settings/notifications"]
+
+priorities:
+  - id: "P1"
+    statement: "Admins can turn off the emails they don't want without contacting support."
+    source: "explicit"
+  - id: "P2"
+    statement: "Admins can check a change worked by sending themselves a test email."
+    source: "explicit"
+
+coreTasks:
+  - id: "T1"
+    statement: "Turn off email for one type of event."
+    linkedPriority: "P1"
+    entryPoint: "the 'Manage notifications' link in an email"
+  - id: "T2"
+    statement: "Choose how often digests are sent."
+    linkedPriority: "P1"
+    entryPoint: "Settings → Notifications"
+  - id: "T3"
+    statement: "Send a test email."
+    linkedPriority: "P2"
+    entryPoint: "the notification preferences page"
+
+requiredElements:
+  - description: "Email on/off for each event type, grouped by area"
+    targetCategory: "input"
+    linkedPriority: "P1"
+    estimatedVolume: "unknown: event types per group to be confirmed (open question)"
+    states: ["loading", "error", "success"]
+  - description: "Security event types shown, locked on, with the reason"
+    targetCategory: "input"
+    linkedPriority: "P1"
+  - description: "Choose one digest frequency"
+    targetCategory: "input"
+    linkedPriority: "P1"
+    states: ["error", "success"]
+  - description: "Send a test email, and see whether it was sent"
+    targetCategory: "action"
+    linkedPriority: "P2"
+    states: ["loading", "error", "success"]
+
+acceptanceCriteria:
+  - id: "AC1"
+    statement: "An admin arriving from an email's 'Manage notifications' link can turn off email for that email's event type in 3 taps or fewer, at 320px."
+    linkedTask: "T1"
+    source: "rewritten"
+  - id: "AC2"
+    statement: "A first-time admin understands the page's purpose and primary action within 3 seconds at 320px, and finishes each core task in under 3 minutes."
+    linkedPriority: "P1"
+    source: "rewritten"
+  - id: "AC3"
+    statement: "The page has exactly one primary action. 'Send test email' is visible without scrolling at 320px, styled as secondary."
+    linkedTask: "T3"
+    source: "rewritten"
+  - id: "AC4"
+    statement: "If loading, saving or sending the test email fails, the admin sees what failed and can retry. The message uses an icon and text, not color alone."
+    linkedPriority: "P1"
+    source: "inferred"
+  - id: "AC5"
+    statement: "Security event types are visible, can't be turned off, and say why."
+    linkedPriority: "P1"
+    source: "explicit"
+
+constraints:
+  - "Security emails can't be turned off (legal requirement), but must still show on the page."
+  - "Ship before the Q4 billing change."
+
+outOfScope:
+  - "Push and SMS notifications (a later project)."
+
+openQuestions:
+  - "Save instantly, or with a Save button?"
+  - "How many event types, in which groups?"
+  - "What are the digest frequency options?"
+  - "'Modern': what outcome, if any?"
+  - "Which settings pages must this stay consistent with?"

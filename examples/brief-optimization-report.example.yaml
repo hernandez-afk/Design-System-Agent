@@ -1,0 +1,97 @@
+# Brief optimization for examples/page-brief.example.md, against the Baseline
+# design system (standard/design-system-manifest.yaml). The author's document
+# is untouched; this report lists every change made to get the optimized brief
+# in ticket-brief-page.example.yaml, and what's still open.
+id: "DES-530-brief-1"
+sourceRef: "examples/page-brief.example.md"
+briefRef: "DES-530"
+manifestVersion: "1.0.0"
+generatedAt: "2026-09-26T09:30:00Z"
+
+lint:
+  result: "needs-work"
+  findings:
+    - "Task has no starting point: 'Send a test email'"
+    - "vague: clean, modern (Purpose); easy, pop (Acceptance criteria); etc (Content and data)"
+    - "solution-first: dropdown (tasks), button (criteria)"
+    - "no amount: the list of event types"
+    - "States not described: error"
+    - "2 acceptance criteria not testable"
+
+changes:
+  - kind: "vague-term"
+    section: "Purpose"
+    original: "It should feel clean and modern."
+    optimized: "Removed from the purpose. 'Clean' is already required (Simplicity Is Architecture, Whitespace Is a Feature). 'Modern' maps to no rule, so it's an open question."
+    reason: "vocabulary map: clean → simplicity + whitespace; modern → no rule, ask"
+  - kind: "solution-to-need"
+    section: "What users need to do"
+    original: "Change how often digests are sent, with a dropdown"
+    optimized: "Choose how often digests are sent (one of the digest frequencies)"
+    reason: "Solution-first: the reuse check picks the control. With up to 5 options, RadioGroup (all visible, one tap) beats a Select (open, then choose); Wickens 8, information access cost."
+  - kind: "inferred"
+    section: "What users need to do"
+    original: "Send a test email"
+    optimized: "Send a test email — starts from: the notification preferences page"
+    reason: "Every core task needs an entry point for the 3-3-3 click count; the brief implies it's done on this page."
+    confirmed: false
+  - kind: "testable-criterion"
+    section: "Acceptance criteria"
+    original: "An admin can turn off email for one event type from the email link"
+    optimized: "AC1: An admin arriving from an email's 'Manage notifications' link can turn off email for that email's event type in 3 taps or fewer, at 320px."
+    reason: "Added the measurable part from the design system: maxClicksToCoreTask (3) and mobile.minViewportPx (320)."
+  - kind: "testable-criterion"
+    section: "Acceptance criteria"
+    original: "The page is easy to use"
+    optimized: "AC2: A first-time admin understands the page's purpose and primary action within 3 seconds at 320px, and finishes each core task in under 3 minutes."
+    reason: "vocabulary map: easy → 3-3-3 (glanceSeconds, maxCoreTaskMinutes)"
+  - kind: "testable-criterion"
+    section: "Acceptance criteria"
+    original: "The Save button should pop, and \"Send test email\" should be just as visible"
+    optimized: "AC3: The page has exactly one primary action. 'Send test email' is visible without scrolling at 320px, styled as secondary."
+    reason: "vocabulary map: pop → hierarchy. 'Just as visible' conflicts with maxPrimaryActionsPerScreen, so see the conflict below; this wording depends on it being accepted."
+  - kind: "added-state"
+    section: "States"
+    original: "(no error state)"
+    optimized: "AC4: If loading, saving or sending the test email fails, the admin sees what failed and can retry. The message uses an icon and text, not color alone."
+    reason: "Every async action needs an error state (rubric category 8), and critical states need two cues (Wickens 4)."
+    confirmed: false
+  - kind: "testable-criterion"
+    section: "Constraints"
+    original: "Security emails can't be turned off (legal requirement), but must still show on the page"
+    optimized: "AC5: Security event types are visible, can't be turned off, and say why."
+    reason: "A constraint the design must visibly meet, so it's also a criterion. Saying why follows Wickens 11: show, don't make people wonder."
+  - kind: "added-volume"
+    section: "Content and data"
+    original: "A list of event types, grouped by area (billing, security, reports, etc.)"
+    optimized: "Event types in groups: billing, security, reports and others (count to be confirmed)."
+    reason: "Unbounded ('etc.', no count). Over compositionHeuristics.listPaginationThreshold (10) per group changes the layout, so the count is an open question."
+
+conflicts:
+  - request: "The Save button should pop, and 'Send test email' should be just as visible."
+    rule: "color.usagePolicy.maxPrimaryActionsPerScreen: 1 (Hierarchy Drives Everything)"
+    proposedResolution: "One primary action. If changes save with a Save button, Save is primary. If they save instantly (open question 1), there's no Save, and the page's primary action is the task itself. Either way, 'Send test email' is a visible secondary action placed after the settings it tests."
+    accepted: false
+
+componentHints:
+  - element: "Email on/off per event type"
+    candidates: ["Switch (takes effect immediately)", "Checkbox (if changes save with a Save button)"]
+  - element: "Digest frequency"
+    candidates: ["RadioGroup (up to 5 options)", "Select (6 or more)"]
+  - element: "Locked security events"
+    candidates: ["Switch (disabled) with a description", "InlineAlert/info for the group"]
+  - element: "Send test email"
+    candidates: ["Button/secondary"]
+  - element: "Loading, save and error feedback"
+    candidates: ["Skeleton", "Toast (saved)", "InlineAlert/error (failed, with retry)"]
+
+relatedDesigns: []   # no settings pages in the design index yet; the scope check (Step 2b) confirms
+
+openQuestions:
+  - "Should changes save instantly, or with a Save button? (from the brief) This decides the primary action and whether each setting is a Switch or a Checkbox."
+  - "How many event types are there, and in which groups? The brief lists billing, security, reports, 'etc.'"
+  - "What are the digest frequency options?"
+  - "'Modern': what should the page make admins feel or do? If nothing specific, we'll drop it. The design system already sets the look."
+  - "'Settings pages generally': which pages must this stay consistent with? None are in the design index yet."
+
+readiness: "needs-answers"

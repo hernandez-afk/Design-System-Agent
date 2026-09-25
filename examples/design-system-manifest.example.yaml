@@ -239,6 +239,12 @@ navigationHeuristics:
   requireNavigationalTies: true
   breadcrumbThresholdDepth: 2
 
+briefPolicy:
+  requireOptimization: true          # every brief goes through skills/brief-optimization.md
+  approvalBeforeGeneration: true     # the author approves the optimized brief first
+  requireAcceptanceCriteria: true
+  vocabulary: {}                     # your own terms, e.g. { hero: "Card/feature at the top of the page" }
+
 mobile:
   minViewportPx: 320          # every screen reflows here with no sideways scrolling
   maxTextScalePercent: 200    # works with text at 200% (zoom, Dynamic Type, font scale)
