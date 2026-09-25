@@ -35,12 +35,31 @@ python3 tools/token_lint.py examples/app/src/app/dashboard/DashboardSummaryRow.t
 
 The first shows DES-512's decisions, components and review flags. The second catches the `gap-5` (20px) spacing bug and an off-brand blue.
 
+## The standard: minimum requirements and a reference design system
+
+**`standard/`** holds **Baseline**, a neutral design system that meets every requirement, and **`standard/REQUIREMENTS.md`**, which says what's required and why:
+
+- **Minimum:** the agent runs. A valid manifest, core color, type and spacing tokens, a component registry, and project context with a matching version stamp.
+- **Optimal:**
+  - every setting explicit, nothing left to the agent's defaults
+  - every value passes the agent's own checks (contrast, the legibility floor, the spacing unit)
+  - the eight baseline components the rubric relies on (Button, Input, Card, InlineAlert, Skeleton, Dialog, Breadcrumb, Pagination)
+
+Check where any design system stands:
+
+```
+python3 tools/check_compatibility.py path/to/design-system-manifest.yaml
+```
+
+Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its gaps, which is what the checker is for. To start a new design system, copy `standard/`, replace the values, and run the checker until it reports Optimal.
+
 ## Folder structure
 
 - **skills/** — the fixed logic (SKILL.md-style files): principles, the generation process, the audit rubric, and the mandatory human-facing report template.
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
-- **tools/** — `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
+- **tools/** — `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

@@ -1,0 +1,289 @@
+# Baseline: the standard design system for this agent.
+#
+# Every field the agent reads is set explicitly (nothing falls back to a
+# default), every value passes the agent's own checks, and the component set
+# covers every requirement in the audit rubric. Start a new product's design
+# system by copying this folder and replacing the values; keep the structure.
+# Requirements and reasons: standard/REQUIREMENTS.md.
+# Check any manifest: python3 tools/check_compatibility.py <manifest>
+
+platform:
+  targets: ["claude-code", "claude-design"]
+  claudeDesign:
+    designSystemUrl: ""
+    markAsDefault: true
+    recordStore: "repo"
+    canvasBoards:
+      phone: { w: 390, h: 844 }
+      desktop: { w: 1440, h: 900 }
+
+meta:
+  name: "Baseline"
+  version: "1.0.0"
+  framework: "react"
+  stylingEngine: "css-variables"
+  decisionProtocol: "always-ask"
+  claudeMd:
+    path: "CLAUDE.md"
+    required: true
+  brandExclusions:        # universal defaults — add your brand's own bans
+    - "glass morphism"
+    - "gradient washes as backgrounds"
+    - "drop shadows for depth (use border + surface color)"
+    - "emoji as icons"
+    - "color as the only signal for a state"
+
+color:
+  neutrals:
+    background: "#fafafa"
+    surface: "#ffffff"
+    border: "#d4d4d8"
+    textPrimary: "#18181b"
+    textSecondary: "#52525b"
+    temperature: "neutral"
+  accents:
+    primary: "#1d4ed8"
+    onPrimary: "#ffffff"
+    secondary: "#7c3aed"   # distinct from every status color, so it never reads as a state
+    success: "#15803d"
+    warning: "#b45309"
+    error: "#b91c1c"
+    info: "#0369a1"
+  contrastStandard: "WCAG-AA"
+  interactionStates:
+    hover: "#1e40af"
+    active: "#1e3a8a"
+    focus: "#1d4ed8"
+  usagePolicy:
+    primaryAccentRole: "accents.primary"
+    secondaryAccentRole: "accents.secondary"
+    maxSimultaneousSecondaryAccents: 1
+    maxPrimaryActionsPerScreen: 1
+  themes:
+    - { id: "light", name: "Light" }
+  resolved:
+    neutrals.background:      { light: "#fafafa" }
+    neutrals.surface:         { light: "#ffffff" }
+    neutrals.border:          { light: "#d4d4d8" }
+    neutrals.textPrimary:     { light: "#18181b" }
+    neutrals.textSecondary:   { light: "#52525b" }
+    accents.primary:          { light: "#1d4ed8" }
+    accents.onPrimary:        { light: "#ffffff" }
+    accents.secondary:        { light: "#7c3aed" }
+    accents.success:          { light: "#15803d" }
+    accents.warning:          { light: "#b45309" }
+    accents.error:            { light: "#b91c1c" }
+    accents.info:             { light: "#0369a1" }
+    interactionStates.hover:  { light: "#1e40af" }
+    interactionStates.active: { light: "#1e3a8a" }
+    interactionStates.focus:  { light: "#1d4ed8" }
+
+typography:
+  typefaces:
+    display: "Source Serif 4"
+    body: "Source Sans 3"
+    ui: "Source Sans 3"
+  weights: [400, 600, 700]
+  scale:
+    baseSizePx: 16
+    ratio: 1.2
+    steps: ["sm", "base", "lg", "xl", "2xl", "3xl", "4xl"]   # smallest is 13px — nothing below the 12px floor
+  lineHeightRatio: 1.5
+  roles:
+    heading: "typefaces.display"        # Source Serif 4, 700
+    readableSubtext: "typefaces.body"   # Source Sans 3, 400, textSecondary
+    formLabel: "typefaces.ui"           # Source Sans 3, 600, textPrimary
+
+spacing:
+  baseUnitPx: 4
+  scale: [4, 8, 12, 16, 24, 32, 48, 64]
+
+radius:
+  tokens:
+    - { name: "radius-sm", px: 4, usage: "Inputs, chips, small buttons." }
+    - { name: "radius-md", px: 8, usage: "Buttons, cards." }
+    - { name: "radius-lg", px: 12, usage: "Dialogs, panels." }
+
+layout:
+  gridColumns: 12
+  gutterPx: 24
+  breakpoints: { sm: 640, md: 768, lg: 1024, xl: 1280 }
+  containerMaxWidthPx: 1200
+  alignmentTolerancePx: 0
+
+motion:
+  durationsMs: { micro: 150, state: 300, page: 500 }
+  easing: { entrance: "ease-out", exit: "ease-in", transition: "ease-in-out" }
+  respectReducedMotion: true
+
+icons:
+  library: "lucide-react"
+  importPattern: "import { IconName } from 'lucide-react'"
+
+accessibility:
+  level: "AA"
+  minTouchTargetPx: 44
+  requireVisibleFocusStates: true
+  requireSemanticHtml: true
+
+# The baseline component set: each one exists because a rubric check needs it
+# (see REQUIREMENTS.md, "Baseline components"). All approved, all with props,
+# so the similarity check has something to compare against.
+components:
+  - name: "Button"
+    category: "action"
+    status: "approved"
+    importPath: "@/components/ui/button"
+    props: ["size", "disabled", "loading", "onClick"]
+    description: "Every clickable action. One primary per screen."
+    variants:
+      - { name: "primary", status: "approved", description: "The one primary action." }
+      - { name: "secondary", status: "approved" }
+      - { name: "ghost", status: "approved", description: "Low-emphasis actions, back buttons." }
+      - { name: "destructive", status: "approved", description: "Irreversible actions; always paired with Dialog/confirm-destructive or an undo." }
+
+  - name: "Input"
+    category: "input"
+    status: "approved"
+    importPath: "@/components/ui/input"
+    props: ["label", "value", "onChange", "disabled", "error", "helperText"]
+    description: "Text entry with a visible label (formLabel role)."
+    variants:
+      - { name: "default", status: "approved" }
+      - { name: "error", status: "approved", description: "Error text + icon + border color." }
+
+  - name: "Card"
+    category: "display"
+    status: "approved"
+    importPath: "@/components/ui/card"
+    props: ["children", "padding"]
+    description: "Content container; border + surface color, no shadow."
+    variants:
+      - { name: "default", status: "approved" }
+      - { name: "outlined", status: "approved" }
+
+  - name: "InlineAlert"
+    category: "feedback"
+    status: "approved"
+    importPath: "@/components/ui/inline-alert"
+    props: ["tone", "title", "children", "icon"]
+    description: "Persistent in-page status. Icon + text + color, never color alone."
+    variants:
+      - { name: "info", status: "approved" }
+      - { name: "success", status: "approved" }
+      - { name: "warning", status: "approved" }
+      - { name: "error", status: "approved" }
+
+  - name: "Toast"
+    category: "feedback"
+    status: "approved"
+    importPath: "@/components/ui/toast"
+    props: ["tone", "message", "action", "duration"]
+    description: "Brief, non-blocking confirmation of a completed action."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "Skeleton"
+    category: "feedback"
+    status: "approved"
+    importPath: "@/components/ui/skeleton"
+    props: ["width", "height", "lines"]
+    description: "Loading placeholder shaped like the content it replaces."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "EmptyState"
+    category: "feedback"
+    status: "approved"
+    importPath: "@/components/ui/empty-state"
+    props: ["title", "description", "action"]
+    description: "What an empty list or view shows, with the next step."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "Dialog"
+    category: "overlay"
+    status: "approved"
+    importPath: "@/components/ui/dialog"
+    props: ["open", "title", "children", "onConfirm", "onCancel", "confirmLabel"]
+    description: "User-initiated modal. The confirm variant guards destructive actions."
+    variants:
+      - { name: "default", status: "approved" }
+      - { name: "confirm-destructive", status: "approved", description: "States the consequence; the confirm button names the action." }
+
+  - name: "Breadcrumb"
+    category: "navigation"
+    status: "approved"
+    importPath: "@/components/ui/breadcrumb"
+    props: ["items"]
+    description: "Trail back up the hierarchy, required below breadcrumbThresholdDepth."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "Pagination"
+    category: "navigation"
+    status: "approved"
+    importPath: "@/components/ui/pagination"
+    props: ["page", "pageCount", "onPageChange"]
+    description: "For any list longer than listPaginationThreshold; shows position."
+    variants:
+      - { name: "default", status: "approved" }
+
+  - name: "Tabs"
+    category: "navigation"
+    status: "approved"
+    importPath: "@/components/ui/tabs"
+    props: ["items", "value", "onChange"]
+    description: "Switch between peer views of the same object."
+    variants:
+      - { name: "default", status: "approved" }
+
+registryPolicy:
+  onMissingComponent: "propose-and-wait"
+  onMissingVariant: "propose-and-continue"
+  requireApprovalBeforeReuse: true
+  requireOperationalVerification: true
+  verificationReviewer: "human-designer"
+  similarityCheck:
+    reuseThreshold: 0.7
+    extendThreshold: 0.4
+    weights: { propOverlap: 0.5, variantOverlap: 0.35, semanticNameSimilarity: 0.15 }
+    onlyCompareApprovedStatus: true
+
+automation:
+  auditTrigger: "automatic-post-generation"
+  maxAutoReviseAttempts: 2
+  notifyOnAutoRevise: true
+
+compositionHeuristics:
+  listPaginationThreshold: 10
+  maxInlineInputs: 7
+  requireProgressiveDisclosure: true
+  requireTicketPriorityTraceability: true
+
+navigationHeuristics:
+  requireNavigationalTies: true
+  breadcrumbThresholdDepth: 2
+
+motionUsagePolicy:
+  requireLoadingAnimation: true
+  requireDataVizAnimation: true
+
+development:
+  uiPaths: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css"]
+  tokenLint: { mode: "block", framework: "both", allow: ["1px"] }
+  designContext: { onUnownedUi: "warn" }
+
+usabilityHeuristics:
+  threeThreeThree: { glanceSeconds: 3, glanceBreakpoint: "sm", maxClicksToCoreTask: 3, maxCoreTaskMinutes: 3 }
+  displayDesign: { minReadableTextPx: 12, maxAbsoluteJudgmentLevels: 5 }
+
+scopePolicy:
+  designIndexPath: "design-index.yaml"
+  requireScopeCheck: true
+  overlapCheck:
+    mergeThreshold: 0.6
+    relatedThreshold: 0.3
+    weights: { termOverlap: 0.4, surfaceOverlap: 0.35, priorityOverlap: 0.25 }
+  onOverlap: "ask"
+  changePropagation: { flagDependentsOnChange: true, flagSharedPatternProjects: true }

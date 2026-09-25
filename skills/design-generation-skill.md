@@ -54,7 +54,7 @@ A PRD usually describes more than one screen or feature. Extract the whole thing
 
 ### Step 2 — Load the manifest
 
-Parse `design-system-manifest.yaml`, validate against its schema. Pull out, in particular:
+Parse `design-system-manifest.yaml`, validate against its schema. If `tools/check_compatibility.py` is available, run it: **Not compatible** → halt with its list. **Minimum** → continue, but say which settings are running on defaults and which baseline components are missing, since designs that need them will file gap reports. **Optimal** → continue. The requirements are in `standard/REQUIREMENTS.md`. Pull out, in particular:
 - `components[]` where `status: approved` (and `proposed` if `registryPolicy.similarityCheck.onlyCompareApprovedStatus` is false)
 - `compositionHeuristics`, `navigationHeuristics`, `motionUsagePolicy` — the behavioral thresholds
 - `meta.decisionProtocol` — how much to ask vs. auto-apply

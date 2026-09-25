@@ -1,0 +1,4 @@
+# Design index for a product using the Baseline design system.
+# Empty until the first design: the agent registers each project here (Step 12),
+# with its scope, decisions, components and the code it owns (codePaths).
+projects: []
