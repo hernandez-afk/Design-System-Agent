@@ -1,7 +1,14 @@
 # Design System Agent
 
-A design agent whose first job is **consistency**: it keeps a product consistent as it's built, by keeping design context present wherever the product is worked on, in design and in development. It generates and audits UI designs from config. The skills hold fixed *process* (how to reason from a ticket to a layout, when to ask, when to reuse, when to audit); every project-specific value (colors, type, spacing, components) comes from a per-project design-system manifest.
+**A harness for iterative, holistic design when developing with AI.** Every design, whether a person or an agent starts it, runs through the same loop: brief → scope → flow → design → audit → approval → build → verify. Each stage has a gate that can't be skipped, and all of it shares one memory of the product: the design-system manifest and the design index. People decide at the points that matter, and a feedback loop turns recurring findings into improvements to the design system itself. **See [HARNESS.md](HARNESS.md) for the operating model.**
 
+Its first job is **consistency**: the product stays consistent as it's built, because design context is present wherever it's worked on, in design and in development.
+
+```
+python3 tools/harness.py status              # every design's stage, gates and blockers
+python3 tools/harness.py next --project ID   # what to do next
+python3 tools/harness.py learn               # recurring findings → proposed system changes
+```
 
 ## The core guarantee: consistency, with design context everywhere
 
@@ -88,7 +95,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
-- **tools/** — `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `harness.py` (stages, gates, next steps, learning), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

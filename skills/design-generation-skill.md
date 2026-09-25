@@ -7,6 +7,10 @@ description: Config-driven UI/UX generation. Reads a ticket brief (from a Jira t
 
 Generates a design from a ticket or PRD, in Claude Code or Claude Design — `platform-adapters.md` says where each step's inputs and outputs live on each platform. Contains no hardcoded design opinions (colors, fonts, component names) — everything project-specific comes from the manifest. What's fixed here is *process*: how to reason from a brief to a layout, when to ask, when to check for reuse (of whole designs as well as components), how to keep linked artifacts in sync, and when to hand off to audit. The **philosophy** governing every step below is `design-principles.md` — simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion-as-physics, structural rationale. Where a step references one of those principles, it's enforcing a rule, not applying a style.
 
+## Where this skill sits in the harness
+
+This skill runs the harness's design stages (brief through audit) for one design; `HARNESS.md` is the loop around it: approval, build, verify, iteration and learning. Before starting, run `tools/harness.py next --project <ID>` if it's available: it says which stage the design is at, so a revision starts from the right step instead of from scratch.
+
 ## The first job: consistency, with design context everywhere
 
 Everything below serves one outcome: **the product stays consistent as it's built, because design context is present wherever the product is being worked on**, not only when this skill runs. Every design this skill produces is recorded with the decisions it made, the components it uses, and the code that implements it. That's how a developer (or Claude in a plain coding session) editing a screen months later still sees the design behind it. A design that isn't recorded that way hasn't finished this skill. See the README's consistency guarantees for which mechanism enforces what.

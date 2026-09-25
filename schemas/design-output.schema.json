@@ -178,6 +178,17 @@
       "description": "Anything still unresolved and explicitly deferred rather than guessed at."
     },
 
+    "signOff": {
+      "type": "object",
+      "description": "The human approval that passes the harness 'approval' gate: only after a pass/minor-issues audit, with every proposed component verified and every integration change accepted.",
+      "required": ["by", "at"],
+      "properties": {
+        "by": { "type": "string" },
+        "at": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" }
+      }
+    },
+
     "auditReportRef": {
       "type": "string",
       "description": "Populated once the automatic audit handoff (Step 11) runs — path/ID of the resulting audit-report."

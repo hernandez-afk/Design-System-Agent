@@ -78,13 +78,24 @@ def session_start(data):
         lines.append("**Warning:** there's no CLAUDE.md with the design system in it. Generate it from the manifest "
                      "(templates/CLAUDE.md) before UI work.")
     projects = index.get("projects", [])
+    stages = {}
+    try:  # the harness stage per design; the summary still works without it
+        from harness import Harness
+        idx_path = os.path.join(ROOT, manifest.get("scopePolicy", {}).get("designIndexPath", "design-index.yaml"))
+        h = Harness(idx_path, os.path.join(ROOT, MANIFEST), ROOT)
+        h.manifest_path = os.path.join(ROOT, MANIFEST)
+        stages = {p["id"]: h.stage(h.gates(p), p) for p in projects if p.get("status") != "deprecated"}
+    except Exception:
+        pass
     if projects:
-        lines.append("\n## Designs and the code they own")
+        lines.append("\n## Designs, their harness stage, and the code they own")
         for p in projects:
             flags = sum(1 for a in p.get("artifacts", []) if a.get("reviewStatus") == "needs-review")
             code = ", ".join(p.get("codePaths", [])) or "no code linked yet"
             note = f" — {flags} artifact(s) need review" if flags else ""
-            lines.append(f"- {p['id']} {p['title']} ({p['status']}): {code}{note}")
+            stage = f", stage: {stages[p['id']]}" if p["id"] in stages else ""
+            lines.append(f"- {p['id']} {p['title']} ({p['status']}{stage}): {code}{note}")
+        lines.append("Run `python3 .claude/design-agent/tools/harness.py next --project <ID>` for what a design needs next.")
     print("\n".join(lines))
     return 0
 

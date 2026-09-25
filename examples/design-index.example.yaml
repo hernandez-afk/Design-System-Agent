@@ -13,6 +13,8 @@ navigation:
     - { from: "app-menu", to: "settings", label: "Settings", kind: "nav", projectId: "DES-420" }
     - { from: "settings", to: "settings/team", label: "Team", kind: "nav", projectId: "DES-420" }
     - { from: "settings", to: "settings/billing", label: "Billing", kind: "nav", projectId: "DES-420" }
+    - { from: "settings", to: "settings/notifications", label: "Notifications", kind: "nav", projectId: "DES-530", status: "proposed" }   # IC1, awaiting DES-420
+    - { from: "email", to: "settings/notifications", label: "Manage notifications", kind: "deep-link", projectId: "DES-530", status: "proposed" }  # IC2
 
 projects:
   - id: "DES-512"
@@ -36,6 +38,10 @@ projects:
         note: "Same date-range filter (preset chips). A change here must be mirrored there."
         scopeOverlapReportId: "PRD-031-scope-1"
     artifacts:
+      - id: "DES-512-brief-1"
+        type: "brief-optimization-report"
+        version: 1
+        reviewStatus: "current"
       - id: "DES-512"
         type: "ticket-brief"
         version: 2            # revenue KPI added via PRD-031 (examples/ticket-brief.example.yaml shows v1)
@@ -139,6 +145,10 @@ projects:
       - id: "P1"
         statement: "Admins can find the setting they want in one tap from the Settings page."
     componentsUsed: ["Card", "Button/ghost"]
+    relatedProjects:
+      - projectId: "DES-530"
+        relation: "links-to"
+        note: "The Settings list gets a Notifications row (IC1, proposed by DES-530)."
     artifacts:
       - id: "DES-420"
         type: "ticket-brief"
@@ -148,4 +158,48 @@ projects:
         type: "design-output"
         version: 2
         dependsOn: [{ artifactId: "DES-420", version: 1 }]
+        reviewStatus: "needs-review"
+        reviewReason: "IC1 from DES-530: add a 'Notifications' row to the Settings list, between Team and Billing."
+
+  - id: "DES-530"
+    title: "Notification preferences"
+    status: "in-progress"
+    scopeSummary: "Where team admins choose which events send them email, and how often digests arrive."
+    scopeTerms: ["notification preference", "email notification", "digest frequency", "test email"]
+    surfaces: ["settings/notifications"]
+    codePaths: ["src/app/settings/notifications/**"]
+    priorities:
+      - id: "P1"
+        statement: "Admins can turn off the emails they don't want without contacting support."
+      - id: "P2"
+        statement: "Admins can check a change worked by sending themselves a test email."
+    relatedProjects:
+      - projectId: "DES-420"
+        relation: "linked-from"
+        note: "Entered from the Settings hub's Notifications row (IC1)."
+    artifacts:
+      - id: "DES-530-page-brief"
+        type: "page-brief"
+        path: "examples/page-brief.example.md"
+        version: 1
+        reviewStatus: "current"
+      - id: "DES-530-brief-1"
+        type: "brief-optimization-report"
+        version: 2            # v2 = answers recorded and approved; v1 (before answers) is examples/brief-optimization-report.example.yaml
+        reviewStatus: "current"
+      - id: "DES-530"
+        type: "ticket-brief"
+        path: "examples/ticket-brief-page.example.yaml"
+        version: 1
+        reviewStatus: "current"
+      - id: "DES-530-scope-1"
+        type: "scope-overlap-report"
+        version: 1
+        dependsOn: [{ artifactId: "DES-530", version: 1 }]
+        reviewStatus: "current"
+      - id: "DES-530-flow-1"
+        type: "user-flow"
+        path: "examples/user-flow.example.yaml"
+        version: 1
+        dependsOn: [{ artifactId: "DES-530", version: 1 }]
         reviewStatus: "current"

@@ -8,6 +8,12 @@
   "properties": {
     "ticket": { "type": "string" },
     "manifestVersion": { "type": "string" },
+    "mode": {
+      "type": "string",
+      "enum": ["design", "implementation"],
+      "default": "design",
+      "description": "'design' = auditing a design output (harness stage 'audit'). 'implementation' = auditing the built UI against its design, acceptance criteria and tokens (harness stage 'verify')."
+    },
     "generatedAt": { "type": "string", "format": "date-time" },
     "autoReviseAttempt": {
       "type": "integer",
