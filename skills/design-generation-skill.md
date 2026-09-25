@@ -166,7 +166,7 @@ Produce a `design-output` (`design-output.schema.json`) bundling: the design its
 
 ### Step 11 — Automatic audit handoff
 
-Per `automation.auditTrigger` (default `automatic-post-generation`): **immediately** run `design-audit-rubric.md` against the output — this happens before anything is shown to the human for sign-off. Route per the audit's own scoring table:
+Per `automation.auditTrigger` (default `automatic-post-generation`): **immediately** run `design-audit-rubric.md` against the output. **Run it independently where you can:** in Claude Code, delegate to the `design-critic` subagent (`personas/claude-code/`), passing artifact paths only, never your rationale. In claude.ai, do an explicit Critic pass (`personas/claude-ai/project-instructions.md`) that re-reads the artifacts from scratch. Either way, the audit happens before anything is shown to the human for sign-off. Route per the audit's own scoring table:
 
 - `pass` / `minor-issues` → proceed to Decision Protocol final sign-off (if any decisions are still pending approval) or present as complete.
 - `major-issues` → revise using the cited findings, return to the relevant step above (usually 4–9), re-audit. Repeat up to `automation.maxAutoReviseAttempts`; notify the human each loop if `notifyOnAutoRevise`. Exhausting the cap escalates to `blocker`.

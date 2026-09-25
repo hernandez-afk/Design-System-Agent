@@ -6,6 +6,7 @@ A config-driven agent skill for generating and auditing UI designs. The skills h
 
 - **skills/** — the fixed logic (SKILL.md-style files): principles, the generation process, the audit rubric, and the mandatory human-facing report template.
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
+- **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **tools/** — `export_claude_design.py`, which turns the manifest into a Claude Design System's `tokens.json` and checks it.
 - **templates/** — `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
@@ -29,6 +30,18 @@ python3 tools/export_claude_design.py design-system-manifest.yaml build/claude-d
 ```
 
 It writes `project/tokens.json` in the Design System's format and checks roles without values, duplicate names, text below the legibility floor, and failing contrast pairs. See `examples/claude-design/project/tokens.json` for the Acme export.
+
+## Personas: a Designer and an independent Critic
+
+The agent can run as two personas, so the design isn't graded by the one who drew it:
+
+- **`personas/claude-code/design-lead.md`**: runs the generation skill and hands every draft to the critic. It passes only file paths, never its own reasoning.
+- **`personas/claude-code/design-critic.md`**: applies the audit rubric and returns the audit report. It has read-only tools, so it can't quietly fix what it's grading.
+- **`personas/claude-ai/project-instructions.md`**: the same two roles for a claude.ai Project, as a Designer pass then an explicit Critic pass that re-reads everything from scratch.
+
+To install in Claude Code, copy both files into your app repo's `.claude/agents/`, then ask for work as usual ("design PRD-031") or name one ("have the design-critic review this screen").
+
+The personas set voice and hand-off only. Every rule still comes from the skills and the manifest.
 
 ## Required first: a project `CLAUDE.md`
 
