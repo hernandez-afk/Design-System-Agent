@@ -7,6 +7,10 @@ description: Config-driven UI/UX generation. Reads a ticket brief (from a Jira t
 
 Generates a design from a ticket or PRD, in Claude Code or Claude Design — `platform-adapters.md` says where each step's inputs and outputs live on each platform. Contains no hardcoded design opinions (colors, fonts, component names) — everything project-specific comes from the manifest. What's fixed here is *process*: how to reason from a brief to a layout, when to ask, when to check for reuse (of whole designs as well as components), how to keep linked artifacts in sync, and when to hand off to audit. The **philosophy** governing every step below is `design-principles.md` — simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion-as-physics, structural rationale. Where a step references one of those principles, it's enforcing a rule, not applying a style.
 
+## The first job: consistency, with design context everywhere
+
+Everything below serves one outcome: **the product stays consistent as it's built, because design context is present wherever the product is being worked on**, not only when this skill runs. Every design this skill produces is recorded with the decisions it made, the components it uses, and the code that implements it. That's how a developer (or Claude in a plain coding session) editing a screen months later still sees the design behind it. A design that isn't recorded that way hasn't finished this skill. See the README's consistency guarantees for which mechanism enforces what.
+
 ## Core Design Principles
 
 These are fixed logic — they hold regardless of which manifest is loaded. Every step below operationalizes one or more of these.
@@ -178,7 +182,7 @@ Per `automation.auditTrigger` (default `automatic-post-generation`): **immediate
 
 Every artifact this run produced or changed is registered on its project in the design index, with `dependsOn` listing the exact upstream versions it was built from (the design output depends on the brief and scope report; the audit depends on the design output; verification reports depend on their gap report). Then:
 
-1. **Register the project** if this was `new-project` or `split` (the `this-project` part): `scopeSummary`, `scopeTerms`, `surfaces`, `priorities`, `componentsUsed` from this run. For `extend-existing`, merge the new terms/surfaces/priorities into the existing project instead.
+1. **Register the project** if this was `new-project` or `split` (the `this-project` part): `scopeSummary`, `scopeTerms`, `surfaces`, `priorities`, `componentsUsed` from this run, and **`codePaths`**: the globs for the code that implements it. Ask if you don't know where it will live. Without `codePaths`, nobody editing that code later gets this design's context. For `extend-existing`, merge the new terms/surfaces/priorities into the existing project instead.
 2. **Record relationships** from the scope report on both sides: `extends`/`extended-by` or `shares-pattern`, with the `scopeOverlapReportId`.
 3. **Propagate** per `scopePolicy.changePropagation`. When any artifact's version is bumped, every artifact that directly depends on an older version of it becomes `reviewStatus: needs-review` with a `reviewReason` naming what changed. The flag cascades further only when a flagged artifact is actually revised — its version bump then flags its own dependents. If a decision shared with other projects changed, their design outputs are flagged too.
 4. **Never auto-regenerate a flagged artifact.** Flagging is the job; the human (or a fresh run of this skill on that project) decides whether the change matters. An artifact marked `needs-review` cannot be presented as current.

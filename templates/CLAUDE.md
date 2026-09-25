@@ -45,6 +45,14 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 - One primary action per screen. Secondary actions never get primary-accent styling.
 - New components or variants go through a gap report and a verification report. Never invent one inline.
 
+## Working on existing UI
+
+- **Before changing UI code, know which design owns it.** Run `python3 .claude/design-agent/tools/design_context.py <file>`, or rely on the hook, which shows it on the first edit. Follow that design's decisions and components.
+- **Changing a decision is a design change, not a code change.** If your edit would contradict a decision (a different filter pattern, a new layout), stop and raise it. Don't just edit.
+- **Designs that share a pattern stay the same.** If the design context says it shares a pattern with another design, change both or neither.
+- **UI that no design owns needs a scope check before it ships.** It may belong to an existing design.
+- **Off-token values get sent back.** The token lint runs after every edit. Replace the value with a token; don't add it to the allow-list to get past the check.
+
 ## Critique criteria
 
 Use these whenever you review, critique or change a design, not only in formal audits.

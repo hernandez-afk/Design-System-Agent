@@ -239,6 +239,15 @@ navigationHeuristics:
   requireNavigationalTies: true
   breadcrumbThresholdDepth: 2
 
+development:
+  uiPaths: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css"]
+  tokenLint:
+    mode: "block"          # off-token values send the edit back to be fixed
+    framework: "both"      # Tailwind classes and CSS declarations
+    allow: ["1px"]         # hairline borders
+  designContext:
+    onUnownedUi: "warn"
+
 usabilityHeuristics:
   threeThreeThree:
     glanceSeconds: 3          # purpose + primary action understood at a glance

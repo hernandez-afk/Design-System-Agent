@@ -503,6 +503,32 @@
       }
     },
 
+    "development": {
+      "type": "object",
+      "description": "How design context and token rules reach day-to-day development, not just design runs. Used by tools/design_context.py, tools/token_lint.py and the hooks in templates/claude-settings.json.",
+      "properties": {
+        "uiPaths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Globs for UI code, e.g. 'src/**/*.tsx'. Only these files are linted and looked up."
+        },
+        "tokenLint": {
+          "type": "object",
+          "properties": {
+            "mode": { "type": "string", "enum": ["block", "warn", "off"], "default": "block", "description": "'block' = an off-token value sends the edit back to be fixed. 'warn' = reported, not blocked." },
+            "framework": { "type": "string", "enum": ["tailwind", "css", "both"], "default": "both", "description": "Which syntax to check: Tailwind utility classes, CSS declarations, or both." },
+            "allow": { "type": "array", "items": { "type": "string" }, "description": "Extra values that are allowed, e.g. '1px' for hairline borders." }
+          }
+        },
+        "designContext": {
+          "type": "object",
+          "properties": {
+            "onUnownedUi": { "type": "string", "enum": ["warn", "off"], "default": "warn", "description": "What to say when a UI file matches no design-index project: 'warn' = remind that new UI needs a scope check and a design before it ships." }
+          }
+        }
+      }
+    },
+
     "usabilityHeuristics": {
       "type": "object",
       "description": "Thresholds for the 3-3-3 rule and Wickens' display-design principles (design-principles.md). Checked in rubric categories 12 and 13.",

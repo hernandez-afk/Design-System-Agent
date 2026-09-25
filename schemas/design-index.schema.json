@@ -31,6 +31,11 @@
             "items": { "type": "string" },
             "description": "Screens/areas of the product this project changes, e.g. ['dashboard', 'dashboard/toolbar']. Two projects editing the same surface is the strongest sign of overlap."
           },
+          "codePaths": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Globs for the code that implements this design, e.g. 'src/app/dashboard/**'. This is how design context reaches development: when someone edits a file under these paths, tools/design_context.py shows this project's decisions, components and open review flags. Required once status is approved or shipped."
+          },
           "priorities": {
             "type": "array",
             "description": "Copied from the project's ticket brief so new briefs can be compared priority-by-priority.",

@@ -1,14 +1,47 @@
 # Design System Agent
 
-A config-driven agent skill for generating and auditing UI designs. The skills hold fixed *process* (how to reason from a ticket to a layout, when to ask, when to reuse, when to audit); every project-specific value (colors, type, spacing, components) comes from a per-project design-system manifest.
+A design agent whose first job is **consistency**: it keeps a product consistent as it's built, by keeping design context present wherever the product is worked on, in design and in development. It generates and audits UI designs from config. The skills hold fixed *process* (how to reason from a ticket to a layout, when to ask, when to reuse, when to audit); every project-specific value (colors, type, spacing, components) comes from a per-project design-system manifest.
+
+
+## The core guarantee: consistency, with design context everywhere
+
+The most important thing this system does is keep a product consistent while it's being built, by making sure **design context is always present in development**, not only when a design is being made. These are the guarantees, and what enforces each:
+
+| Guarantee | While designing | While developing (Claude Code) |
+|---|---|---|
+| Every session knows the design system | Skill halts on a missing or stale `CLAUDE.md` / Design System README | `CLAUDE.md` loads every session. The session-start hook warns if it's stale. |
+| Every piece of work knows the design that owns it | Scope check against the design index (Step 2b) | Code is linked to designs by `codePaths`. The first edit to a design's files shows its context. |
+| Decisions are made once and reused | Inherited decisions, shared patterns | The design context lists the owning design's decisions. Contradicting one is raised as a design change. |
+| Every value is a token | Rubric category 3 | `token_lint.py` runs after every edit and sends off-token values back to fix |
+| Every component comes from the registry | Reuse check, gap + verification reports | The design context lists the components to use |
+| Nothing drifts silently | Version stamps, change propagation, `needs-review` flags | Session start lists every design with open review flags |
+| The work is checked by someone who didn't make it | Independent critic persona | — |
+
+### Setting up the development side (Claude Code)
+
+In your app repo:
+
+1. Copy `tools/` to `.claude/design-agent/tools/`, and put `design-system-manifest.yaml` and your design index at the repo root.
+2. Merge `templates/claude-settings.json` into `.claude/settings.json`.
+3. Run `pip install pyyaml`, and add `.claude/.design-context-seen/` to `.gitignore`.
+4. In the manifest, set `development.uiPaths` (which files are UI) and give every design in the index its `codePaths`.
+
+To try the tools on this repo's examples:
+
+```
+python3 tools/design_context.py examples/app/src/app/dashboard/DashboardSummaryRow.tsx --root examples/app --index ../design-index.example.yaml --manifest ../design-system-manifest.example.yaml
+python3 tools/token_lint.py examples/app/src/app/dashboard/DashboardSummaryRow.tsx --root examples/app --manifest ../design-system-manifest.example.yaml
+```
+
+The first shows DES-512's decisions, components and review flags. The second catches the `gap-5` (20px) spacing bug and an off-brand blue.
 
 ## Folder structure
 
 - **skills/** — the fixed logic (SKILL.md-style files): principles, the generation process, the audit rubric, and the mandatory human-facing report template.
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
-- **tools/** — `export_claude_design.py`, which turns the manifest into a Claude Design System's `tokens.json` and checks it.
-- **templates/** — `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
+- **tools/** — `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **templates/** — `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 
 ## Platforms: Claude Code and Claude Design

@@ -162,6 +162,7 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** A decision listed in `reusedDecisions` was re-decided differently without a Decision Protocol entry explaining why, and without the sharing project being flagged — two designs that share a pattern now drift apart.
 - [ ] **Major:** The design output depends on an upstream artifact (brief, scope report, verification report) whose current version is newer than the one recorded in `dependsOn` — it was built from stale input.
 - [ ] **Minor:** Candidate scores in the scope report have no `evidence`, or the brief's `scopeTerms` are generic ("page", "button", "user") enough to make the overlap check meaningless.
+- [ ] **Major:** An `approved` or `shipped` project in the design index has no `codePaths`, so edits to its code get no design context and no owning design.
 - [ ] **Minor:** The design index wasn't updated after the run (new artifacts unregistered, or relationships from the scope report recorded on only one side).
 
 **Evidence required:** the `CLAUDE.md` version stamp, the `scopeOverlapReportRef` on the design output, and for every `existing-project` route, either the element's absence from this design or a `humanDecision` override.
