@@ -1,7 +1,8 @@
 <!-- design-system-manifest: Acme Product UI v1.0.0 -->
 <!-- Generated from design-system-manifest.yaml by the design-generation skill.
      Regenerate it whenever the manifest's version changes; the skill refuses to run while the versions differ.
-     The manifest is the source of truth. This file is the always-loaded summary. -->
+     The manifest is the source of truth. This file is the always-loaded summary.
+     In Claude Design, this same content is the Design System's project/README.md (see skills/platform-adapters.md). -->
 
 # Design system: Acme Product UI
 
@@ -13,14 +14,14 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 
 **Color roles** (Tailwind names)
 - Neutrals (cool): background `slate-50`, surface `white`, border `slate-200`, text `slate-900`, muted text `slate-600`
-- Accents: primary `teal-500`, secondary `amber-500` (at most 1 on screen at once)
+- Accents: primary `teal-500` (text on it: `slate-900`; white fails AA), secondary `amber-500` (at most 1 on screen at once)
 - Status: success `green-500`, warning `amber-500`, error `red-500`, info `sky-500`
 - Interaction: hover `teal-600`, active `teal-700`, focus `teal-600`
 - Contrast: WCAG-AA
 
 **Typography**
 - Display `Fraunces`, body `Inter`, UI `Inter`; weights 400 / 500 / 700
-- Scale: base 16px × 1.25, steps xs · sm · base · lg · xl · 2xl · 3xl · 4xl · 5xl; line height 1.5
+- Scale: base 16px × 1.25, steps xs · sm · base · lg · xl · 2xl · 3xl · 4xl · 5xl; line height 1.5. `xs` (10px) is below the 12px legibility floor: never use it for text.
 - Roles:
   - Heading: Fraunces 700
   - Readable subtext: Inter 400 in `slate-600`
@@ -28,6 +29,7 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 
 **Spacing & layout**
 - Spacing scale (px): 4, 8, 16, 24, 32, 48; base unit 4px
+- Radius: `radius-sm` 4px (inputs, chips, small buttons) · `radius-md` 8px (buttons, cards) · `radius-lg` 12px (panels, dialogs)
 - Grid: 12 columns, 24px gutter, max width 1200px, alignment tolerance 0px (exact)
 - Breakpoints (design mobile first): sm 640 · md 768 · lg 1024 · xl 1280
 

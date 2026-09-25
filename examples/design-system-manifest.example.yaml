@@ -1,6 +1,16 @@
 # Example design-system manifest — fill this in per project.
 # Swap this file to reuse the same agent/skill across different design systems.
 
+platform:
+  targets: ["claude-code", "claude-design"]   # same manifest drives both — see skills/platform-adapters.md
+  claudeDesign:
+    designSystemUrl: ""       # filled in on first export
+    markAsDefault: true       # every new Design canvas applies Acme without being asked
+    recordStore: "repo"       # briefs, reports and the design index stay in the repo
+    canvasBoards:
+      phone: { w: 390, h: 844 }
+      desktop: { w: 1440, h: 900 }
+
 meta:
   name: "Acme Product UI"
   version: "1.0.0"
@@ -26,12 +36,31 @@ color:
     temperature: "cool"
   accents:
     primary: "teal-500"
+    onPrimary: "slate-900"   # white on teal-500 is ~2.5:1 and fails AA; slate-900 passes
     secondary: "amber-500"
     success: "green-500"
     warning: "amber-500"
     error: "red-500"
     info: "sky-500"
   contrastStandard: "WCAG-AA"
+  themes:
+    - { id: "light", name: "Light" }
+  resolved:                    # real values for Claude Design (Tailwind v3 palette)
+    neutrals.background:     { light: "#f8fafc" }   # slate-50
+    neutrals.surface:        { light: "#ffffff" }   # white
+    neutrals.border:         { light: "#e2e8f0" }   # slate-200
+    neutrals.textPrimary:    { light: "#0f172a" }   # slate-900
+    neutrals.textSecondary:  { light: "#475569" }   # slate-600
+    accents.primary:         { light: "#14b8a6" }   # teal-500
+    accents.onPrimary:       { light: "#0f172a" }   # slate-900
+    accents.secondary:       { light: "#f59e0b" }   # amber-500
+    accents.success:         { light: "#22c55e" }   # green-500
+    accents.warning:         { light: "#f59e0b" }   # amber-500
+    accents.error:           { light: "#ef4444" }   # red-500
+    accents.info:            { light: "#0ea5e9" }   # sky-500
+    interactionStates.hover:  { light: "#0d9488" }  # teal-600
+    interactionStates.active: { light: "#0f766e" }  # teal-700
+    interactionStates.focus:  { light: "#0d9488" }  # teal-600
   interactionStates:
     hover: "teal-600"    # one step darker than accents.primary (teal-500)
     active: "teal-700"
@@ -64,6 +93,12 @@ typography:
 spacing:
   baseUnitPx: 4
   scale: [4, 8, 16, 24, 32, 48]
+
+radius:
+  tokens:
+    - { name: "radius-sm", px: 4, usage: "Inputs, chips, small buttons." }
+    - { name: "radius-md", px: 8, usage: "Buttons, cards." }
+    - { name: "radius-lg", px: 12, usage: "Panels, dialogs." }
 
 layout:
   gridColumns: 12

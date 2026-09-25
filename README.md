@@ -6,8 +6,29 @@ A config-driven agent skill for generating and auditing UI designs. The skills h
 
 - **skills/** — the fixed logic (SKILL.md-style files): principles, the generation process, the audit rubric, and the mandatory human-facing report template.
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
+- **tools/** — `export_claude_design.py`, which turns the manifest into a Claude Design System's `tokens.json` and checks it.
 - **templates/** — `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
+
+## Platforms: Claude Code and Claude Design
+
+The same manifest, skills and rubric run on both. `platform.targets` in the manifest says which; **`skills/platform-adapters.md`** maps every step to each platform.
+
+| | Claude Code | Claude Design |
+|---|---|---|
+| Always-loaded context | `CLAUDE.md` | The default Design System's README (same template) |
+| Tokens | Manifest values | Design System `tokens.json`, exported by `tools/export_claude_design.py` |
+| Design drawn as | Code/markup | Design canvas artboards and clickable prototypes |
+| Records (briefs, reports, index) | Repo files | A connected repo (recommended), or the design index as a Design System section |
+
+To use Claude Design, set `platform.targets` to include `claude-design` and fill `color.resolved` with real color values, then export:
+
+```
+pip install pyyaml
+python3 tools/export_claude_design.py design-system-manifest.yaml build/claude-design
+```
+
+It writes `project/tokens.json` in the Design System's format and checks roles without values, duplicate names, text below the legibility floor, and failing contrast pairs. See `examples/claude-design/project/tokens.json` for the Acme export.
 
 ## Required first: a project `CLAUDE.md`
 

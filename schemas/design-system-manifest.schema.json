@@ -5,7 +5,50 @@
   "description": "Project-specific design system data consumed by a generalized design-principles agent skill. Fixed reasoning rules (decision protocol, contrast math, animation physics) stay in the skill itself; this file supplies the 'what exists / what's allowed' data per project.",
   "type": "object",
   "required": ["meta", "color", "typography", "spacing", "layout", "components", "accessibility"],
+  "if": {
+    "properties": { "platform": { "properties": { "targets": { "contains": { "const": "claude-design" } } }, "required": ["targets"] } },
+    "required": ["platform"]
+  },
+  "then": {
+    "properties": { "color": { "required": ["resolved"] } }
+  },
   "properties": {
+
+    "platform": {
+      "type": "object",
+      "description": "Where this design system is used. The same manifest drives both: Claude Code (a repo with CLAUDE.md and files) and Claude Design (a Design System artifact plus Design canvases on claude.ai). See skills/platform-adapters.md.",
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["claude-code", "claude-design"] },
+          "minItems": 1,
+          "uniqueItems": true,
+          "default": ["claude-code"],
+          "description": "Including 'claude-design' requires color.resolved, because a Design System needs real color values, not framework class names."
+        },
+        "claudeDesign": {
+          "type": "object",
+          "properties": {
+            "designSystemUrl": { "type": "string", "description": "The claude.ai link of the Design System artifact exported from this manifest. Empty until the first export." },
+            "markAsDefault": { "type": "boolean", "default": true, "description": "Keep it as the account's default design system, so every new Design canvas applies it without being asked — the Claude Design equivalent of CLAUDE.md always loading." },
+            "recordStore": {
+              "type": "string",
+              "enum": ["repo", "design-system-section"],
+              "default": "repo",
+              "description": "Where briefs, scope/gap/verification/audit reports and the design index live. 'repo' = a connected repository (full pipeline). 'design-system-section' = the design index only, as a design-index.md section of the Design System; per-run reports are returned in the conversation, not stored, so scope checks and change tracking only see what the index records."
+            },
+            "canvasBoards": {
+              "type": "object",
+              "description": "Artboard sizes for Design canvases, one per breakpoint the design shows.",
+              "properties": {
+                "phone": { "type": "object", "properties": { "w": { "type": "integer", "default": 390 }, "h": { "type": "integer", "default": 844 } } },
+                "desktop": { "type": "object", "properties": { "w": { "type": "integer", "default": 1440 }, "h": { "type": "integer", "default": 900 } } }
+              }
+            }
+          }
+        }
+      }
+    },
 
     "meta": {
       "type": "object",
@@ -61,11 +104,26 @@
           "description": "1-3 bold action/emphasis colors plus semantic status colors.",
           "properties": {
             "primary": { "type": "string" },
+            "onPrimary": { "type": "string", "description": "Text/icon color used on a primary-accent fill. Must meet contrastStandard against accents.primary." },
             "secondary": { "type": "string" },
             "success": { "type": "string" },
             "warning": { "type": "string" },
             "error": { "type": "string" },
             "info": { "type": "string" }
+          }
+        },
+        "themes": {
+          "type": "array",
+          "description": "Color themes, first = primary. Omit for a single light theme.",
+          "items": { "type": "object", "required": ["id", "name"], "properties": { "id": { "type": "string" }, "name": { "type": "string" } } },
+          "default": [{ "id": "light", "name": "Light" }]
+        },
+        "resolved": {
+          "type": "object",
+          "description": "Real color values for every role, per theme — required for Claude Design, and the only place contrast can actually be computed. Keys are role paths ('neutrals.background', 'accents.primary', 'interactionStates.hover'); values map theme id → a hex/rgb/hsl/oklch value.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
           }
         },
         "contrastStandard": {
@@ -170,6 +228,25 @@
           "type": "array",
           "items": { "type": "number" },
           "description": "e.g. [4, 8, 16, 24, 32, 48]"
+        }
+      }
+    },
+
+    "radius": {
+      "type": "object",
+      "description": "Corner radius scale. Optional for Claude Code; exported as radius tokens to a Claude Design system.",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "px"],
+            "properties": {
+              "name": { "type": "string", "description": "e.g. 'radius-md'." },
+              "px": { "type": "number" },
+              "usage": { "type": "string", "description": "Which components use it." }
+            }
+          }
         }
       }
     },

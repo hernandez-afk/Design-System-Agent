@@ -5,7 +5,7 @@ description: Config-driven UI/UX generation. Reads a ticket brief (from a Jira t
 
 # Design Generation Skill
 
-Generates a design from a ticket or PRD. Contains no hardcoded design opinions (colors, fonts, component names) — everything project-specific comes from the manifest. What's fixed here is *process*: how to reason from a brief to a layout, when to ask, when to check for reuse (of whole designs as well as components), how to keep linked artifacts in sync, and when to hand off to audit. The **philosophy** governing every step below is `design-principles.md` — simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion-as-physics, structural rationale. Where a step references one of those principles, it's enforcing a rule, not applying a style.
+Generates a design from a ticket or PRD, in Claude Code or Claude Design — `platform-adapters.md` says where each step's inputs and outputs live on each platform. Contains no hardcoded design opinions (colors, fonts, component names) — everything project-specific comes from the manifest. What's fixed here is *process*: how to reason from a brief to a layout, when to ask, when to check for reuse (of whole designs as well as components), how to keep linked artifacts in sync, and when to hand off to audit. The **philosophy** governing every step below is `design-principles.md` — simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion-as-physics, structural rationale. Where a step references one of those principles, it's enforcing a rule, not applying a style.
 
 ## Core Design Principles
 
@@ -30,11 +30,15 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 | Ticket brief | `ticket-brief.schema.json` | If given raw ticket or PRD text instead, extract into this shape first — see Step 1. If a Jira MCP tool is available, fetch the ticket directly. |
 | Design index | `design-index.schema.json` | At `scopePolicy.designIndexPath`. If none exists yet, this is the first project — create one in Step 12, and record the scope check as `new-project` with no candidates. |
 | Design-system manifest | `design-system-manifest.schema.json` | **Halt and ask** for one. Never fall back to generic/default design opinions — that defeats the entire point of this skill existing. |
-| Project `CLAUDE.md` | `templates/CLAUDE.md` | At `meta.claudeMd.path` (default `CLAUDE.md`, repo root). **Halt**, and offer to generate it from the manifest — see Step 2. Required unless `meta.claudeMd.required` is false. |
+| Project context | `templates/CLAUDE.md` | **Claude Code:** `CLAUDE.md` at `meta.claudeMd.path` (default repo root). **Claude Design:** the default Design System's `project/README.md`, exported from this manifest (`platform-adapters.md`). **Halt**, and offer to generate it — see Step 2. Required unless `meta.claudeMd.required` is false. |
 
 ---
 
 ## Process
+
+### Step 0 — Detect the platform
+
+Work out whether this run is in Claude Code, Claude Design, or both (`platform-adapters.md`, "Detecting the platform"), and check it's one of the manifest's `platform.targets`. If it isn't, stop and say so: a manifest set up only for Claude Code has no resolved colors for a Design System, and a Claude Design-only setup has no `CLAUDE.md`. Every later step uses that platform's column of the adapter map.
 
 ### Step 1 — Resolve the brief
 
@@ -53,13 +57,13 @@ Parse `design-system-manifest.yaml`, validate against its schema. Pull out, in p
 
 If the manifest is missing a section this ticket needs (e.g. no `motion` block but the ticket needs a loading state), don't invent values — ask, or use the schema's stated defaults and flag that a default was used.
 
-**Then check the project's `CLAUDE.md`.** Claude Code loads it into every session, so it's what keeps *every* interaction on-system — including quick edits, reviews, and questions that never run this skill. It must hold the design system's tokens, brand rules, and critique criteria, and its first line must carry the version stamp `<!-- design-system-manifest: <meta.name> v<meta.version> -->`.
+**Then check the project context** — `CLAUDE.md` in Claude Code, the default Design System's README in Claude Design; the rules below apply to whichever this platform uses, and to both when both are targets. In Claude Design, also check the Design System's `tokens.json` carries `meta.source` = this manifest version, and re-export (`tools/export_claude_design.py`) if not. **`CLAUDE.md`:** Claude Code loads it into every session, so it's what keeps *every* interaction on-system — including quick edits, reviews, and questions that never run this skill. It must hold the design system's tokens, brand rules, and critique criteria, and its first line must carry the version stamp `<!-- design-system-manifest: <meta.name> v<meta.version> -->`.
 
 - **Missing** → halt. Offer to generate it: fill `templates/CLAUDE.md` from the manifest (every `{{…}}` placeholder resolved, no placeholder left behind), show it to the human, and write it only once they approve. It's added to the repo root, not overwritten — if a `CLAUDE.md` already exists without the design-system sections, merge them in and keep everything else.
 - **Stamp doesn't match `meta.version`** → halt. The tokens in it are stale, and anything that reads it would design against an old system. Offer to regenerate the design-system sections from the current manifest; show the diff before writing.
 - **Present and matching** → continue. If it and the manifest ever disagree on a value, the manifest wins, and the mismatch is itself a finding (rubric category 11).
 
-Whenever this run changes the manifest (a component moves to `approved`, a token is added), bump `meta.version` and regenerate `CLAUDE.md` in the same change, so the two never drift.
+Whenever this run changes the manifest (a component moves to `approved`, a token is added), bump `meta.version` and regenerate the project context for every target in the same change — `CLAUDE.md`, and for Claude Design a fresh export of the Design System — so nothing drifts.
 
 ### Step 2b — Scope placement check (against the design index)
 
@@ -158,7 +162,7 @@ Record the results in the design output's `glanceTest` and `taskPaths`.
 
 ### Step 10 — Assemble output
 
-Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest` and `taskPaths` from Step 9b, the list of components/variants used (with status), and any gap and verification reports filed.
+Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`; in Claude Design, a Design canvas with one artboard per screen × breakpoint, listed in `artifact.boards`, plus `artifact.designSystemRef`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest` and `taskPaths` from Step 9b, the list of components/variants used (with status), and any gap and verification reports filed.
 
 ### Step 11 — Automatic audit handoff
 
@@ -203,4 +207,5 @@ Governed by `meta.decisionProtocol`:
 - Does not start a new design for work the design index shows another project already owns — the scope placement check routes it there, or asks.
 - Does not re-decide a pattern a related project already settled — it inherits it, or raises the conflict with both projects flagged.
 - Does not leave downstream artifacts silently stale after a change — they are flagged `needs-review`, never quietly regenerated.
-- Does not run without a project `CLAUDE.md` whose version stamp matches the manifest — it halts and offers to generate or regenerate it instead.
+- Does not run without project context whose version stamp matches the manifest — `CLAUDE.md` in Claude Code, the Design System README in Claude Design — it halts and offers to generate or regenerate it instead.
+- Does not put a `proposed` component in a Claude Design System's bundle, or audit findings on a canvas's artboards.

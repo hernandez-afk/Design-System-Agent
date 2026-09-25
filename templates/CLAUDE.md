@@ -1,7 +1,8 @@
 <!-- design-system-manifest: {{meta.name}} v{{meta.version}} -->
 <!-- Generated from design-system-manifest.yaml by the design-generation skill.
      Regenerate it whenever the manifest's version changes; the skill refuses to run while the versions differ.
-     The manifest is the source of truth. This file is the always-loaded summary. -->
+     The manifest is the source of truth. This file is the always-loaded summary.
+     In Claude Design, this same content is the Design System's project/README.md (see skills/platform-adapters.md). -->
 
 # Design system: {{meta.name}}
 
@@ -13,7 +14,7 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 
 **Color roles**
 - Neutrals: background `{{color.neutrals.background}}`, surface `{{color.neutrals.surface}}`, border `{{color.neutrals.border}}`, text `{{color.neutrals.textPrimary}}`, muted text `{{color.neutrals.textSecondary}}`
-- Accents: primary `{{color.accents.primary}}`, secondary `{{color.accents.secondary}}` (at most {{color.usagePolicy.maxSimultaneousSecondaryAccents}} on screen at once)
+- Accents: primary `{{color.accents.primary}}` (text on it: `{{color.accents.onPrimary}}`), secondary `{{color.accents.secondary}}` (at most {{color.usagePolicy.maxSimultaneousSecondaryAccents}} on screen at once)
 - Status: success `{{color.accents.success}}`, warning `{{color.accents.warning}}`, error `{{color.accents.error}}`, info `{{color.accents.info}}`
 - Interaction: hover `{{color.interactionStates.hover}}`, active `{{color.interactionStates.active}}`, focus `{{color.interactionStates.focus}}`
 - Contrast: {{color.contrastStandard}}
@@ -25,6 +26,7 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 
 **Spacing & layout**
 - Spacing scale (px): {{spacing.scale}}; base unit {{spacing.baseUnitPx}}px
+- Radius: {{radius.tokens — name px (usage), one per item}}
 - Grid: {{layout.gridColumns}} columns, {{layout.gutterPx}}px gutter, max width {{layout.containerMaxWidthPx}}px, alignment tolerance {{layout.alignmentTolerancePx}}px
 - Breakpoints (design mobile first): {{layout.breakpoints}}
 

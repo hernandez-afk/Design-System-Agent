@@ -18,8 +18,23 @@
       "description": "The actual design deliverable.",
       "required": ["format", "location"],
       "properties": {
-        "format": { "type": "string", "enum": ["html", "react-jsx", "figma-spec", "markdown-wireframe"], "description": "Matches meta.framework/stylingEngine where applicable." },
-        "location": { "type": "string", "description": "File path or URL to the rendered artifact." }
+        "format": { "type": "string", "enum": ["html", "react-jsx", "figma-spec", "markdown-wireframe", "claude-design-canvas"], "description": "Matches meta.framework/stylingEngine where applicable. 'claude-design-canvas' = a Design canvas on claude.ai." },
+        "location": { "type": "string", "description": "File path, or URL (for a Claude Design canvas, its claude.ai link)." },
+        "designSystemRef": { "type": "string", "description": "For claude-design-canvas: the Design System artifact the canvas installed. Must be the one exported from this manifest version." },
+        "boards": {
+          "type": "array",
+          "description": "For claude-design-canvas: one artboard per screen × breakpoint shown.",
+          "items": {
+            "type": "object",
+            "required": ["file", "breakpoint"],
+            "properties": {
+              "file": { "type": "string", "description": "e.g. 'Dashboard-sm.dc.html'." },
+              "screen": { "type": "string" },
+              "breakpoint": { "type": "string", "description": "A layout.breakpoints key, e.g. 'sm'." },
+              "interactive": { "type": "boolean", "description": "True when the board is a clickable prototype (used for the 3-3-3 task paths)." }
+            }
+          }
+        }
       }
     },
 
