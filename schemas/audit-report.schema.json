@@ -45,6 +45,8 @@
       "items": {
         "type": "object",
         "required": ["category", "verdict", "findings"],
+        "if": { "properties": { "category": { "enum": ["three-three-three-usability", "display-design-wickens"] } } },
+        "then": { "properties": { "findings": { "items": { "required": ["principleRef"] } } } },
         "properties": {
           "category": {
             "type": "string",
@@ -59,7 +61,9 @@
               "interaction-behavior",
               "composition-and-density",
               "navigation-color-and-motion-feedback",
-              "scope-and-artifact-integrity"
+              "scope-and-artifact-integrity",
+              "three-three-three-usability",
+              "display-design-wickens"
             ]
           },
           "verdict": {
@@ -74,6 +78,7 @@
               "properties": {
                 "severity": { "type": "string", "enum": ["blocker", "major", "minor"] },
                 "rubricItem": { "type": "string", "description": "Short quote/id of the rubric checklist item that was violated." },
+                "principleRef": { "type": "string", "description": "The named principle behind the check, e.g. 'Wickens 4: Redundancy gain' or '3-3-3: 3 clicks'. Required for categories three-three-three-usability and display-design-wickens." },
                 "description": { "type": "string", "description": "What was found, specific to this design." },
                 "location": { "type": "string", "description": "Where in the design this occurs, e.g. component name, screen, section." },
                 "manifestReference": { "type": "string", "description": "The manifest field this check was evaluated against, e.g. 'accessibility.minTouchTargetPx'." },

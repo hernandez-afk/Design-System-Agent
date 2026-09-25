@@ -23,6 +23,52 @@
       }
     },
 
+    "glanceTest": {
+      "type": "array",
+      "description": "3-3-3 rule, part 1: per screen, what a first-time user sees first at usabilityHeuristics.threeThreeThree.glanceBreakpoint, without scrolling.",
+      "items": {
+        "type": "object",
+        "required": ["screen", "breakpoint", "purposeVisible", "primaryActionVisible", "pass"],
+        "properties": {
+          "screen": { "type": "string" },
+          "breakpoint": { "type": "string" },
+          "firstNoticed": { "type": "array", "items": { "type": "string" }, "description": "The first two or three things the eye lands on, in order." },
+          "purposeVisible": { "type": "boolean", "description": "Is what this screen is for clear from what's visible, without reading body text?" },
+          "primaryActionVisible": { "type": "boolean", "description": "Is the one primary action visible and identifiable without scrolling?" },
+          "pass": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+
+    "taskPaths": {
+      "type": "array",
+      "description": "3-3-3 rule, parts 2 and 3: every coreTask from the brief, walked step by step from its entry point.",
+      "items": {
+        "type": "object",
+        "required": ["taskId", "steps", "clickCount", "estimatedSeconds", "estimateBasis"],
+        "properties": {
+          "taskId": { "type": "string", "description": "ticket-brief coreTasks[].id." },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["action", "isClick"],
+              "properties": {
+                "action": { "type": "string", "description": "e.g. 'Tap the 30d preset chip'." },
+                "isClick": { "type": "boolean", "description": "False for typing, reading, or waiting." },
+                "scent": { "type": "string", "description": "What tells the user this is the right step — the label, icon, or placement. Required when clickCount exceeds maxClicksToCoreTask." }
+              }
+            }
+          },
+          "clickCount": { "type": "integer", "minimum": 0 },
+          "estimatedSeconds": { "type": "number", "minimum": 0, "description": "Estimated time for a first-time user, including reading and waiting." },
+          "estimateBasis": { "type": "string", "description": "How the estimate was made — the assumptions, e.g. '~3 s to scan, 1 tap, ~2 s for results to load'." },
+          "overLimitReason": { "type": "string", "description": "Required if clickCount or estimatedSeconds exceeds the manifest limits." }
+        }
+      }
+    },
+
     "componentsUsed": {
       "type": "array",
       "items": {

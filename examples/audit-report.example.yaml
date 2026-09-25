@@ -98,6 +98,25 @@ categories:
           newValue: "<Skeleton variant=\"default\" />"
           designSystemTokenRef: "components[] Skeleton (feedback category)"
 
+  - category: "three-three-three-usability"
+    verdict: "pass"
+    findings: []
+
+  - category: "display-design-wickens"
+    verdict: "minor-issues"
+    findings:
+      - severity: "minor"
+        rubricItem: "The user commits to something with a foreseeable result ... with no preview of it"
+        principleRef: "Wickens 12: Predictive aiding"
+        description: "Preset chips don't show the dates they cover, so a user can't tell whether '30d' includes today until after the refresh."
+        location: "Dashboard toolbar, date-range chips"
+        manifestReference: "usabilityHeuristics.displayDesign"
+        implementationNote:
+          component: "DateRangeChip"
+          property: "title / supporting label"
+          oldValue: "'30d'"
+          newValue: "'30d' with the covered range (e.g. 'Aug 11 – Sep 9') shown on focus and hover, and as supporting text at md and up"
+
 # Routing: overallVerdict = blocker -> hard stop, routed to a human (never
 # auto-retried). The human sent it back to generation with these findings,
 # producing revision 1 in design-output.example.yaml. Either blocker alone

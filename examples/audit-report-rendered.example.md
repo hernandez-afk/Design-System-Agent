@@ -25,7 +25,9 @@ PHASE 3 — Polish (Micro-interactions, transitions, empty/loading/error states,
 
 - Dashboard summary row (StatTile): KPI values fetch asynchronously with no loading state → Add the approved Skeleton component (feedback category) while values load → Users briefly see blank/zero values on load, which reads as a bug rather than a loading state.
 
-Review: Phase 3 because the screen is usable without it, but the missing loading state is the kind of thing that erodes trust in the data on every page load — worth fixing before ship even though it doesn't block Phase 1/2 work.
+- Dashboard toolbar (date-range chips): '30d' doesn't say which dates it covers → Show the covered range on focus/hover, and as supporting text at md and up → Wickens 12 (predictive aiding): users should know what a filter will do before they apply it, not find out after the refresh.
+
+Review: Phase 3 because the screen is usable without these, but the missing loading state is the kind of thing that erodes trust in the data on every page load — worth fixing before ship even though it doesn't block Phase 1/2 work.
 
 ────────────────────────────────────────────
 
@@ -41,4 +43,5 @@ IMPLEMENTATION NOTES FOR BUILD AGENT
 
 - DashboardSummaryRow gap: 20px → 24px (DESIGN_SYSTEM spacing.scale: 24)
 - DashboardSummaryRow: add <Skeleton variant="default" /> as loading fallback for each StatTile while KPI fetch is pending, per DESIGN_SYSTEM Skeleton (feedback category)
+- DateRangeChip title/supporting label: '30d' → '30d' plus covered range (e.g. 'Aug 11 – Sep 9') on focus and hover, as supporting text at md and up
 - Toolbar IconButton: mark data-status="pending-review" until DES-512-gap-2 is approved; do not treat as a stable API until then

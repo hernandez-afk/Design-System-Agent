@@ -53,6 +53,20 @@
         }
       }
     },
+    "coreTasks": {
+      "type": "array",
+      "description": "The tasks users come to this design to do. Each is walked against the 3-3-3 rule (design-principles.md) — understood in 3 seconds, reached in 3 clicks, completed in 3 minutes.",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "entryPoint"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'T1'." },
+          "statement": { "type": "string", "description": "What the user is trying to get done, e.g. 'Filter the dashboard to the last 30 days.'" },
+          "linkedPriority": { "type": "string" },
+          "entryPoint": { "type": "string", "description": "Where the user starts — the surface they land on, e.g. 'dashboard (after sign-in)'. Clicks are counted from here." }
+        }
+      }
+    },
     "constraints": {
       "type": "array",
       "items": { "type": "string" },

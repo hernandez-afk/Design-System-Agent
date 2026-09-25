@@ -201,6 +201,16 @@ navigationHeuristics:
   requireNavigationalTies: true
   breadcrumbThresholdDepth: 2
 
+usabilityHeuristics:
+  threeThreeThree:
+    glanceSeconds: 3          # purpose + primary action understood at a glance
+    glanceBreakpoint: "sm"    # judged at the smallest breakpoint
+    maxClicksToCoreTask: 3
+    maxCoreTaskMinutes: 3
+  displayDesign:
+    minReadableTextPx: 12     # Wickens 1 — legibility
+    maxAbsoluteJudgmentLevels: 5   # Wickens 2 — unlabeled shades/sizes of one variable
+
 scopePolicy:
   designIndexPath: "design-index.yaml"
   requireScopeCheck: true

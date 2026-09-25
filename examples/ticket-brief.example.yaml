@@ -32,6 +32,16 @@ requiredElements:
     targetCategory: "feedback"
     linkedPriority: "P3"
 
+coreTasks:
+  - id: "T1"
+    statement: "See the core KPIs and whether each is trending up or down."
+    linkedPriority: "P1"
+    entryPoint: "dashboard (after sign-in)"
+  - id: "T2"
+    statement: "Filter the dashboard to the last 30 days."
+    linkedPriority: "P2"
+    entryPoint: "dashboard (after sign-in)"
+
 constraints:
   - "Must fit above the fold on the existing dashboard layout, no new page."
 

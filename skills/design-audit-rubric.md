@@ -164,6 +164,47 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 ---
 
+## 12. 3-3-3 Usability
+
+*Whether a person can actually use the design: understood in 3 seconds, reached in 3 clicks, done in 3 minutes. Thresholds from `usabilityHeuristics.threeThreeThree`; evidence from the design output's `glanceTest` and `taskPaths`. Every finding cites its part in `principleRef`.*
+
+- [ ] **Major:** A core task in the brief has no `taskPaths` entry, or a screen has no `glanceTest` — the check can't be verified, so it's treated as failed.
+- [ ] **Major:** Glance test fails — at `glanceBreakpoint`, the screen's purpose or its primary action isn't visible without scrolling or reading body text. *(3 seconds)*
+- [ ] **Major:** A core task takes more than `maxClicksToCoreTask` clicks from its entry point with no `overLimitReason`. *(3 clicks)*
+- [ ] **Major:** A core task's estimated completion time is over `maxCoreTaskMinutes` with no stated reason. *(3 minutes)*
+- [ ] **Major:** A path meets the click limit by breaking another rule — cramming more than `maxInlineInputs` fields onto one step, dropping pagination, or undoing progressive disclosure.
+- [ ] **Minor:** A path over the click limit has a reason but one or more steps have no documented `scent`.
+- [ ] **Minor:** A time estimate has no `estimateBasis`, or the basis leaves out reading or waiting time.
+
+---
+
+## 13. Display Design (Wickens' 13 Principles)
+
+*Whether the display fits how people perceive, attend, and remember — from Wickens et al., as set out in `design-principles.md`. Thresholds from `usabilityHeuristics.displayDesign`. Every finding cites the principle number in `principleRef`, e.g. "Wickens 4: Redundancy gain".*
+
+**Perceptual**
+- [ ] **Major (1 — Legibility):** Any text, including captions and chart labels, below `minReadableTextPx`, or truncated so it loses meaning at the smallest breakpoint.
+- [ ] **Major (2 — Absolute judgment):** A value is encoded in more than `maxAbsoluteJudgmentLevels` levels of one visual variable (shade, size, hue) without direct labels.
+- [ ] **Major (3 — Top-down processing):** A convention is broken (red for success, unusual placement of a standard control, down meaning more) without a Decision Protocol entry and an unmistakable visual difference.
+- [ ] **Major (4 — Redundancy gain):** A *critical* state — error, warning, destructive action, system status — is signaled by one cue only. *(Category 2 flags color-only state as minor in general; for critical states it's major.)*
+- [ ] **Major (5 — Discriminability):** Two elements with different meanings or outcomes look nearly the same, especially side by side (e.g. "Save" and "Save as" styled identically, near-identical icons).
+
+**Mental model**
+- [ ] **Minor (6 — Pictorial realism):** A graphic contradicts what it represents — more shown as lower or smaller, time running against reading direction.
+- [ ] **Minor (7 — Moving part):** Motion goes against the user's model — a rising value animates down, progress moves backward, a panel exits in a different direction than it entered.
+
+**Attention**
+- [ ] **Major (8 — Information access cost):** Something a core task needs every time is behind a tab, toggle, scroll, or drill-down.
+- [ ] **Major (9 — Proximity compatibility):** Information the user must combine is far apart or on different screens without a visible link — or unrelated items are grouped so they look related.
+- [ ] **Minor (10 — Multiple resources):** Every signal, including time-critical alerts, is visual while the user is busy reading, and the platform offers sound or haptics that aren't used.
+
+**Memory**
+- [ ] **Major (11 — Knowledge in the world):** A step makes the user remember something from an earlier step (a value, a code, a choice) instead of showing it, or a key action is only reachable by an unmarked gesture or shortcut.
+- [ ] **Minor (12 — Predictive aiding):** The user commits to something with a foreseeable result — a limit, a cost, a wait, an irreversible next step — with no preview of it.
+- [ ] **Major (13 — Consistency):** The same meaning or action is shown differently on different screens, or differently from related designs in the design index. *(Overlaps categories 1 and 11 — cite whichever is the root cause, not both.)*
+
+---
+
 ## Scoring & Verdict
 
 | Verdict | Condition | Automation behavior |
@@ -192,3 +233,5 @@ This audit runs **automatically immediately after every generation**, before a d
 | Composition & Density | New | Yes — `compositionHeuristics` |
 | Navigation, Color Discipline & Motion Feedback | New | Yes — `navigationHeuristics`, `color.interactionStates`, `color.usagePolicy`, `motionUsagePolicy` |
 | Scope & Cross-Artifact Integrity | New (design index) | Yes — `scopePolicy`, design index |
+| 3-3-3 Usability | 3-3-3 rule | Yes — `usabilityHeuristics.threeThreeThree`, brief `coreTasks` |
+| Display Design (Wickens) | Wickens et al., 13 principles of display design | Partially — `usabilityHeuristics.displayDesign` |

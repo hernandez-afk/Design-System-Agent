@@ -11,6 +11,34 @@ artifact:
   format: "react-jsx"
   location: "/designs/DES-512/dashboard-kpi-summary.jsx"
 
+glanceTest:   # 3-3-3: 3 seconds
+  - screen: "Dashboard"
+    breakpoint: "sm"
+    firstNoticed: ["Page heading 'Dashboard'", "Date-range preset chips (7d / 30d / 90d)", "KPI row, 2×2"]
+    purposeVisible: true
+    primaryActionVisible: true
+    pass: true
+    notes: "Primary action is the date-range filter (P2); the KPI tiles are read-only. Toolbar sits above the KPI row so both fit above the fold at 640px."
+
+taskPaths:    # 3-3-3: 3 clicks, 3 minutes
+  - taskId: "T1"
+    steps:
+      - action: "Land on the dashboard; the KPI row is above the fold"
+        isClick: false
+    clickCount: 0
+    estimatedSeconds: 5
+    estimateBasis: "~2 s for values to load behind the Skeleton, ~3 s to scan four labeled tiles with trend arrows."
+  - taskId: "T2"
+    steps:
+      - action: "Tap the '30d' preset chip"
+        isClick: true
+        scent: "Chip labeled '30d' in the toolbar directly above the numbers it filters."
+      - action: "Wait for the KPI row to refresh"
+        isClick: false
+    clickCount: 1
+    estimatedSeconds: 6
+    estimateBasis: "~2 s to find the chip, 1 tap, ~2 s refresh, ~2 s to confirm the new values."
+
 componentsUsed:
   - name: "StatTile"
     variant: "default"

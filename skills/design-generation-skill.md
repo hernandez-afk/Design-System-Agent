@@ -20,6 +20,9 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 7. **Design the feeling.** Motion should read as physics, not decoration — durations/easing always come from `motion.durationsMs`/`easing` tokens, never freehand. The result should feel calm and respectful of the user's time, which in practice means: no motion or interruption without a functional reason (ties directly to Interaction Behavior audit category).
 8. **No cosmetic fixes without structural reasoning.** Every decision, finding, and implementation note states what it accomplishes in the hierarchy/consistency/usability sense — never a bare preference. "Make this blue" is not a valid instruction anywhere in this pipeline; "change CTA to `color-brand-primary` to restore contrast against secondary actions" is. This is already enforced structurally by `audit-presentation-template.md`'s implementation-notes format and the decision log's required `tradeoff` field — this principle is *why* those exist.
 
+9. **Usable in 3-3-3.** Every core task is understood in 3 seconds, reached in 3 clicks, completed in 3 minutes (thresholds in `usabilityHeuristics.threeThreeThree`). Walked explicitly in Step 9b, never assumed.
+10. **Displays follow human perception, attention, and memory.** Wickens' 13 principles of display design (in `design-principles.md`) are applied in the steps where they bite — noted inline below — and audited in category 13.
+
 ## Required inputs
 
 | Input | Schema | If missing |
@@ -34,7 +37,7 @@ These are fixed logic — they hold regardless of which manifest is loaded. Ever
 
 ### Step 1 — Resolve the brief
 
-If not already structured, extract a `ticket-brief` from the raw ticket: identify `priorities` (rank them — don't treat every line as equally important), pull `requiredElements` with a best-guess `targetCategory` each, set `sourceType`, extract `scopeTerms` (specific domain terms, not generic words) and `surfaces` (which screens/areas it changes, using the design index's surface names), and flag anything genuinely ambiguous as `openQuestions`.
+If not already structured, extract a `ticket-brief` from the raw ticket: identify `priorities` (rank them — don't treat every line as equally important), pull `requiredElements` with a best-guess `targetCategory` each, set `sourceType`, extract `scopeTerms` (specific domain terms, not generic words) and `surfaces` (which screens/areas it changes, using the design index's surface names), list the `coreTasks` users come to do (each with an `entryPoint`), and flag anything genuinely ambiguous as `openQuestions`.
 
 A PRD usually describes more than one screen or feature. Extract the whole thing into one brief first — Step 2b decides whether it is one design, part of an existing one, or several.
 
@@ -96,6 +99,9 @@ Before laying out pixels, decide structure using `compositionHeuristics`. Start 
 - Any `requiredElements` entry with `estimatedVolume` implying a list longer than `listPaginationThreshold` → plan pagination/chunking now, not as an afterthought.
 - Any input cluster implied by the brief with more than `maxInlineInputs` fields → group into sections, or defer non-essential fields to a later step/screen. State which fields you deferred and why.
 - If `requireProgressiveDisclosure` is true → default to title + primary actions on the main view, specs/details on a drill-down, unless the brief's priorities explicitly need detail visible immediately.
+- **Minimize information access cost** (Wickens 8): anything a core task needs every time is on the path, not behind a tab, toggle, or drill-down.
+- **Proximity compatibility** (Wickens 9): information the user must combine sits together or is visibly linked; unrelated information must not look grouped.
+- **Knowledge in the world** (Wickens 11): no step makes the user remember something from a previous step — carry it forward on screen.
 - Map every resulting screen/section back to a `priorities` id. Anything that doesn't trace to a priority gets cut or flagged as a question, not included "for completeness."
 
 ### Step 5 — Layout, using manifest tokens only
@@ -110,7 +116,7 @@ If multiple layout paradigms could reasonably serve the brief (e.g. dashboard-gr
 
 ### Step 6 — Typography
 
-Apply `typography.roles`: heading uses `roles.heading`, explanatory text uses `roles.readableSubtext`, and any label attached to a fillable field uses `roles.formLabel` — these three must remain visually distinguishable from each other (this is checked in audit category 3). Derive the type scale from `typography.scale.baseSizePx` / `ratio`, don't pick sizes freehand.
+Apply `typography.roles`: heading uses `roles.heading`, explanatory text uses `roles.readableSubtext`, and any label attached to a fillable field uses `roles.formLabel` — these three must remain visually distinguishable from each other (this is checked in audit category 3). Derive the type scale from `typography.scale.baseSizePx` / `ratio`, don't pick sizes freehand. No text — captions and chart labels included — below `usabilityHeuristics.displayDesign.minReadableTextPx`, and nothing truncated at the smallest breakpoint (Wickens 1, legibility). Labels on adjacent actions with different outcomes must differ in their first word, not just the last (Wickens 5, discriminability).
 
 ### Step 7 — Color
 
@@ -118,17 +124,32 @@ Structure comes from `color.neutrals`. Actions come from `color.accents`, govern
 
 **Hierarchy Drives Everything**: identify the single primary action for this screen before styling anything, and style only that many elements (`maxPrimaryActionsPerScreen`, default 1) with primary-accent weight. Every other action is visually secondary regardless of how important it feels — if two actions both seem to need primary weight, that's an information-architecture problem to resolve back in Step 4, not a reason to raise the count.
 
+**Perception checks** while placing color:
+- **Redundancy gain** (Wickens 4): every critical state (error, warning, destructive, status) gets a second cue — icon and/or text — never color alone.
+- **Absolute judgment** (Wickens 2): don't encode a value in more than `displayDesign.maxAbsoluteJudgmentLevels` shades/sizes of one variable without direct labels.
+- **Top-down processing** (Wickens 3): follow convention (red = error, green = success, standard control placement). Breaking a convention is a Decision Protocol moment.
+
 ### Step 8 — Motion
 
-Any async wait (data fetch, computed result) → loading state using `motion.durationsMs` / `easing`, required if `motionUsagePolicy.requireLoadingAnimation`. Any chart/visualization → entrance animation if `motionUsagePolicy.requireDataVizAnimation`, gated by `motion.respectReducedMotion`. **Design the Feeling**: curves should behave like momentum, not decoration — `easing.entrance` reads as arriving and settling (ease-out), `easing.exit` reads as departing (ease-in), never a bounce or flourish added for its own sake.
+Any async wait (data fetch, computed result) → loading state using `motion.durationsMs` / `easing`, required if `motionUsagePolicy.requireLoadingAnimation`. Any chart/visualization → entrance animation if `motionUsagePolicy.requireDataVizAnimation`, gated by `motion.respectReducedMotion`. **Design the Feeling**: curves should behave like momentum, not decoration — `easing.entrance` reads as arriving and settling (ease-out), `easing.exit` reads as departing (ease-in), never a bounce or flourish added for its own sake. Charts and indicators follow **pictorial realism** (Wickens 6: more is higher/bigger) and **the moving part** (Wickens 7: an increase animates up, progress fills forward, a panel leaves the way it came). Anywhere the user commits to something with a foreseeable outcome — a limit, a cost, a wait — show it in advance (**predictive aiding**, Wickens 12). Time-critical alerts don't rely on the visual channel alone where the platform offers sound or haptics (**multiple resources**, Wickens 10).
 
 ### Step 9 — Navigation ties
 
 Any view reached by drilling in needs a way back — button, breadcrumb, or shortcut per `navigationHeuristics.requireNavigationalTies`. Use a breadcrumb trail specifically once depth exceeds `breadcrumbThresholdDepth`; a back button alone is fine above it.
 
+### Step 9b — 3-3-3 walk-through
+
+For every `coreTasks` entry, before packaging:
+
+1. **3 seconds — glance test.** At `threeThreeThree.glanceBreakpoint`, list the first two or three things the eye lands on. Pass only if the screen's purpose and its primary action are both visible without scrolling and without reading body text. A fail is a hierarchy problem — go back to Steps 4–7, don't add explanatory copy.
+2. **3 clicks — task path.** Walk from the task's `entryPoint`, writing down every step and marking which are clicks/taps (typing isn't). Over `maxClicksToCoreTask` → shorten the path, or document an `overLimitReason` and each step's `scent` (why the user knows it's the right step). Never shorten a path by breaking `maxInlineInputs`, pagination, or progressive disclosure — if they conflict, it's a Decision Protocol moment.
+3. **3 minutes — completion estimate.** Estimate a first-time user's time step by step, including reading and waiting, and state the basis. Over `maxCoreTaskMinutes` → simplify the task, split it, or document the reason.
+
+Record the results in the design output's `glanceTest` and `taskPaths`.
+
 ### Step 10 — Assemble output
 
-Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the list of components/variants used (with status), and any gap and verification reports filed.
+Produce a `design-output` (`design-output.schema.json`) bundling: the design itself (markup/mockup, appropriate to `meta.framework`/`stylingEngine`), the `projectId` and `scopeOverlapReportRef` from Step 2b, the decision log from any Decision Protocol invocations (plus inherited decisions), the `glanceTest` and `taskPaths` from Step 9b, the list of components/variants used (with status), and any gap and verification reports filed.
 
 ### Step 11 — Automatic audit handoff
 

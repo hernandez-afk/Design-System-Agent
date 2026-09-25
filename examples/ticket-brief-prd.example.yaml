@@ -33,6 +33,16 @@ requiredElements:
     targetCategory: "data-viz"
     linkedPriority: "P3"
 
+coreTasks:
+  - id: "T1"
+    statement: "Narrow the report list to the last 90 days."
+    linkedPriority: "P1"
+    entryPoint: "reports"
+  - id: "T2"
+    statement: "Export an open report as CSV."
+    linkedPriority: "P2"
+    entryPoint: "reports"
+
 constraints:
   - "Ship with the Q4 finance close."
 

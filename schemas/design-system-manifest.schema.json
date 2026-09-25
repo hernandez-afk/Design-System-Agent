@@ -418,6 +418,29 @@
       }
     },
 
+    "usabilityHeuristics": {
+      "type": "object",
+      "description": "Thresholds for the 3-3-3 rule and Wickens' display-design principles (design-principles.md). Checked in rubric categories 12 and 13.",
+      "properties": {
+        "threeThreeThree": {
+          "type": "object",
+          "properties": {
+            "glanceSeconds": { "type": "number", "default": 3, "description": "A first-time user must grasp the screen's purpose and primary action within this long." },
+            "glanceBreakpoint": { "type": "string", "default": "sm", "description": "The layout.breakpoints step the glance test is judged at — the smallest, per Responsive Is the Real Design." },
+            "maxClicksToCoreTask": { "type": "integer", "default": 3, "description": "Max clicks/taps from a core task's entry point to reaching it. Typing doesn't count." },
+            "maxCoreTaskMinutes": { "type": "number", "default": 3, "description": "Max estimated time for a first-time user to complete a core task." }
+          }
+        },
+        "displayDesign": {
+          "type": "object",
+          "properties": {
+            "minReadableTextPx": { "type": "number", "default": 12, "description": "Wickens 1 (legibility): no text below this size, including captions and chart labels." },
+            "maxAbsoluteJudgmentLevels": { "type": "integer", "default": 5, "description": "Wickens 2: max number of levels of one visual variable (shade, size, hue) used to encode a value without direct labels." }
+          }
+        }
+      }
+    },
+
     "scopePolicy": {
       "type": "object",
       "description": "How the agent places incoming briefs against existing designs (design-index) and keeps linked artifacts in sync. See design-generation-skill.md Step 2b and Step 12, and rubric category 11.",

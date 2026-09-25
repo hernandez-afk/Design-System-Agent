@@ -1,6 +1,6 @@
 ---
 name: design-principles
-description: The fixed rules design-generation-skill.md and design-audit-rubric.md both answer to. Not manifest-configurable, not per-project preference — these hold regardless of design system.
+description: The fixed rules design-generation-skill.md and design-audit-rubric.md both answer to — the eight core principles, the 3-3-3 usability rule, and Wickens' 13 principles of display design. Not manifest-configurable, not per-project preference — these hold regardless of design system.
 ---
 
 # Design Principles
@@ -58,3 +58,48 @@ Premium apps feel calm, confident, and quiet. Every interaction should feel resp
 Never suggest a change without explaining what it accomplishes in the hierarchy. "Make this blue" is not an instruction. "Change CTA color to brand-primary to increase contrast against secondary actions" is. Every change must have a design reason, not just a preference.
 
 **Applied:** This is exactly what `implementationNote` + the "Why this matters" column in `audit-presentation-template.md` already enforce structurally — the bad/good examples in that template are this principle in practice. Strengthened requirement: the rationale must cite a structural cause (hierarchy, consistency, contrast ratio, a named token) — "looks better" is not a valid rationale and should be rejected the same way a missing `implementationNote` is.
+
+---
+
+# Usability & Display-Design Criteria
+
+The eight principles above say what a good interface *is*. The two sets below make it *checkable*: the 3-3-3 rule measures whether a person can actually use the design, and Wickens' 13 principles of display design (Wickens, Lee, Liu & Gordon-Becker, *An Introduction to Human Factors Engineering*) explain why a display is or isn't easy to perceive, understand, and remember. Thresholds live in the manifest's `usabilityHeuristics`; the checks are rubric categories 12 and 13.
+
+## The 3-3-3 Rule
+
+Every core task in the ticket brief (`coreTasks`) must pass all three:
+
+1. **3 seconds to understand.** A first-time user, glancing at the screen, can tell what it is for and what the primary action is within `glanceSeconds` — at the smallest breakpoint (`glanceBreakpoint`), without scrolling, and without reading body text. The heading and the one primary action carry this; if either needs explanation, the hierarchy is wrong.
+2. **3 clicks to reach.** From its entry point, a core task is reachable in at most `maxClicksToCoreTask` clicks/taps. Typing into a field doesn't count; every navigation, selection, or toggle does.
+3. **3 minutes to complete.** A first-time user can finish the core task in under `maxCoreTaskMinutes`, estimated step by step with the assumptions stated.
+
+**The limits are guides, not goals.** Research on the three-click rule shows people don't give up after three clicks when every click is obviously the right one — what matters is that each step has clear *information scent* (the label tells you what's behind it). So:
+- Never meet the click limit by cramming: it does not override `maxInlineInputs`, progressive disclosure, or pagination. If they conflict, that's a Decision Protocol moment, not a silent trade.
+- A path that goes over the limit is acceptable only with a stated reason and every step's scent documented.
+
+**Applied:** the ticket brief lists `coreTasks`; generation Step 9b walks each one and records a `glanceTest` and `taskPaths` in the design output; audited in rubric category 12.
+
+## Wickens' 13 Principles of Display Design
+
+### Perceptual principles
+1. **Make displays legible.** Text, icons, and data must be readable in the real conditions of use — size, contrast, and resolution at the smallest breakpoint. Nothing below `displayDesign.minReadableTextPx`; nothing truncated into meaninglessness.
+2. **Avoid absolute judgment limits.** People can't reliably tell apart more than a few levels of one visual variable (shade, size, hue) from memory. Don't encode more than `displayDesign.maxAbsoluteJudgmentLevels` levels on a single dimension without direct labels or a second dimension.
+3. **Top-down processing.** People see what they expect. Follow established conventions (placement of standard controls, red = error, green = success, up = more); when a design must break an expectation, make the difference unmistakable.
+4. **Redundancy gain.** A message is received more reliably when it arrives through more than one channel. Critical states — errors, warnings, destructive actions, status — use at least two cues (color *and* icon *and/or* text).
+5. **Discriminability.** Similar-looking items get confused. Elements that mean different things must look clearly different — especially when they sit side by side or trigger different outcomes. Emphasize the features that differ, not the ones they share.
+
+### Mental-model principles
+6. **Pictorial realism.** A display should look like what it represents: higher values higher, more is bigger, time runs left to right in left-to-right locales.
+7. **The moving part.** Things that change should move the way the user's mental model says they move: progress fills forward, an increase animates upward, a panel slides from where it came from.
+
+### Attention principles
+8. **Minimize information access cost.** Information used often, or together, should be reachable with the least effort — no repeated scrolling, tab-switching, or drilling to find what a task needs every time.
+9. **Proximity compatibility.** Information that must be mentally combined belongs close together (or visibly linked by color, line, or container); unrelated information should *not* look grouped.
+10. **Multiple resources.** Attention can be split across channels (visual, auditory, haptic) better than within one. Don't pile every signal onto the visual channel while the user is reading; for time-critical alerts, use a second modality where the platform supports it.
+
+### Memory principles
+11. **Replace memory with visual information (knowledge in the world).** Don't make people remember what the interface can show. Values, options, and context from a previous step stay visible; available actions are visible, not hidden behind unmarked gestures.
+12. **Predictive aiding.** Show what's about to happen: consequences before committing, time remaining, what the next step is, when a limit will be reached. Anticipating is easier than reacting.
+13. **Consistency.** The same thing looks and behaves the same everywhere, including across other designs in the design index. (This deepens *Consistency Is Non-Negotiable* above; the component registry and scope check exist to enforce it.)
+
+**Applied:** principles 1–5 shape generation Steps 5–8 (layout, typography, color, motion); 6–7 shape data-viz and motion (Step 8); 8–9 shape information architecture (Step 4); 10–12 shape feedback and navigation (Steps 8–9); 13 is enforced by Steps 2b and 3. All 13 are audited in rubric category 13.
