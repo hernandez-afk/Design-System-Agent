@@ -17,6 +17,33 @@ designSystemUpdatesRequired:
     relatedGapReportId: "DES-512-gap-2"
     requiresApprovalBeforeImplementation: true
 
+consistencyInventory:   # built first, in every critique
+  spacing:
+    - element: "StatTile"
+      property: "padding"
+      role: "card-padding"
+      expectedPx: 16
+      found: [{ px: 16, where: "each of the 4 KPI tiles" }]
+      consistent: true
+    - element: "KPI summary row"
+      property: "gap"
+      role: "stack-group"
+      expectedPx: 24
+      found: [{ px: 20, where: "between StatTiles" }]
+      consistent: false        # the category-3 finding below
+  typography:
+    - element: "h1 page title"
+      style: "page-title"
+      expected: "3xl / 700 / display"
+      found: [{ value: "3xl / 700", where: "Dashboard header" }]
+      consistent: true
+    - element: "form labels"
+      style: "label"
+      expected: "sm / 500 / ui"
+      found: [{ value: "sm / 500", where: "date-range chips' group label" }]
+      consistent: true
+  rhythm: { relatedPx: 8, groupPx: 20, sectionPx: 48, ascending: true }
+
 categories:
   - category: "reuse-and-component-discipline"
     verdict: "blocker"

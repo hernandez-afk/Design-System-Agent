@@ -48,6 +48,11 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Blocker:** A spacing value appears that isn't in `spacing.scale` (or a documented multiple of `spacing.baseUnitPx`). *(Escalated from major — "no hardcoded values, ever" per core design principle 3.)*
 - [ ] **Blocker:** A font size appears that isn't one of `typography.scale.steps`. *(Escalated from major, same reason.)*
 - [ ] **Blocker:** A color appears that isn't a `color.neutrals` / `color.accents` role. *(Escalated from major, same reason.)*
+- [ ] **Major:** The same kind of element has different spacing or padding in different places (cards 16px on one screen, 24px on another; buttons with two different paddings), even when every value is on the scale.
+- [ ] **Major:** Text of the same kind uses different styles (section headings at `xl` here and `2xl` there, labels in two weights).
+- [ ] **Major:** An element uses an on-scale value that isn't its role's value (card padding 24px when `spacing.roles` says 16px), or a text style that isn't its `typography.styles` entry.
+- [ ] **Major:** No consistency inventory in the audit report, so consistency wasn't actually checked.
+- [ ] **Minor:** Rhythm doesn't step up: space between related items isn't smaller than between groups, or between groups isn't smaller than between sections (Wickens 9, proximity).
 - [ ] **Minor:** More than `typography.weights.length` distinct font weights used.
 - [ ] **Minor:** A third typeface introduced beyond `typography.typefaces` (display/body/ui).
 - [ ] **Major:** Heading and its readable subtext use the same font, weight, and size step — no visual hierarchy between them (violates `typography.roles.heading` vs `typography.roles.readableSubtext`).

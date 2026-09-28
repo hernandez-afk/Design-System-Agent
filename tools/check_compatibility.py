@@ -41,7 +41,7 @@ EXPLICIT = [
     "registryPolicy.onMissingComponent", "registryPolicy.onMissingVariant", "registryPolicy.requireApprovalBeforeReuse",
     "registryPolicy.requireOperationalVerification", "registryPolicy.verificationReviewer", "registryPolicy.similarityCheck",
     "automation", "compositionHeuristics", "navigationHeuristics", "motionUsagePolicy",
-    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy",
+    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy", "spacing.roles", "typography.styles",
 ]
 
 # The components the rubric's checks assume exist, with the variants they need.
@@ -144,6 +144,21 @@ def check(m, schemas, claude_md, index_path):
         gaps.append(f"Spacing steps not multiples of baseUnitPx: {off_unit}.")
     if sp.get("scale") != sorted(sp.get("scale", [])):
         gaps.append("spacing.scale isn't in ascending order.")
+    # consistency by role: every role and style must be expressible in the system
+    scale_px = set(sp.get("scale", []))
+    for r in get(m, "spacing.roles") or []:
+        if r["px"] not in scale_px:
+            gaps.append(f"Spacing role '{r['name']}' is {r['px']}px, which isn't on spacing.scale.")
+    roles = {r["name"]: r["px"] for r in get(m, "spacing.roles") or []}
+    ladder = [roles[k] for k in ("stack-related", "stack-group", "section") if k in roles]
+    if ladder != sorted(set(ladder)) or len(ladder) != len(set(ladder)):
+        gaps.append("Spacing roles don't step up: stack-related < stack-group < section is what makes grouping visible (Wickens 9).")
+    weights = set(get(m, "typography.weights") or [])
+    for st in get(m, "typography.styles") or []:
+        if st["step"] not in steps:
+            gaps.append(f"Text style '{st['name']}' uses step '{st['step']}', which isn't in typography.scale.steps.")
+        if weights and st["weight"] not in weights:
+            gaps.append(f"Text style '{st['name']}' uses weight {st['weight']}, which isn't in typography.weights.")
     if get(m, "layout.gutterPx") is not None and get(m, "layout.gutterPx") not in sp.get("scale", []):
         gaps.append("layout.gutterPx isn't a spacing.scale step.")
     bps = list((get(m, "layout.breakpoints") or {}).values())

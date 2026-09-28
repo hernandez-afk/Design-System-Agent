@@ -26,10 +26,12 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
   - Heading: Source Serif 4, 700
   - Readable subtext: Source Sans 3, 400, in `#52525b`
   - Form label: Source Sans 3, 600, in `#18181b`. It must never look like readable subtext.
+- **Text styles** (every kind of text has one style, on every screen): page-title 3xl / 700 / display (h1) · section-heading xl / 600 / display (h2) · subheading lg / 600 / body (h3) · body base / 400 (p) · label sm / 600 / ui (label) · caption sm / 400
 
 **Spacing & layout**
 - Spacing scale (px): 4, 8, 12, 16, 24, 32, 48, 64; base unit 4px
 - Radius: `radius-sm` 4px (inputs, chips, small buttons) · `radius-md` 8px (buttons, cards) · `radius-lg` 12px (dialogs, panels)
+- **Spacing roles** (the same kind of space is the same value everywhere): card-padding 16 (Card, Dialog, InlineAlert) · control-padding-x 16 and control-padding-y 12 (Button, Input, Select) · stack-related 8 · stack-group 24 · section 48 · page-gutter 16
 - Grid: 12 columns, 24px gutter, max width 1200px, alignment tolerance 0px (exact)
 - Breakpoints (design mobile first): sm 640 · md 768 · lg 1024 · xl 1280
 
@@ -117,6 +119,8 @@ Never meet the click limit by cramming.
 **Accessibility:** AA; touch targets ≥ 44px; visible focus; semantic HTML.
 
 **Density:** paginate lists over 10 items; group forms over 7 fields; details go on a drill-down view.
+
+**Consistency, in every critique:** list each kind of element with its padding, spacing and text style on every screen, and compare it with its spacing role and text style. The same kind of element with different values is a finding, even when both values are on the scale. Spacing steps up: related < group < section.
 
 **Severity:**
 - **Blocker:** off-token value, invented component, more than one primary action, skipped decision or scope check, contrast or touch-target failure

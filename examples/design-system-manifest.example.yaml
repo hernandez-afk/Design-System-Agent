@@ -82,6 +82,12 @@ typography:
     ratio: 1.25
     steps: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl"]
   lineHeightRatio: 1.5
+  styles:
+    - { name: "page-title",      step: "3xl",  weight: 700, typeface: "display", appliesTo: ["h1"] }
+    - { name: "section-heading", step: "xl",   weight: 700, typeface: "display", appliesTo: ["h2"] }
+    - { name: "subheading",      step: "lg",   weight: 500, typeface: "body",    appliesTo: ["h3"] }
+    - { name: "body",            step: "base", weight: 400, typeface: "body",    appliesTo: ["p"] }
+    - { name: "label",           step: "sm",   weight: 500, typeface: "ui",      appliesTo: ["label"] }
   roles:
     heading: "typefaces.display"        # Fraunces, 700 weight
     readableSubtext: "typefaces.body"   # Inter, 400 weight, textSecondary color
@@ -93,6 +99,13 @@ typography:
 spacing:
   baseUnitPx: 4
   scale: [4, 8, 16, 24, 32, 48]
+  roles:
+    - { name: "card-padding",      px: 16, property: "padding",   appliesTo: ["Card", "StatTile"] }
+    - { name: "control-padding-x", px: 16, property: "padding-x", appliesTo: ["Button", "Input"] }
+    - { name: "control-padding-y", px: 8,  property: "padding-y", appliesTo: ["Button", "Input"] }
+    - { name: "stack-related",     px: 8,  property: "gap" }
+    - { name: "stack-group",       px: 24, property: "gap" }
+    - { name: "section",           px: 48, property: "margin" }
 
 radius:
   tokens:

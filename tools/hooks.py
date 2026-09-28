@@ -129,6 +129,19 @@ def post_edit(data):
     if report:
         messages.append(report)
     owners, text = context_for(rel, ROOT, manifest, index)
+    if owners:  # the edited file against every other file of the same design
+        from design_context import globmatch
+        globs = [g for p in index.get("projects", []) if p["id"] in owners for g in p.get("codePaths", [])]
+        files = [os.path.join(d, n) for d, _, names in os.walk(ROOT) if "/." not in d and "node_modules" not in d
+                 for n in names if any(globmatch(os.path.relpath(os.path.join(d, n), ROOT), g) for g in globs)]
+        if len(files) > 1:
+            import subprocess
+            res = subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "consistency_check.py"),
+                                  *files, "--root", ROOT, "--manifest", MANIFEST], capture_output=True, text=True)
+            mine = [l.strip() for l in res.stdout.splitlines() if l.strip().startswith("•") and rel in l]
+            if mine:
+                messages.append("Inconsistent with the rest of this design (same element, different spacing or type):\n"
+                                + "\n".join(mine) + "\nUse the spacing role or text style, so it matches everywhere.")
     if not owners and text and not seen(data.get("session_id", "default"), "unowned-" + os.path.dirname(rel)):
         messages.append(text)
     if not messages:

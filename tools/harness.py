@@ -185,7 +185,12 @@ class Harness:
                 res = subprocess.run([sys.executable, os.path.join(HERE, "token_lint.py"), *files, "--root", self.root,
                                       "--manifest", os.path.relpath(self.manifest_path, self.root)], capture_output=True, text=True)
                 n = sum(1 for l in res.stderr.splitlines() + res.stdout.splitlines() if " — " in l)
-                g["build"] = ("fail", f"token lint: {n} off-token value(s) in {len(files)} file(s)") if res.returncode == 2 else ("pass", f"{len(files)} file(s), token-clean")
+                cons = subprocess.run([sys.executable, os.path.join(HERE, "consistency_check.py"), *files, "--root", self.root,
+                                       "--manifest", os.path.relpath(self.manifest_path, self.root)], capture_output=True, text=True)
+                c = sum(1 for l in cons.stdout.splitlines() if l.strip().startswith("•"))
+                problems = ([f"token lint: {n} off-token value(s)"] if res.returncode == 2 else []) + \
+                           ([f"consistency: {c} finding(s)"] if cons.returncode == 2 else [])
+                g["build"] = ("fail", f"{'; '.join(problems)} in {len(files)} file(s)") if problems else ("pass", f"{len(files)} file(s), token-clean and consistent")
         # verify
         a = self.artifact(p, "implementation-review")
         r = self.read(a) if a else None

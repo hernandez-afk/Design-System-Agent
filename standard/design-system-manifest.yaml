@@ -89,6 +89,13 @@ typography:
     ratio: 1.2
     steps: ["sm", "base", "lg", "xl", "2xl", "3xl", "4xl"]   # smallest is 13px — nothing below the 12px floor
   lineHeightRatio: 1.5
+  styles:                  # every kind of text has one style, on every screen
+    - { name: "page-title",      step: "3xl",  weight: 700, typeface: "display", appliesTo: ["h1"] }
+    - { name: "section-heading", step: "xl",   weight: 600, typeface: "display", appliesTo: ["h2"] }
+    - { name: "subheading",      step: "lg",   weight: 600, typeface: "body",    appliesTo: ["h3"] }
+    - { name: "body",            step: "base", weight: 400, typeface: "body",    appliesTo: ["p"] }
+    - { name: "label",           step: "sm",   weight: 600, typeface: "ui",      appliesTo: ["label"] }
+    - { name: "caption",         step: "sm",   weight: 400, typeface: "body",    usage: "Supporting text, in textSecondary." }
   roles:
     heading: "typefaces.display"        # Source Serif 4, 700
     readableSubtext: "typefaces.body"   # Source Sans 3, 400, textSecondary
@@ -97,6 +104,14 @@ typography:
 spacing:
   baseUnitPx: 4
   scale: [4, 8, 12, 16, 24, 32, 48, 64]
+  roles:                   # the same kind of space is the same value everywhere
+    - { name: "card-padding",      px: 16, property: "padding",   appliesTo: ["Card", "Dialog", "InlineAlert"] }
+    - { name: "control-padding-x", px: 16, property: "padding-x", appliesTo: ["Button", "Input", "Select"] }
+    - { name: "control-padding-y", px: 12, property: "padding-y", appliesTo: ["Button", "Input", "Select"] }
+    - { name: "stack-related",     px: 8,  property: "gap", usage: "Label to field; items in one group." }
+    - { name: "stack-group",       px: 24, property: "gap", usage: "Between groups of related items." }
+    - { name: "section",           px: 48, property: "margin", usage: "Between page sections." }
+    - { name: "page-gutter",       px: 16, property: "padding-x", usage: "Page edges on phones; the grid gutter takes over from md." }
 
 radius:
   tokens:

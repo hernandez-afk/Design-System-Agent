@@ -23,10 +23,12 @@ Use only these values. Never hard-code a color, spacing, size, radius or duratio
 - Display `{{typography.typefaces.display}}`, body `{{typography.typefaces.body}}`, UI `{{typography.typefaces.ui}}`; weights {{typography.weights}}
 - Scale: base {{typography.scale.baseSizePx}}px × {{typography.scale.ratio}}, steps {{typography.scale.steps}}; line height {{typography.lineHeightRatio}}
 - Roles: {{typography.roles — one line each: heading, readable subtext, form label, and how they differ}}
+- **Text styles** (every kind of text has one style, on every screen): {{typography.styles — name: step / weight / typeface (applies to), one per item}}
 
 **Spacing & layout**
 - Spacing scale (px): {{spacing.scale}}; base unit {{spacing.baseUnitPx}}px
 - Radius: {{radius.tokens — name px (usage), one per item}}
+- **Spacing roles** (the same kind of space is the same value everywhere): {{spacing.roles — name px (applies to), one per item}}
 - Grid: {{layout.gridColumns}} columns, {{layout.gutterPx}}px gutter, max width {{layout.containerMaxWidthPx}}px, alignment tolerance {{layout.alignmentTolerancePx}}px
 - Breakpoints (design mobile first): {{layout.breakpoints}}
 
@@ -95,6 +97,8 @@ Never meet the click limit by cramming.
 **Accessibility:** {{accessibility.level}}; touch targets ≥ {{accessibility.minTouchTargetPx}}px; visible focus; semantic HTML.
 
 **Density:** paginate lists over {{compositionHeuristics.listPaginationThreshold}} items; group forms over {{compositionHeuristics.maxInlineInputs}} fields; details go on a drill-down view.
+
+**Consistency, in every critique:** list each kind of element with its padding, spacing and text style on every screen, and compare it with its spacing role and text style. The same kind of element with different values is a finding, even when both values are on the scale. Spacing steps up: related < group < section.
 
 **Severity:**
 - **Blocker:** off-token value, invented component, more than one primary action, skipped decision or scope check, contrast or touch-target failure

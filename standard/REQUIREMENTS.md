@@ -45,6 +45,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 - **Registry:** `registryPolicy` in full, including `similarityCheck`, `requireOperationalVerification` and `verificationReviewer`
 - **Behavior:** `automation`, `compositionHeuristics`, `navigationHeuristics`, `motionUsagePolicy`, `usabilityHeuristics`, `scopePolicy`
 - **Briefs:** `briefPolicy` in full, including `requireEdgeCaseSweep` and any product-specific `edgeCaseLenses`
+- **Consistency by role:** `spacing.roles` (card, control, related, group and section spacing) and `typography.styles` (page title, section heading, body, label, caption), each naming the elements it applies to
 - **Mobile:** `mobile` in full (narrowest width, text scale, target spacing, largest fixed size, text expansion, thumb zone, orientations)
 
 ### Values that pass the agent's own checks
@@ -60,6 +61,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 | At most 3 weights | Rubric category 3 | 400 / 600 / 700 |
 | Spacing steps are multiples of `baseUnitPx`, in ascending order, and the gutter is one of them | Alignment is exact (`alignmentTolerancePx: 0`) | 4–64 on a 4px unit, 24px gutter |
 | Breakpoints ascending; touch targets ≥ 44px | Mobile-first layout; rubric category 2 | 640 / 768 / 1024 / 1280; 44px |
+| Spacing roles are on the scale and step up (related < group < section); text styles use existing steps and weights | Consistency by role: the same kind of element is the same everywhere, and grouping is visible (Wickens 9) | 8 < 24 < 48 |
 | Designs verified at 360px or narrower; text scale ≥ 200%; target spacing ≥ 8px; a breakpoint at or below 640px | Mobile at all times (rubric category 14) | 320px, 200%, 8px, sm 640 |
 | Similarity and overlap weights each sum to 1, with reuse > extend and merge > related | Otherwise the reuse and scope checks route work wrongly | Defaults |
 

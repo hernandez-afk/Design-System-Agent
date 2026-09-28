@@ -195,6 +195,22 @@
           }
         },
         "lineHeightRatio": { "type": "number", "default": 1.5 },
+        "styles": {
+          "type": "array",
+          "description": "Named text styles: which step, weight and typeface each kind of text uses. The same kind of text is always the same style: every section heading uses 'section-heading', never xl on one screen and 2xl on another. Steps must be in scale.steps and weights in weights.",
+          "items": {
+            "type": "object",
+            "required": ["name", "step", "weight"],
+            "properties": {
+              "name": { "type": "string", "description": "e.g. 'page-title', 'section-heading', 'body', 'label', 'caption'." },
+              "step": { "type": "string", "description": "A scale.steps name." },
+              "weight": { "type": "integer" },
+              "typeface": { "type": "string", "enum": ["display", "body", "ui"] },
+              "appliesTo": { "type": "array", "items": { "type": "string" }, "description": "Elements it applies to, e.g. ['h1'] or ['label']." },
+              "usage": { "type": "string" }
+            }
+          }
+        },
         "roles": {
           "type": "object",
           "description": "Explicit pairing rules so the agent doesn't have to infer hierarchy — a header and its subtext must read as visually distinct, and a subtext next to an input must read differently than a subtext that's just explanatory prose.",
@@ -228,6 +244,21 @@
           "type": "array",
           "items": { "type": "number" },
           "description": "e.g. [4, 8, 16, 24, 32, 48]"
+        },
+        "roles": {
+          "type": "array",
+          "description": "Which spacing step each kind of space uses, so the same kind of space is the same everywhere: card padding is always one value, never 16 here and 24 there. Every value must be on spacing.scale. The critic checks every instance against its role (rubric category 3), and tools/consistency_check.py checks the code.",
+          "items": {
+            "type": "object",
+            "required": ["name", "px"],
+            "properties": {
+              "name": { "type": "string", "description": "e.g. 'card-padding', 'control-padding-x', 'stack-related', 'stack-group', 'section'." },
+              "px": { "type": "number" },
+              "appliesTo": { "type": "array", "items": { "type": "string" }, "description": "Components or elements it applies to, e.g. ['Card']. Empty for layout roles like 'stack-related'." },
+              "property": { "type": "string", "enum": ["padding", "padding-x", "padding-y", "gap", "margin"], "description": "Which property the role sets on the elements in appliesTo." },
+              "usage": { "type": "string" }
+            }
+          }
         }
       }
     },

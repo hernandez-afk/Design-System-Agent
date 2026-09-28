@@ -127,11 +127,26 @@ def main(manifest_path, out_dir):
     families = {role: f'"{face}", {"serif" if role == "display" else "system-ui, sans-serif"}'
                 for role, face in faces.items()}
     groups = [{"name": "Text", "family": "body", "styles": text_styles}]
+    # named text styles: what the critic checks every kind of text against
+    size_of = {s["name"]: s for s in text_styles + display_styles}
+    named = [{"name": st["name"], "fontSize": size_of[st["step"]]["fontSize"], "lineHeight": size_of[st["step"]]["lineHeight"],
+              "fontWeight": st["weight"]} for st in typo.get("styles", []) or [] if st["step"] in size_of]
+    missing_steps = [st["name"] for st in typo.get("styles", []) or [] if st["step"] not in size_of]
+    if missing_steps:
+        errors.append(f"Text style(s) {', '.join(missing_steps)} use a step that isn't in typography.scale.steps.")
     if display_styles:
         groups.append({"name": "Display", "family": "display" if "display" in families else "body", "styles": display_styles})
+    for fam in ("display", "body"):
+        fam_styles = [n for n, st in zip(named, typo.get("styles", []) or []) if (st.get("typeface") or "body") in ((fam,) if fam == "display" else ("body", "ui"))]
+        if fam_styles:
+            groups.append({"name": "Styles" if fam == "body" else "Display styles", "family": fam if fam in families else "body", "styles": fam_styles})
 
     spacing = [{"name": f"space-{px}", "value": f"{px}px", "usage": f"Spacing scale step {i + 1} of {len(m['spacing']['scale'])}."}
                for i, px in enumerate(m["spacing"]["scale"])]
+    for r in m["spacing"].get("roles", []) or []:  # roles: the same kind of space is the same value everywhere
+        applies = f" for {', '.join(r['appliesTo'])}" if r.get("appliesTo") else ""
+        spacing.append({"name": r["name"], "value": f"{r['px']}px",
+                        "usage": (r.get("usage") or f"{r.get('property', 'spacing').capitalize()}{applies}.") + " Use this role, not a raw step."})
     radius = [{"name": r["name"], "value": f"{r['px']}px", "usage": r.get("usage", "")}
               for r in (m.get("radius", {}) or {}).get("tokens", [])]
     for t in spacing + radius:
@@ -161,7 +176,7 @@ def main(manifest_path, out_dir):
     with open(path, "w") as f:
         json.dump(tokens, f, indent=2, ensure_ascii=False)
         f.write("\n")
-    print(f"Wrote {path}: {len(color_tokens)} colors, {len(text_styles) + len(display_styles)} type styles, "
+    print(f"Wrote {path}: {len(color_tokens)} colors, {len(text_styles) + len(display_styles)} type steps + {len(named)} named text styles, "
           f"{len(spacing)} spacing, {len(radius)} radius tokens.")
     return 0
 

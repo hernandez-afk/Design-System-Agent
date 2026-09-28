@@ -21,6 +21,7 @@ The most important thing this system does is keep a product consistent while it'
 | Decisions are made once and reused | Inherited decisions, shared patterns | The design context lists the owning design's decisions. Contradicting one is raised as a design change. |
 | Every design works on a phone; every component is dynamic | Mobile pass (`mobileCheck`) on every design; `dynamicBehavior` required to approve a component; rubric category 14 | The token lint flags fixed sizes that break on narrow screens |
 | Every value is a token | Rubric category 3 | `token_lint.py` runs after every edit and sends off-token values back to fix |
+| The same kind of element looks the same everywhere | Spacing roles and text styles; a consistency inventory in every critique | `consistency_check.py` compares each edit with the rest of its design, and gates the build |
 | Every component comes from the registry | Reuse check, gap + verification reports | The design context lists the components to use |
 | Nothing drifts silently | Version stamps, change propagation, `needs-review` flags | Session start lists every design with open review flags |
 | The work is checked by someone who didn't make it | Independent critic persona | — |
@@ -105,7 +106,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
-- **tools/** — `harness.py` (stages, gates, next steps, learning), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `harness.py` (stages, gates, next steps, learning), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

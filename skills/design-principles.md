@@ -27,6 +27,16 @@ The same component must look and behave identically everywhere. If you find inco
 
 **Applied:** This is the registry/reuse system's entire reason for existing. "Flag, don't invent a third variation" is now explicit in rubric category 1 for standalone audits of existing designs. Hardcoded-value findings in category 3 are **blockers**, not majors — "ever" doesn't leave room for a lesser severity.
 
+### Consistency by role
+
+Being on the scale isn't the same as being consistent. 16px and 24px are both valid spacing steps, but a card with 16px padding on one screen and 24px on the next is inconsistent. So every spacing and type value is chosen **by role, not per instance**:
+
+- **Spacing roles** (`spacing.roles`) name what each kind of space is for: card padding, control padding, space between related items, between groups, between sections. The same role is the same value everywhere.
+- **Text styles** (`typography.styles`) name each kind of text: page title, section heading, body, label, caption. Every section heading uses the section-heading style, on every screen.
+- **Rhythm steps up.** Space between related items is smaller than between groups, which is smaller than between sections. That's how proximity shows what belongs together (Wickens 9).
+
+**Applied:** generation Steps 5–6 apply roles and styles, never picking a value for one element. Every critique carries a consistency inventory, which lists every kind of element with its values across all screens, checked against its role (rubric category 3). `tools/consistency_check.py` does the same on code.
+
 ## Alignment Is Precision
 
 Every element sits on a grid. No exceptions. If something is off by 1–2 pixels, it's wrong. Alignment separates premium from good-enough. The eye detects misalignment before the brain can name it.

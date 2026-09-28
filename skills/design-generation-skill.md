@@ -158,13 +158,13 @@ Design from the smallest `layout.breakpoints` step upward, verified at `mobile.m
 
 Grid: `layout.gridColumns` / `layout.gutterPx`, snapped to within `layout.alignmentTolerancePx` (default exact, no exceptions — **Alignment Is Precision**). Breakpoints: `layout.breakpoints`, with explicit behavior at each step (category 4 of the audit rubric checks this isn't left implicit). Container width: `layout.containerMaxWidthPx`.
 
-When a spacing decision is ambiguous, default to the roomier `spacing.scale` step, not the denser one — **Whitespace Is a Feature**: crowding is never the safe default.
+**Apply spacing by role, never per element.** Card padding is `spacing.roles` card-padding everywhere, control padding is control-padding everywhere, and the gaps between related items, groups and sections come from their roles, in that ascending order. Only where no role fits, and a spacing decision is genuinely ambiguous, default to the roomier `spacing.scale` step, not the denser one — **Whitespace Is a Feature**: crowding is never the safe default.
 
 If multiple layout paradigms could reasonably serve the brief (e.g. dashboard-grid vs. single-column-feed) and `meta.decisionProtocol` is `always-ask` — this is exactly the kind of consequential decision the protocol exists for. Go to the **Decision Protocol** below before proceeding.
 
 ### Step 6 — Typography
 
-Apply `typography.roles`: heading uses `roles.heading`, explanatory text uses `roles.readableSubtext`, and any label attached to a fillable field uses `roles.formLabel` — these three must remain visually distinguishable from each other (this is checked in audit category 3). Derive the type scale from `typography.scale.baseSizePx` / `ratio`, don't pick sizes freehand. No text — captions and chart labels included — below `usabilityHeuristics.displayDesign.minReadableTextPx`, and nothing truncated at the smallest breakpoint (Wickens 1, legibility). Labels on adjacent actions with different outcomes must differ in their first word, not just the last (Wickens 5, discriminability).
+Apply `typography.roles`: heading uses `roles.heading`, explanatory text uses `roles.readableSubtext`, and any label attached to a fillable field uses `roles.formLabel` — these three must remain visually distinguishable from each other (this is checked in audit category 3). Derive the type scale from `typography.scale.baseSizePx` / `ratio`, don't pick sizes freehand. **Every piece of text takes a named style from `typography.styles`**: page title, section heading, body, label, caption. Two section headings never get different styles. A kind of text with no style is a gap to raise, not a size to pick. No text — captions and chart labels included — below `usabilityHeuristics.displayDesign.minReadableTextPx`, and nothing truncated at the smallest breakpoint (Wickens 1, legibility). Labels on adjacent actions with different outcomes must differ in their first word, not just the last (Wickens 5, discriminability).
 
 ### Step 7 — Color
 

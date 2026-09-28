@@ -4,7 +4,7 @@
   "title": "Design Audit Report",
   "description": "Structured output of running design-audit-rubric.md against a design. Drives the pipeline's approve/revise routing.",
   "type": "object",
-  "required": ["ticket", "manifestVersion", "overallVerdict", "categories"],
+  "required": ["ticket", "manifestVersion", "overallVerdict", "consistencyInventory", "categories"],
   "properties": {
     "ticket": { "type": "string" },
     "manifestVersion": { "type": "string" },
@@ -43,6 +43,58 @@
           "description": { "type": "string", "description": "e.g. 'New token: spacing-lg (20px) for StatTile gap, not currently in spacing.scale.'" },
           "relatedGapReportId": { "type": "string" },
           "requiresApprovalBeforeImplementation": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "consistencyInventory": {
+      "type": "object",
+      "description": "Required in every critique, design or implementation: every kind of element, the spacing and type values it actually has across all screens, and whether they match its role. On-scale isn't enough; the same kind of element must have the same value everywhere. Divergences become category-3 findings.",
+      "required": ["spacing", "typography"],
+      "properties": {
+        "spacing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["element", "property", "found", "consistent"],
+            "properties": {
+              "element": { "type": "string", "description": "e.g. 'Card', 'Button', 'form fields (stack)', 'sections'." },
+              "property": { "type": "string", "description": "e.g. 'padding', 'gap', 'padding-x'." },
+              "role": { "type": "string", "description": "The spacing.roles entry that governs it, if any." },
+              "expectedPx": { "type": "number" },
+              "found": {
+                "type": "array",
+                "items": { "type": "object", "required": ["px", "where"], "properties": { "px": { "type": "number" }, "where": { "type": "string" } } }
+              },
+              "consistent": { "type": "boolean", "description": "True only if every instance has the same value, and it's the role's value when there is a role." }
+            }
+          }
+        },
+        "typography": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["element", "found", "consistent"],
+            "properties": {
+              "element": { "type": "string", "description": "e.g. 'h2 section headings', 'form labels', 'card titles'." },
+              "style": { "type": "string", "description": "The typography.styles entry that governs it, if any." },
+              "expected": { "type": "string", "description": "e.g. 'xl / 600 / display'." },
+              "found": {
+                "type": "array",
+                "items": { "type": "object", "required": ["value", "where"], "properties": { "value": { "type": "string" }, "where": { "type": "string" } } }
+              },
+              "consistent": { "type": "boolean" }
+            }
+          }
+        },
+        "rhythm": {
+          "type": "object",
+          "description": "Proximity: space between related items < between groups < between sections (Wickens 9). One failed step makes unrelated things look grouped.",
+          "properties": {
+            "relatedPx": { "type": "number" },
+            "groupPx": { "type": "number" },
+            "sectionPx": { "type": "number" },
+            "ascending": { "type": "boolean" }
+          }
         }
       }
     },
