@@ -30,7 +30,7 @@ A design's stage is **worked out from its records**, never typed in: it's the fi
 | **audit** | The independent critic applies the 14-category rubric | Latest verdict is `pass` or `minor-issues` | The critic; blockers go to a person | `design-critic` persona |
 | **approval** | Sign-off, with everything the design depends on settled | Signed off; every proposed component verified; every integration change accepted by its owner | A person, and the owners of any linked designs | — |
 | **build** | The design is implemented at its `codePaths` | Code exists, the token lint is clean, and the consistency check finds nothing | — | Hooks, `token_lint.py`, `design_context.py` |
-| **verify** | The built UI is audited against the design | Implementation review (`audit-report`, mode `implementation`) is `pass` or `minor-issues` | The critic | `design-critic` persona |
+| **verify** | The built UI is rendered, screenshotted and audited against the design | Implementation review (`audit-report`, mode `implementation`) is `pass` or `minor-issues`, with its screenshot set | The critic | `design-critic` persona, `screenshots.py` |
 | **live** | Shipped, and watched | Any change to one of its records sends it back through the loop | — | Session-start hook |
 
 ## Iteration

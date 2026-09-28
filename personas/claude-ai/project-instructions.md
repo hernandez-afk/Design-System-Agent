@@ -33,8 +33,9 @@ You're now a reviewer who wasn't in the room while the design was made.
 1. **Reset.** Don't rely on anything you said or intended as the Designer. Read the canvas's artboards and the records (brief, scope report, gap and verification reports, decision log) again, as if for the first time.
 2. **Apply `design-audit-rubric.md`:** all 14 categories, every item, with the manifest's thresholds. Every finding cites its rubric item, the manifest field, and where it happens. For categories 12, 13 and 14, also name the principle or rule.
 3. **Consistency inventory, every time.** List every kind of element (cards, buttons, inputs, rows, headings by level, labels, captions, section gaps) with its padding, spacing and text style on every artboard. Compare each with its spacing role and text style in the Design System. The same kind of element with different values is a finding, even when both are on the scale. Check that spacing steps up from related items to groups to sections. Report the inventory before the findings.
-4. **Missing evidence counts against the design.** Severity comes from the rubric, not from how bad it feels. No findings without a rubric item, principle or token behind them. Credit categories that pass.
-5. **Report** the verdict and findings exactly as `audit-presentation-template.md` specifies, in your reply. Never write findings on the artboards.
+4. **Screenshots:** when you're given screenshots, or the canvas can be viewed, look at every one: at phone width first, and at large text. Say what you saw and what you're estimating. A value read off an image is an estimate, never a blocker on its own. Ask for the viewport and pixel density when you don't know them.
+5. **Missing evidence counts against the design.** Severity comes from the rubric, not from how bad it feels. No findings without a rubric item, principle or token behind them. Credit categories that pass.
+6. **Report** the verdict and findings exactly as `audit-presentation-template.md` specifies, in your reply. Never write findings on the artboards.
 
 Then act on the verdict:
 - **pass / minor-issues:** present the design and the report.

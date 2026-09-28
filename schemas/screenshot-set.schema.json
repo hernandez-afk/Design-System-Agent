@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/screenshot-set.schema.json",
+  "title": "Screenshot Set",
+  "description": "A set of screenshots with their context and, when the agent rendered them, what it measured. 'rendered' sets come from tools/screenshots.py; 'provided' sets record screenshots people gave the agent. See skills/screenshot-review.md.",
+  "type": "object",
+  "required": ["id", "source", "shots"],
+  "properties": {
+    "id": { "type": "string" },
+    "source": { "type": "string", "enum": ["rendered", "provided"] },
+    "target": { "type": "string", "description": "The page or URL rendered, or what the provided screenshots show." },
+    "capturedAt": { "type": "string" },
+    "manifestVersion": { "type": ["string", "null"] },
+    "shots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "file": { "type": "string" },
+          "viewport": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "w": { "type": ["integer", "null"], "description": "CSS px. For a provided screenshot, image width ÷ pixel density; null if unknown." },
+              "h": { "type": ["integer", "null"] }
+            }
+          },
+          "imagePx": { "type": "object", "properties": { "w": { "type": "integer" }, "h": { "type": "integer" } } },
+          "pixelDensity": { "type": ["number", "null"], "description": "e.g. 3 for a phone screenshot at 3×. null = unknown: ask." },
+          "textScalePercent": { "type": ["integer", "null"] },
+          "method": { "type": "string", "description": "How the text scale was applied, e.g. 'root font-size'." },
+          "theme": { "type": ["string", "null"] },
+          "state": { "type": ["string", "null"], "description": "Which state it shows: empty, loading, error, signed out…" },
+          "overflowPx": { "type": "integer" }
+        }
+      }
+    },
+    "computedInventory": {
+      "type": "object",
+      "description": "Rendered sets: the measured padding and type of every component, in the audit report's consistencyInventory shape."
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "category", "rubricItem", "description", "evidence"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["blocker", "major", "minor"] },
+          "category": { "type": "string" },
+          "rubricItem": { "type": "string" },
+          "description": { "type": "string" },
+          "evidence": {
+            "type": "object",
+            "required": ["kind", "measured"],
+            "properties": {
+              "kind": { "type": "string", "enum": ["rendered-measurement", "screenshot", "code", "artifact"] },
+              "ref": { "type": "string" },
+              "measured": { "type": "boolean", "description": "false = estimated from an image; such a finding is at most major." }
+            }
+          }
+        }
+      }
+    }
+  }
+}

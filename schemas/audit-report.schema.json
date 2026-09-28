@@ -46,6 +46,7 @@
         }
       }
     },
+    "screenshotSetRef": { "type": "string", "description": "The screenshot set the critic reviewed, if any." },
     "consistencyInventory": {
       "type": "object",
       "description": "Required in every critique, design or implementation: every kind of element, the spacing and type values it actually has across all screens, and whether they match its role. On-scale isn't enough; the same kind of element must have the same value everywhere. Divergences become category-3 findings.",
@@ -142,6 +143,15 @@
                 "location": { "type": "string", "description": "Where in the design this occurs, e.g. component name, screen, section." },
                 "manifestReference": { "type": "string", "description": "The manifest field this check was evaluated against, e.g. 'accessibility.minTouchTargetPx'." },
                 "relatedGapReportId": { "type": "string", "description": "For reuse-discipline findings, the gap report this should have referenced." },
+                "evidence": {
+                  "type": "object",
+                  "description": "What the finding rests on (skills/screenshot-review.md). A finding estimated from an image (kind: screenshot, measured: false) is at most major.",
+                  "properties": {
+                    "kind": { "type": "string", "enum": ["rendered-measurement", "screenshot", "code", "artifact"] },
+                    "ref": { "type": "string", "description": "e.g. 'narrow-320-text200.png', 'src/app/dashboard/KpiDetails.tsx:10'." },
+                    "measured": { "type": "boolean" }
+                  }
+                },
                 "presentationPhase": {
                   "type": "integer",
                   "enum": [1, 2, 3],

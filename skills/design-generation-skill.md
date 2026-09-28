@@ -205,6 +205,8 @@ For every `coreTasks` entry, before packaging:
 
    A failed item goes back to Step 5. It's never recorded as passing.
 
+   **If the design is a renderable page, prove it:** run `python3 tools/screenshots.py <page> --out <dir>`, look at the narrowest and 200% screenshots yourself, fix what the measurements report, and record the set as `screenshotSetRef`.
+
 Record the results in the design output's `glanceTest`, `taskPaths` and `mobileCheck`.
 
 ### Step 10 — Assemble output

@@ -102,7 +102,7 @@
                 "id": { "type": "string", "description": "The artifact's own ID, e.g. 'DES-512-gap-1' or 'audit-report-DES-512-rev1'." },
                 "type": {
                   "type": "string",
-                  "enum": ["prd", "page-brief", "ticket-brief", "brief-optimization-report", "scope-overlap-report", "user-flow", "design-output", "component-gap-report", "component-verification-report", "audit-report", "implementation-review"],
+                  "enum": ["prd", "page-brief", "ticket-brief", "brief-optimization-report", "scope-overlap-report", "user-flow", "design-output", "component-gap-report", "component-verification-report", "audit-report", "implementation-review", "screenshot-set"],
                   "description": "'implementation-review' = an audit-report with mode: implementation, auditing the built UI against the design (harness stage 'verify')."
                 },
                 "path": { "type": "string", "description": "File path or URL." },

@@ -1,0 +1,380 @@
+id: DES-512-shots-1
+source: rendered
+target: examples/rendered/dashboard.html
+capturedAt: '2026-09-28T08:46:23Z'
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 226
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 529
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 156
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 459
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: Card
+    property: padding-x
+    role: card-padding
+    expectedPx: 16
+    found:
+    - px: 24
+      where: Card "Recent reports Updated 2 minutes ago Rep" @ narrow-320.png
+    - px: 24
+      where: Card "Recent reports Updated 2 minutes ago Rep" @ desktop-1440.png
+    consistent: false
+  - element: Card
+    property: padding-y
+    role: card-padding
+    expectedPx: 16
+    found:
+    - px: 24
+      where: Card "Recent reports Updated 2 minutes ago Rep" @ narrow-320.png
+    - px: 24
+      where: Card "Recent reports Updated 2 minutes ago Rep" @ desktop-1440.png
+    consistent: false
+  - element: StatTile
+    property: padding-x
+    role: card-padding
+    expectedPx: 16
+    found:
+    - px: 16
+      where: StatTile "Active users this month12,480 ↑" @ narrow-320.png
+    - px: 16
+      where: StatTile "Revenue$84.2k ↑" @ narrow-320.png
+    - px: 16
+      where: StatTile "Churn2.1% ↓" @ narrow-320.png
+    - px: 16
+      where: StatTile "NPS48 –" @ narrow-320.png
+    - px: 16
+      where: StatTile "Active users this month12,480 ↑" @ desktop-1440.png
+    - px: 16
+      where: StatTile "Revenue$84.2k ↑" @ desktop-1440.png
+    - px: 16
+      where: StatTile "Churn2.1% ↓" @ desktop-1440.png
+    - px: 16
+      where: StatTile "NPS48 –" @ desktop-1440.png
+    consistent: true
+  - element: StatTile
+    property: padding-y
+    role: card-padding
+    expectedPx: 16
+    found:
+    - px: 16
+      where: StatTile "Active users this month12,480 ↑" @ narrow-320.png
+    - px: 16
+      where: StatTile "Revenue$84.2k ↑" @ narrow-320.png
+    - px: 16
+      where: StatTile "Churn2.1% ↓" @ narrow-320.png
+    - px: 16
+      where: StatTile "NPS48 –" @ narrow-320.png
+    - px: 16
+      where: StatTile "Active users this month12,480 ↑" @ desktop-1440.png
+    - px: 16
+      where: StatTile "Revenue$84.2k ↑" @ desktop-1440.png
+    - px: 16
+      where: StatTile "Churn2.1% ↓" @ desktop-1440.png
+    - px: 16
+      where: StatTile "NPS48 –" @ desktop-1440.png
+    consistent: true
+  - element: button.chip
+    property: padding-x
+    found:
+    - px: 16
+      where: button.chip "7d" @ narrow-320.png
+    - px: 16
+      where: button.chip "30d" @ narrow-320.png
+    - px: 16
+      where: button.chip "90d" @ narrow-320.png
+    - px: 16
+      where: button.chip "7d" @ desktop-1440.png
+    - px: 16
+      where: button.chip "30d" @ desktop-1440.png
+    - px: 16
+      where: button.chip "90d" @ desktop-1440.png
+    consistent: true
+  - element: button.chip
+    property: padding-y
+    found:
+    - px: 8
+      where: button.chip "7d" @ narrow-320.png
+    - px: 8
+      where: button.chip "30d" @ narrow-320.png
+    - px: 8
+      where: button.chip "90d" @ narrow-320.png
+    - px: 8
+      where: button.chip "7d" @ desktop-1440.png
+    - px: 8
+      where: button.chip "30d" @ desktop-1440.png
+    - px: 8
+      where: button.chip "90d" @ desktop-1440.png
+    consistent: true
+  - element: button.icon-button
+    property: padding-x
+    found:
+    - px: 6
+      where: button.icon-button "↻" @ narrow-320.png
+    - px: 6
+      where: button.icon-button "↻" @ desktop-1440.png
+    consistent: true
+  - element: button.icon-button
+    property: padding-y
+    found:
+    - px: 1
+      where: button.icon-button "↻" @ narrow-320.png
+    - px: 1
+      where: button.icon-button "↻" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: Card
+    found:
+    - value: 16px / 400
+      where: Card "Recent reports Updated 2 minutes ago Rep" @ narrow-320.png
+    - value: 16px / 400
+      where: Card "Recent reports Updated 2 minutes ago Rep" @ desktop-1440.png
+    consistent: true
+  - element: StatTile
+    found:
+    - value: 16px / 400
+      where: StatTile "Active users this month12,480 ↑" @ narrow-320.png
+    - value: 16px / 400
+      where: StatTile "Revenue$84.2k ↑" @ narrow-320.png
+    - value: 16px / 400
+      where: StatTile "Churn2.1% ↓" @ narrow-320.png
+    - value: 16px / 400
+      where: StatTile "NPS48 –" @ narrow-320.png
+    - value: 16px / 400
+      where: StatTile "Active users this month12,480 ↑" @ desktop-1440.png
+    - value: 16px / 400
+      where: StatTile "Revenue$84.2k ↑" @ desktop-1440.png
+    - value: 16px / 400
+      where: StatTile "Churn2.1% ↓" @ desktop-1440.png
+    - value: 16px / 400
+      where: StatTile "NPS48 –" @ desktop-1440.png
+    consistent: true
+  - element: button.chip
+    found:
+    - value: 16px / 400
+      where: button.chip "7d" @ narrow-320.png
+    - value: 16px / 400
+      where: button.chip "30d" @ narrow-320.png
+    - value: 16px / 400
+      where: button.chip "90d" @ narrow-320.png
+    - value: 16px / 400
+      where: button.chip "7d" @ desktop-1440.png
+    - value: 16px / 400
+      where: button.chip "30d" @ desktop-1440.png
+    - value: 16px / 400
+      where: button.chip "90d" @ desktop-1440.png
+    consistent: true
+  - element: button.icon-button
+    found:
+    - value: 13.3333px / 400
+      where: button.icon-button "↻" @ narrow-320.png
+    - value: 13.3333px / 400
+      where: button.icon-button "↻" @ desktop-1440.png
+    consistent: true
+  - element: h1
+    style: page-title
+    expected: 39px / 700
+    found:
+    - value: 32px / 700
+      where: h1 "Dashboard" @ narrow-320.png
+    - value: 32px / 700
+      where: h1 "Dashboard" @ desktop-1440.png
+    consistent: false
+  - element: h2
+    style: section-heading
+    expected: 25px / 700
+    found:
+    - value: 25px / 700
+      where: h2 "Recent reports" @ narrow-320.png
+    - value: 25px / 700
+      where: h2 "Recent reports" @ desktop-1440.png
+    consistent: true
+  - element: p.caption
+    found:
+    - value: 11px / 400
+      where: p.caption "Updated 2 minutes ago" @ narrow-320.png
+    - value: 11px / 400
+      where: p.caption "Updated 2 minutes ago" @ desktop-1440.png
+    consistent: true
+findings:
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 226px at 320px; widest: table "ReportOwnerLast
+    runStatus Weekly revenue".'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: blocker
+  category: accessibility
+  rubricItem: Interactive targets smaller than accessibility.minTouchTargetPx
+  description: button.icon-button "↻" is 32×32px at 320px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: display-design-wickens
+  rubricItem: 'Text below minReadableTextPx (Wickens 1: legibility)'
+  description: p.caption "Updated 2 minutes ago" is 11px at 320px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 529px at 320px at 200% text; widest: table "ReportOwnerLast
+    runStatus Weekly revenue".'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: 'Text doesn''t grow with the text scale (WCAG 1.4.4): it''s set in fixed
+    px'
+  description: button.icon-button "↻" stays 13.3333px at 320px at 200% text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: 'Text doesn''t grow with the text scale (WCAG 1.4.4): it''s set in fixed
+    px'
+  description: p.caption "Updated 2 minutes ago" stays 11px at 320px at 200% text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: Text is clipped at maxTextScalePercent
+  description: div.tile-label "Active users this month" is clipped at 320px at 200%
+    text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: Text is clipped at maxTextScalePercent
+  description: div.tile-label "Revenue" is clipped at 320px at 200% text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: Text is clipped at maxTextScalePercent
+  description: div.tile-label "Churn" is clipped at 320px at 200% text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: Text is clipped at maxTextScalePercent
+  description: div.tile-label "NPS" is clipped at 320px at 200% text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 156px at 390px; widest: table "ReportOwnerLast
+    runStatus Weekly revenue".'
+  evidence:
+    kind: rendered-measurement
+    ref: phone-390.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 459px at 390px at 200% text; widest: table "ReportOwnerLast
+    runStatus Weekly revenue".'
+  evidence:
+    kind: rendered-measurement
+    ref: phone-390-text200.png
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: The same kind of element has different spacing, or isn't its role's
+    value
+  description: 'Card padding-x: 24px (2×); role ''card-padding'' is 16px.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: The same kind of element has different spacing, or isn't its role's
+    value
+  description: 'Card padding-y: 24px (2×); role ''card-padding'' is 16px.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h1>: 32px / 700; style ''page-title'' is 39px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true

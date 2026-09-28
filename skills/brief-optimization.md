@@ -11,6 +11,8 @@ It never adds scope. Every optimized line traces to something in the original br
 
 ## Inputs
 
+- Screenshots of the current product, if the author has them: the pages this one connects to, or the page being replaced. Read them with `screenshot-review.md`: they show what exists (entities, entry points, existing patterns to stay consistent with). Anything read off them is marked as seen or estimated.
+
 - The brief: a page brief (`templates/page-brief.md`), a PRD, or ticket text.
 - The manifest, including `briefPolicy`.
 - The design index, to spot related designs early. The full scope check is still Step 2b.

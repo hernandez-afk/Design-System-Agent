@@ -61,6 +61,20 @@ The brief is then optimized in a standard way (**`skills/brief-optimization.md`*
 
 Your team's own terms can be added to the vocabulary in the manifest (`briefPolicy.vocabulary`). See `examples/page-brief.example.md` → `examples/brief-optimization-report.example.yaml` → `examples/ticket-brief-page.example.yaml`.
 
+## Screenshots: reading them, and taking them
+
+The agent reads screenshots (`skills/screenshot-review.md`): existing pages to audit, the current product for context in a brief, or a design system that only exists as images. A screenshot shows what something looks like, not what it's made of, so values read off an image are marked as estimates and are never blockers on their own.
+
+It also takes its own. `python3 tools/screenshots.py page.html --out shots/` renders a page at the narrowest width, the phone, each breakpoint and desktop, plus 200% text, and **measures** what a picture can only estimate:
+- sideways scrolling, and which element causes it
+- touch targets that are too small
+- text that's too small, clipped, or doesn't grow with text size
+- the real padding and type of every component, checked against its spacing role and text style
+
+The critic reads the screenshots and the measurements together. See `examples/rendered/`: a dashboard prototype with five planted problems. The tool finds all of them, plus an `h1` that doesn't match its text style. Its 320px screenshot looks fine but is really 546px wide, which only the measurement shows.
+
+`--provided <images…>` records screenshots someone gives you, with their pixel sizes, and leaves the unknown context (viewport, pixel density, text size, state) as questions.
+
 ## Edge cases, caught at the brief
 
 Most edge cases are found in testing. The **edge-case sweep** (`skills/edge-case-sweep.md`) catches the obvious ones before anything is designed, the same way every time:
@@ -106,7 +120,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
-- **tools/** — `harness.py` (stages, gates, next steps, learning), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `harness.py` (stages, gates, next steps, learning), `screenshots.py` + `render/capture.js` (render, screenshot and measure a page; record provided screenshots), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

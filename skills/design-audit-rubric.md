@@ -240,6 +240,8 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** Adjacent touch targets are closer than `minTargetSpacingPx`.
 - [ ] **Major:** On phones, the primary action is out of thumb reach with no `thumbZoneReason`, when `thumbZonePrimaryAction` is true.
 - [ ] **Major:** Content sits under a safe area (notch, home indicator), or the on-screen keyboard covers the field being typed into.
+- [ ] **Major:** The design or build can be rendered, but its mobile claims aren't backed by a screenshot set at `minViewportPx` and `maxTextScalePercent` (`tools/screenshots.py`).
+- [ ] **Major:** Text doesn't grow with the text scale because it's set in fixed px (WCAG 1.4.4).
 - [ ] **Minor:** An orientation listed in `mobile.orientations` has no defined behavior.
 
 **Dynamic components**
@@ -249,6 +251,12 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** A component adapts only to viewport breakpoints, so it breaks when placed in a narrower container (a sidebar, a card, a split view).
 - [ ] **Major:** Copy, numbers or options are hard-coded inside a component instead of passed in.
 - [ ] **Minor:** Truncated content has no way to see it in full.
+
+---
+
+## Evidence
+
+Every finding says what it rests on: a `rendered-measurement`, a `screenshot` (seen or estimated), the `code`, or an `artifact`. **A value estimated from an image is never a blocker by itself.** It's at most major, and says what would confirm it. See `screenshot-review.md`.
 
 ---
 
