@@ -189,17 +189,39 @@ projects:
         reviewStatus: "current"
       - id: "DES-530"
         type: "ticket-brief"
-        path: "examples/ticket-brief-page.example.yaml"
-        version: 1
+        version: 2            # the approved brief; examples/ticket-brief-page.example.yaml is v1, before the author's answers
         reviewStatus: "current"
       - id: "DES-530-scope-1"
         type: "scope-overlap-report"
         version: 1
-        dependsOn: [{ artifactId: "DES-530", version: 1 }]
+        dependsOn: [{ artifactId: "DES-530", version: 2 }]
         reviewStatus: "current"
       - id: "DES-530-flow-1"
         type: "user-flow"
         path: "examples/user-flow.example.yaml"
         version: 1
-        dependsOn: [{ artifactId: "DES-530", version: 1 }]
+        dependsOn: [{ artifactId: "DES-530", version: 2 }]
+        reviewStatus: "current"
+
+  - id: "DES-600"
+    title: "Hackathon voting"
+    status: "in-progress"
+    scopeSummary: "Where attendees vote for their favourite games at the end of a hackathon."
+    scopeTerms: ["hackathon", "vote", "game entry", "voting window"]
+    surfaces: ["hackathon/vote"]
+    codePaths: ["src/app/hackathon/vote/**"]
+    artifacts:
+      - id: "DES-600-page-brief"
+        type: "page-brief"
+        path: "examples/page-brief-voting.example.md"
+        version: 1
+        reviewStatus: "current"
+      - id: "DES-600-brief-1"
+        type: "brief-optimization-report"
+        version: 1
+        reviewStatus: "current"
+      - id: "DES-600"
+        type: "ticket-brief"
+        path: "examples/ticket-brief-voting.example.yaml"
+        version: 1
         reviewStatus: "current"

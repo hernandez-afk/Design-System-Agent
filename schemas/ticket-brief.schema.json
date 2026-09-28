@@ -5,6 +5,20 @@
   "description": "Structured extraction from a Jira ticket, PRD, or feature request, produced before generation starts. Keeps 'what does the ticket actually ask for' explicit and separate from the agent's interpretation, so requireTicketPriorityTraceability (composition-heuristics) has something concrete to check against.",
   "type": "object",
   "required": ["ticketKey", "title", "sourceType", "priorities", "requiredElements", "scopeTerms", "surfaces"],
+  "definitions": {
+    "operation": {
+      "type": "object",
+      "required": ["handledBy"],
+      "properties": {
+        "handledBy": { "type": "string", "enum": ["this-project", "existing-design", "new-brief", "out-of-scope", "question"] },
+        "ref": { "type": "string", "description": "existing-design: its design-index ID. new-brief: the new brief's title. out-of-scope: the reason. question: the question." },
+        "note": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "handledBy": { "enum": ["existing-design", "new-brief", "out-of-scope", "question"] } } }, "then": { "required": ["ref"] } }
+      ]
+    }
+  },
   "properties": {
     "ticketKey": { "type": "string", "description": "e.g. 'DES-512' or 'PRD-031'." },
     "sourceType": {
@@ -76,6 +90,50 @@
         "arrivesFrom": { "type": "array", "items": { "type": "string" } },
         "goesNext": { "type": "array", "items": { "type": "string" } },
         "mustLinkHere": { "type": "array", "items": { "type": "string" }, "description": "Existing pages that should link to this one." }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "description": "The things this page shows, acts on or needs, and who handles each part of their life (skills/edge-case-sweep.md, Step 1). This is where missing parts of the product surface, like an admin side nobody briefed.",
+      "items": {
+        "type": "object",
+        "required": ["name", "operations"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g. 'hackathon', 'game', 'vote'." },
+          "description": { "type": "string" },
+          "operations": {
+            "type": "object",
+            "required": ["create", "source"],
+            "properties": {
+              "create": { "$ref": "#/definitions/operation" },
+              "source": { "$ref": "#/definitions/operation" },
+              "update": { "$ref": "#/definitions/operation" },
+              "publish": { "$ref": "#/definitions/operation" },
+              "close": { "$ref": "#/definitions/operation" },
+              "delete": { "$ref": "#/definitions/operation" }
+            }
+          }
+        }
+      }
+    },
+    "nonEntityTerms": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Scope terms that aren't things with a life of their own (e.g. 'voting window'), so the edge-case check doesn't ask who creates them."
+    },
+    "edgeCases": {
+      "type": "array",
+      "description": "The edge-case sweep's findings (skills/edge-case-sweep.md, Step 2), each with a decision.",
+      "items": {
+        "type": "object",
+        "required": ["id", "lens", "case", "disposition"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'EC1'." },
+          "lens": { "type": "string", "description": "One of the standard lenses (ecosystem, roles, setup, time, concurrency, integrity, scale, failure, ending, communication, privacy, access) or a product lens from briefPolicy.edgeCaseLenses." },
+          "case": { "type": "string" },
+          "disposition": { "type": "string", "enum": ["in-scope", "new-brief", "out-of-scope", "question", "not-applicable"] },
+          "action": { "type": "string", "description": "in-scope: which AC, element, state or flow path covers it (by id where there is one). new-brief: the brief's title. out-of-scope / not-applicable: the reason. question: the question." }
+        }
       }
     },
     "outOfScope": {

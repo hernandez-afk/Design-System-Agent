@@ -1,0 +1,102 @@
+# The voting brief after brief optimization and the edge-case sweep
+# (skills/edge-case-sweep.md). The author's draft (page-brief-voting.example.md)
+# covered the voter's side only. The sweep found what the page depends on but
+# nobody briefed: an admin side to create the hackathon and import its games,
+# and a results page. Those become new briefs, not extra screens here.
+# Check:  python3 tools/edge_case_check.py examples/ticket-brief-voting.example.yaml --index examples/design-index.example.yaml
+ticketKey: "DES-600"
+title: "Hackathon voting"
+sourceType: "page-brief"
+sourceRef: "examples/page-brief-voting.example.md"
+
+scopeTerms: ["hackathon", "vote", "game entry", "voting window"]
+surfaces: ["hackathon/vote"]
+
+connections:
+  arrivesFrom: ["QR code at the closing session", "the event link"]
+  goesNext: ["a thank-you", "results, once announced"]
+  mustLinkHere: ["the hackathon page"]
+
+priorities:
+  - { id: "P1", statement: "Every attendee can vote for their favourite games in under a minute.", source: "explicit" }
+  - { id: "P2", statement: "Organizers can trust the result: one person, three votes.", source: "explicit" }
+
+coreTasks:
+  - { id: "T1", statement: "Browse the games and cast my votes.", linkedPriority: "P1", entryPoint: "the QR code at the closing session" }
+  - { id: "T2", statement: "Change my votes before voting closes.", linkedPriority: "P1", entryPoint: "the voting page" }
+
+requiredElements:
+  - { description: "The games, as cards: title, team, thumbnail", targetCategory: "display", linkedPriority: "P1", estimatedVolume: "about 40 per hackathon", states: ["loading", "empty"] }
+  - { description: "Search or filter the games (40 is over listPaginationThreshold)", targetCategory: "input", linkedPriority: "P1" }
+  - { description: "Cast, change and see my 3 votes", targetCategory: "action", linkedPriority: "P1", states: ["loading", "error", "success"] }
+  - { description: "Voting status: not open yet, open until a time, closed", targetCategory: "feedback", linkedPriority: "P2", states: ["empty", "success"] }
+
+acceptanceCriteria:
+  - { id: "AC1", statement: "An attendee can cast 3 votes in under a minute on a phone at 320px.", linkedTask: "T1", source: "explicit" }
+  - { id: "AC2", statement: "A person can't cast more than 3 votes, from any number of devices.", linkedPriority: "P2", source: "rewritten" }
+  - { id: "AC3", statement: "Before voting opens, the page says when it opens, and no vote can be cast.", linkedPriority: "P2", source: "inferred" }
+  - { id: "AC4", statement: "If voting closes while someone is choosing, votes already confirmed are kept, and the page says voting has closed.", linkedTask: "T2", source: "inferred" }
+  - { id: "AC5", statement: "A vote only counts once the page confirms it saved. On failure the attendee sees it didn't save and can retry.", linkedTask: "T1", source: "inferred" }
+  - { id: "AC6", statement: "Nobody can see how another person voted on this page.", linkedPriority: "P2", source: "inferred" }
+
+entities:
+  - name: "hackathon"
+    description: "The event the votes belong to. The draft brief never mentions who sets it up."
+    operations:
+      create:  { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games" }
+      source:  { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games" }
+      update:  { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games" }
+      publish: { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games", note: "Opening voting." }
+      close:   { handledBy: "question", ref: "Does voting close when an admin closes it, or at a set time?" }
+      delete:  { handledBy: "out-of-scope", ref: "Archiving past hackathons can wait until there's more than one." }
+  - name: "game"
+    operations:
+      create:  { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games" }
+      source:  { handledBy: "question", ref: "Where do games come from: submitted by teams, or imported from the game-jam platform?" }
+      update:  { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games", note: "Fixing a wrong title or thumbnail." }
+      delete:  { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games", note: "Removing a disqualified game." }
+  - name: "vote"
+    operations:
+      create:  { handledBy: "this-project" }
+      source:  { handledBy: "this-project" }
+      update:  { handledBy: "this-project", note: "T2: change votes while voting is open." }
+      close:   { handledBy: "new-brief", ref: "Hackathon admin: create a hackathon and import its games", note: "Votes close with the hackathon's voting window." }
+  - name: "voter"
+    description: "Who is allowed to vote, and how the page knows it's the same person."
+    operations:
+      create:  { handledBy: "question", ref: "How are voters identified: a signed-in account, or a code on their badge?" }
+      source:  { handledBy: "question", ref: "Who is allowed to vote: registered attendees only, or anyone with the link?" }
+
+edgeCases:
+  - { id: "EC1", lens: "ecosystem", case: "Results: who sees the totals, and when are winners announced?", disposition: "new-brief", action: "Hackathon results and winners" }
+  - { id: "EC2", lens: "roles", case: "Organizers want to see turnout while voting is open.", disposition: "new-brief", action: "Hackathon admin: create a hackathon and import its games" }
+  - { id: "EC3", lens: "roles", case: "Someone without an account scans the QR code.", disposition: "question", action: "Depends on how voters are identified: can they vote, sign up, or only view?" }
+  - { id: "EC4", lens: "setup", case: "The page is opened before any games are imported, or before voting opens.", disposition: "in-scope", action: "AC3; empty state of the game list" }
+  - { id: "EC5", lens: "time", case: "Voting closes while someone is choosing.", disposition: "in-scope", action: "AC4" }
+  - { id: "EC6", lens: "time", case: "The closing time is shown in the viewer's time zone, not the server's.", disposition: "in-scope", action: "element: voting status" }
+  - { id: "EC7", lens: "concurrency", case: "Hundreds of people vote in the same minute at the closing session.", disposition: "in-scope", action: "flow: loading and error paths on casting a vote (T1); AC5" }
+  - { id: "EC8", lens: "integrity", case: "Voting more than 3 times, from several devices.", disposition: "in-scope", action: "AC2" }
+  - { id: "EC9", lens: "integrity", case: "Participants voting for their own team's game.", disposition: "question", action: "Can participants vote for their own game?" }
+  - { id: "EC10", lens: "integrity", case: "Ties for the top places.", disposition: "new-brief", action: "Hackathon results and winners" }
+  - { id: "EC11", lens: "scale", case: "40 games on a phone screen.", disposition: "in-scope", action: "element: search or filter the games" }
+  - { id: "EC12", lens: "scale", case: "A game with no thumbnail or a very long title.", disposition: "in-scope", action: "state: game card with missing thumbnail or long title (dynamic component)" }
+  - { id: "EC13", lens: "failure", case: "A vote fails to save on weak venue Wi-Fi.", disposition: "in-scope", action: "AC5" }
+  - { id: "EC14", lens: "ending", case: "What voters see after voting closes, and once results are out.", disposition: "in-scope", action: "element: voting status (closed), linking to results when they exist" }
+  - { id: "EC15", lens: "communication", case: "Telling attendees voting is open, or closing soon.", disposition: "out-of-scope", action: "Announced on stage at the closing session; no notifications for the spring hackathon." }
+  - { id: "EC16", lens: "privacy", case: "Who can see how each person voted.", disposition: "in-scope", action: "AC6" }
+  - { id: "EC17", lens: "access", case: "Voting one-handed in a dark room, standing up.", disposition: "in-scope", action: "element: vote action within thumb reach (mobile.thumbZonePrimaryAction)" }
+
+constraints:
+  - "Ship before the spring hackathon."
+
+outOfScope:
+  - "Judges' scoring (a separate panel)."
+  - "Notifications: voting is announced on stage at the closing session for the spring hackathon."
+  - "Archiving past hackathons."
+
+openQuestions:
+  - "Where do games come from: submitted by teams, or imported from the game-jam platform?"
+  - "Does voting close when an admin closes it, or at a set time?"
+  - "How are voters identified: a signed-in account, or a code on their badge?"
+  - "Who is allowed to vote: registered attendees only, or anyone with the link?"
+  - "Can participants vote for their own game?"

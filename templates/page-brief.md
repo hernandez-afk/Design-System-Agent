@@ -44,6 +44,17 @@
      reached in 3 clicks, done in 3 minutes. Say what they need, not which
      control to use: "choose how often" rather than "a dropdown". -->
 
+## What this page depends on
+
+- **[thing, e.g. an event]:** created by [who, on which page] · comes from [typed in, imported, an integration] · changed by [who] · ends when [who or what closes it]
+- **[thing]:** created by [...] · comes from [...]
+
+<!-- Everything the page shows or acts on has a life outside this page. Someone
+     creates it, it comes from somewhere, and something ends it. If you don't
+     know, write "unknown": that's the gap to catch now, not after launch.
+     (A voting page needs someone to create what's voted on, and a way to get
+     the entries in.) -->
+
 ## Content and data
 
 - [What's shown, with rough amounts: "about 12 event types in 3 groups", "up to 200 rows, growing"]

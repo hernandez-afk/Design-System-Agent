@@ -510,6 +510,16 @@
         "requireOptimization": { "type": "boolean", "default": true, "description": "Every brief goes through brief optimization (generation Step 1) before design." },
         "approvalBeforeGeneration": { "type": "boolean", "default": true, "description": "The author approves the optimized brief and its report before anything is designed." },
         "requireAcceptanceCriteria": { "type": "boolean", "default": true, "description": "A brief without testable acceptance criteria is not ready." },
+        "requireEdgeCaseSweep": { "type": "boolean", "default": true, "description": "Every brief goes through skills/edge-case-sweep.md: entities with an owner for every operation, every lens covered, no questions open." },
+        "edgeCaseLenses": {
+          "type": "array",
+          "description": "Product-specific lenses added to the standard twelve, e.g. content ratings for a games platform.",
+          "items": {
+            "type": "object",
+            "required": ["name", "ask"],
+            "properties": { "name": { "type": "string" }, "ask": { "type": "string" } }
+          }
+        },
         "vocabulary": {
           "type": "object",
           "additionalProperties": { "type": "string" },

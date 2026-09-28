@@ -16,7 +16,7 @@ import os
 import re
 import sys
 
-REQUIRED = ["Purpose", "Goals (ranked)", "What users need to do", "Content and data", "Acceptance criteria"]
+REQUIRED = ["Purpose", "Goals (ranked)", "What users need to do", "What this page depends on", "Content and data", "Acceptance criteria"]
 RECOMMENDED = ["Users and context", "Where it fits", "States", "Out of scope", "Related pages and designs"]
 
 VAGUE = {
@@ -113,6 +113,16 @@ def main():
                     if re.search(rf"\b{re.escape(s)}s?\b", low):
                         warnings.append(f"[{name}] solution-first: \"{s}\" — describe the need, and let the reuse check pick the component.")
                         break
+
+    for thing in items(sec.get("What this page depends on", "")):
+        name = re.sub(r"\*\*|:.*$", "", thing).strip() or thing[:30]
+        low = thing.lower()
+        if "created by" not in low:
+            warnings.append(f"[What this page depends on] {name}: who creates it? Nothing says 'created by'. Often this is a whole admin side nobody briefed.")
+        if "comes from" not in low:
+            warnings.append(f"[What this page depends on] {name}: where does its data come from? Nothing says 'comes from'.")
+        if "unknown" in low or "?" in thing:
+            warnings.append(f"[What this page depends on] {name}: has an unknown. It becomes an edge-case question before design.")
 
     for line in items(sec.get("Content and data", "")):
         if re.search(VOLUME_NOUNS, line, re.I) and not re.search(r"\d", line):

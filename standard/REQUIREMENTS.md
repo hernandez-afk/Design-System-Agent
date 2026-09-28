@@ -44,6 +44,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 - **Accessibility:** `minTouchTargetPx`, `requireVisibleFocusStates`, `requireSemanticHtml`
 - **Registry:** `registryPolicy` in full, including `similarityCheck`, `requireOperationalVerification` and `verificationReviewer`
 - **Behavior:** `automation`, `compositionHeuristics`, `navigationHeuristics`, `motionUsagePolicy`, `usabilityHeuristics`, `scopePolicy`
+- **Briefs:** `briefPolicy` in full, including `requireEdgeCaseSweep` and any product-specific `edgeCaseLenses`
 - **Mobile:** `mobile` in full (narrowest width, text scale, target spacing, largest fixed size, text expansion, thumb zone, orientations)
 
 ### Values that pass the agent's own checks

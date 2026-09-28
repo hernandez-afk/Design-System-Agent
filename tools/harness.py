@@ -101,6 +101,21 @@ class Harness:
                 g["brief"] = ("pass", "optimized and approved")
         else:
             g["brief"] = ("pass", "optimized (on record)")
+        if g["brief"][0] == "pass" and policy.get("requireEdgeCaseSweep", True) and brief and brief.get("path") \
+                and brief["path"].endswith((".yaml", ".yml")) and self.resolve(brief["path"]):
+            res = subprocess.run([sys.executable, os.path.join(HERE, "edge_case_check.py"), self.resolve(brief["path"]),
+                                  "--index", self.index_path], capture_output=True, text=True)
+            out_lines = res.stdout.splitlines()
+            new = [l.strip()[2:].split("  (from")[0] for l in out_lines if l.strip().startswith("+ ")]
+            extra = f"; new briefs needed: {', '.join(new)}" if new else ""
+            if res.returncode == 2:
+                first = next((l.strip()[2:] for l in out_lines if l.strip().startswith("✗")), "")
+                g["brief"] = ("fail", f"edge-case sweep incomplete: {first}{extra}")
+            elif res.returncode == 1:
+                n = sum(1 for l in out_lines if l.strip().startswith("?"))
+                g["brief"] = ("fail", f"edge-case sweep has {n} open question(s){extra}")
+            elif new:
+                g["brief"] = ("note", f"optimized; edge-case sweep complete{extra}")
         # scope
         a = self.artifact(p, "scope-overlap-report")
         if not a:
@@ -155,7 +170,7 @@ class Harness:
                        if ic["status"] in ("proposed", "rejected")]
         if waiting:
             g["approval"] = ("fail", "integration changes not accepted: " + ", ".join(waiting))
-        elif out is not None and not out.get("signOff") and p.get("status") not in ("approved", "shipped"):
+        elif not self.legacy(p) and not (out or {}).get("signOff"):
             g["approval"] = ("missing", "no human sign-off on the design output")
         else:
             g["approval"] = ("pass", "signed off" if (out or {}).get("signOff") else f"status: {p.get('status')}")
@@ -262,6 +277,7 @@ def cmd_next(h, pid):
 
 def cmd_learn(h, min_count):
     findings, conflicts, gaps, rewrites = defaultdict(set), defaultdict(set), defaultdict(set), Counter()
+    late = []  # found only after build: the edge cases the sweep should have asked about
     for pid, p in h.projects.items():
         for a in p.get("artifacts", []):
             r = h.read(a) if a.get("path") else None
@@ -271,6 +287,8 @@ def cmd_learn(h, min_count):
                 for c in r.get("categories", []):
                     for f in c.get("findings", []):
                         findings[(c["category"], f.get("manifestReference") or f["rubricItem"][:60])].add(pid)
+                        if a["type"] == "implementation-review" or r.get("mode") == "implementation":
+                            late.append((pid, f.get("description", f["rubricItem"])))
             elif a["type"] == "brief-optimization-report":
                 for c in r.get("conflicts", []):
                     conflicts[c["rule"]].add(pid)
@@ -293,6 +311,9 @@ def cmd_learn(h, min_count):
     for kind, n in rewrites.items():
         if n >= max(min_count, 2) and kind in ("vague-term", "solution-to-need"):
             proposals.append(f"{n} brief rewrites of kind '{kind}'. Add your team's recurring terms to briefPolicy.vocabulary.")
+    for pid, desc in late:  # every late finding counts, even once: it's what the sweep missed
+        proposals.append(f"Found only after build in {pid}: \"{desc.strip()[:120].rstrip('.')}\". Add a lens question "
+                         "(briefPolicy.edgeCaseLenses) or a page-brief prompt, so the edge-case sweep asks it next time.")
     print("Proposed system changes:" if proposals else f"No recurring patterns yet (looking for {min_count}+ occurrences).")
     for pr in proposals:
         print("  •", pr)

@@ -60,6 +60,16 @@ The brief is then optimized in a standard way (**`skills/brief-optimization.md`*
 
 Your team's own terms can be added to the vocabulary in the manifest (`briefPolicy.vocabulary`). See `examples/page-brief.example.md` → `examples/brief-optimization-report.example.yaml` → `examples/ticket-brief-page.example.yaml`.
 
+## Edge cases, caught at the brief
+
+Most edge cases are found in testing. The **edge-case sweep** (`skills/edge-case-sweep.md`) catches the obvious ones before anything is designed, the same way every time:
+
+- **What the page depends on.** Every thing the page shows or acts on gets an owner for each part of its life: who creates it, where its data comes from, who changes it, what ends it. This is where the most expensive gaps hide. A voting page with no admin side to create the hackathon and import the games fails here.
+- **Twelve lenses:** ecosystem, roles, setup, time, concurrency, integrity, scale, failure, ending, communication, privacy and access, plus your product's own (`briefPolicy.edgeCaseLenses`).
+- **Every case decided:** handled here (it becomes an acceptance criterion, element, state or flow path), a **new brief** for a part of the product nobody briefed, out of scope with a reason, or a question.
+
+`python3 tools/edge_case_check.py brief.yaml --index design-index.yaml` is the gate: the harness's brief stage doesn't pass until the sweep is complete with no open questions. See `examples/page-brief-voting.example.md` → `examples/ticket-brief-voting.example.yaml`: a voting brief that covered only the voter's side, and the two new briefs the sweep found (the hackathon admin, and results).
+
 ## The user flow: how a page connects to the product
 
 Before any screen is laid out, the agent maps the **user flow** (generation Step 2c, `schemas/user-flow.schema.json`):
@@ -95,7 +105,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, and REQUIREMENTS.md.
-- **tools/** — `harness.py` (stages, gates, next steps, learning), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `harness.py` (stages, gates, next steps, learning), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

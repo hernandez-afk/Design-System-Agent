@@ -123,6 +123,8 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Blocker:** A major layout or content decision has no traceable link back to a stated priority in the source ticket, when `requireTicketPriorityTraceability` is true — i.e. the design solved a problem the ticket didn't ask about, or missed the one it did.
 - [ ] **Blocker:** The design fails an acceptance criterion from the brief, or includes something the brief lists as out of scope.
 - [ ] **Major:** An acceptance criterion has no `acceptanceResults` entry, or its evidence doesn't point to anything in the design.
+- [ ] **Blocker:** The design was generated with the edge-case sweep incomplete or its questions open, when `briefPolicy.requireEdgeCaseSweep` is true, or it adds screens for a part of the product the sweep sent to a separate brief.
+- [ ] **Major:** An edge case the sweep marked `in-scope` has no element, state, flow path or acceptance result in the design.
 - [ ] **Major:** The design was generated from a brief that wasn't optimized, or before the author approved it, when `briefPolicy.requireOptimization` / `approvalBeforeGeneration` is true.
 - [ ] **Minor:** Progressive disclosure was applied somewhere but inconsistently (e.g. one list paginates, a structurally identical list elsewhere doesn't).
 

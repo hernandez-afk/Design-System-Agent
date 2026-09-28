@@ -33,6 +33,7 @@ Map the brief onto `schemas/ticket-brief.schema.json` (`sourceType: page-brief` 
 | States | `requiredElements` states, and the loading/empty/error needs they imply |
 | Constraints | `constraints` |
 | Acceptance criteria | `acceptanceCriteria`, each linked to a priority or task |
+| What this page depends on | `entities`, the start of the edge-case sweep |
 | Out of scope | `outOfScope` |
 | Where it fits | `connections` (arrives from, goes next, pages that should link here): the start of the user flow (Step 2c) |
 | Related pages and designs | `scopeTerms` and `surfaces` hints for the scope check |
@@ -57,6 +58,15 @@ This is the optimization itself. Each rule turns plain language into something t
 
    Mobile and accessibility are always required, so don't ask whether they're wanted. Note the specific phone considerations instead.
 7. **Point at related designs early.** If the brief's terms or surfaces match design-index projects, name them. Step 2b decides; this just avoids surprises.
+
+### 3b. Sweep for edge cases
+
+Run **`edge-case-sweep.md`** when `briefPolicy.requireEdgeCaseSweep` is true (the default):
+- List the entities the page depends on, and decide who handles each part of their life.
+- Go through every lens, and decide every case.
+- Pass `python3 tools/edge_case_check.py <optimized brief> --index <design index>`.
+
+Parts of the product nobody briefed, like the admin side that creates what users vote on, become `newBriefs` in the report. They're never extra screens added to this design. Open questions from the sweep join the report's questions, so the brief isn't `ready` until they're answered.
 
 ### 4. Report, and wait
 

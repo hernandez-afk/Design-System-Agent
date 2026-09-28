@@ -28,7 +28,7 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["vague-term", "solution-to-need", "testable-criterion", "added-state", "added-volume", "ranked-goal", "component-hint", "inferred"],
+            "enum": ["vague-term", "solution-to-need", "testable-criterion", "added-state", "added-volume", "ranked-goal", "component-hint", "inferred", "edge-case"],
             "description": "Which optimization rule produced it (skills/brief-optimization.md, 'Fit it to the design system')."
           },
           "section": { "type": "string", "description": "Section of the source it came from." },
@@ -62,6 +62,30 @@
         "properties": {
           "element": { "type": "string" },
           "candidates": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "edgeCaseSweep": {
+      "type": "object",
+      "description": "Result of skills/edge-case-sweep.md: tools/edge_case_check.py's verdict and the counts by disposition.",
+      "properties": {
+        "result": { "type": "string", "enum": ["complete", "needs-answers", "incomplete"] },
+        "entities": { "type": "integer" },
+        "cases": { "type": "integer" },
+        "byDisposition": { "type": "object", "additionalProperties": { "type": "integer" } }
+      }
+    },
+    "newBriefs": {
+      "type": "array",
+      "description": "Separate briefs the sweep found are needed: parts of the product this page depends on that no design covers. Each is opened as its own page brief; the scope check links them.",
+      "items": {
+        "type": "object",
+        "required": ["title", "why"],
+        "properties": {
+          "title": { "type": "string" },
+          "why": { "type": "string" },
+          "fromEdgeCases": { "type": "array", "items": { "type": "string" }, "description": "Edge-case and entity-operation references that produced it." },
+          "blocksThisDesign": { "type": "boolean", "description": "True if this design can't ship without it (e.g. nothing to vote on without the admin side)." }
         }
       }
     },

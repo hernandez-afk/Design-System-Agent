@@ -309,6 +309,8 @@ briefPolicy:
   requireOptimization: true          # every brief goes through skills/brief-optimization.md
   approvalBeforeGeneration: true     # the author approves the optimized brief first
   requireAcceptanceCriteria: true
+  requireEdgeCaseSweep: true       # skills/edge-case-sweep.md: every entity owned, every lens covered
+  edgeCaseLenses: []                # your product's own lenses, e.g. { name: content-ratings, ask: "Age ratings for games?" }
   vocabulary: {}                     # your own terms, e.g. { hero: "Card/feature at the top of the page" }
 
 mobile:

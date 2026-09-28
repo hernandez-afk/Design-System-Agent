@@ -26,6 +26,11 @@ Let team admins choose which events send them email, so they stop getting alerts
 - Change how often digests are sent, with a dropdown — starts from: Settings → Notifications
 - Send a test email
 
+## What this page depends on
+
+- **Event types:** created by engineering, in code (there's no admin screen for them) · comes from the product's list of events
+- **Notification settings:** created by the product with defaults for every new team · changed by team admins on this page · comes from the team's account
+
 ## Content and data
 
 - A list of event types, grouped by area (billing, security, reports, etc.)
