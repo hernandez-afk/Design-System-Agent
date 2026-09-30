@@ -5,6 +5,12 @@ system should learn. See HARNESS.md.
 Usage:
   python3 tools/harness.py status [--project ID]   stage, gates and blockers per design
   python3 tools/harness.py next --project ID       the next action, with the command to run
+  python3 tools/harness.py check --project ID [--page page.html]
+                                                   every mechanical check in one call; prints only failures
+  python3 tools/harness.py new <ticket-brief|user-flow|design-output|critique>
+                                                   a minimal skeleton to fill in (no need to read schemas)
+  python3 tools/harness.py record --project ID --type TYPE --path PATH [--title T] [--depends ID:VER,…]
+                                                   register or bump a record in the design index
   python3 tools/harness.py learn [--min 2]         recurring findings → proposed system changes
 Options: --index design-index.yaml --manifest design-system-manifest.yaml --root .
 
@@ -29,7 +35,7 @@ STAGE_OF = {"prd": "brief", "page-brief": "brief", "ticket-brief": "brief", "bri
             "component-gap-report": "design", "component-verification-report": "design",
             "audit-report": "audit", "implementation-review": "verify"}
 NEXT = {
-    "brief": "Optimize the brief (skills/brief-optimization.md, generation Step 1): lint it, answer the open questions, and get the author's approval.",
+    "brief": "Optimize the brief (skills/design-agent/reference/brief-optimization.md, generation Step 1): lint it, answer the open questions, and get the author's approval.",
     "scope": "Run the scope placement check (generation Step 2b) against the design index, and record the human decision.",
     "flow": "Map the user flow (generation Step 2c), then pass: python3 tools/flow_check.py <flow> --index <index> --brief <brief>",
     "design": "Design it (generation Steps 3–10): reuse check, structure, phone-first layout, 3-3-3 walk-through and mobile pass.",
@@ -39,6 +45,67 @@ NEXT = {
     "verify": "Have the design-critic audit the built UI against the design, its acceptance criteria and the tokens (audit-report mode: implementation).",
 }
 OK = ("pass", "note")
+SKELETONS = {
+    "ticket-brief": """ticketKey: ""            # e.g. DES-600
+approvedBy: ""           # set once the author approves (after their questions are answered)
+title: ""
+sourceType: "page-brief"
+scopeTerms: []           # specific nouns: ["hackathon", "vote"]
+surfaces: []             # ["hackathon/vote"]
+connections: { arrivesFrom: [], goesNext: [], mustLinkHere: [] }
+priorities:              # ranked; P1 decides the one primary action
+  - { id: "P1", statement: "", source: "explicit" }
+coreTasks:
+  - { id: "T1", statement: "", linkedPriority: "P1", entryPoint: "" }
+requiredElements:
+  - { description: "", targetCategory: "display", linkedPriority: "P1", states: [] }
+acceptanceCriteria:      # testable: who, action, measurable result
+  - { id: "AC1", statement: "", source: "explicit" }
+entities:                # handledBy: this-project | existing-design | new-brief | out-of-scope | question (+ ref)
+  - name: ""
+    operations: { create: { handledBy: "", ref: "" }, source: { handledBy: "", ref: "" } }
+edgeCases:               # one line per lens; not-applicable needs a reason in action
+  # lenses: roles setup time concurrency integrity scale failure ending communication privacy access
+  - { id: "EC1", lens: "roles", case: "", disposition: "", action: "" }
+outOfScope: []
+openQuestions: []
+""",
+    "user-flow": """id: ""                   # DES-xxx-flow-1
+projectId: ""
+briefRef: ""
+screens:                 # kind: new | existing (needs surface + owningProject) | system | external
+  - { id: "S1", name: "", kind: "new", surface: "" }
+entryPoints:
+  - { id: "E1", from: "", to: "S1", trigger: "", carriesState: "", whenSignedOut: "" }
+flows:                   # one per core task; every async step needs an error path
+  - taskId: "T1"
+    entryPoint: "E1"
+    steps: [ { screen: "S1", action: "", isClick: true, async: false } ]
+    done: ""
+    alternatePaths: [ { kind: "error", when: "", then: "" } ]
+backNavigation: [ { screen: "S1", back: "", to: "" } ]
+exits: []
+integrationChanges: []   # changes to other designs' pages: { id, screen, change, owner, status: proposed }
+""",
+    "design-output": """ticket: ""
+projectId: ""
+manifestVersion: ""
+artifact: { format: "html", location: "" }
+screenshotSetRef: ""     # from `harness.py check --page`: replaces a hand-written mobileCheck
+userFlowRef: ""
+componentsUsed: [ { name: "", variant: "", status: "approved" } ]
+decisionLog: []          # only decisions a person made or should know about
+acceptanceResults: [ { criterionId: "AC1", met: true, evidence: "" } ]
+taskPaths: [ { taskId: "T1", steps: [ { action: "", isClick: true } ], clickCount: 1, estimatedSeconds: 0, estimateBasis: "" } ]
+glanceTest: [ { screen: "", breakpoint: "sm", purposeVisible: true, primaryActionVisible: true, pass: true } ]
+""",
+    "critique": """verdict: ""              # pass | minor-issues | major-issues | blocker
+toolSummary: ""          # path to the `harness.py check` output; not copied here
+findings:                # only failures; format: where: what -> fix (rule)
+  - { severity: "", where: "", what: "", fix: "", rule: "" }
+""",
+}
+
 
 
 def load(path):
@@ -87,8 +154,19 @@ class Harness:
         policy = self.manifest.get("briefPolicy", {})
         # brief
         report, brief = self.artifact(p, "brief-optimization-report"), self.artifact(p, "ticket-brief")
+        lite = (self.manifest.get("harness", {}) or {}).get("mode", "lite") == "lite"
+        brief_doc = self.read(brief) if brief else None
         if not brief:
             g["brief"] = ("missing", "no ticket brief on record")
+        elif lite and not report and brief_doc is not None:
+            # lite: no separate report; the brief carries its open questions and the author's approval
+            q = brief_doc.get("openQuestions") or []
+            if q:
+                g["brief"] = ("fail", f"{len(q)} open question(s) for the author")
+            elif policy.get("approvalBeforeGeneration", True) and not brief_doc.get("approvedBy"):
+                g["brief"] = ("fail", "the author hasn't approved the brief (set approvedBy)")
+            else:
+                g["brief"] = ("pass", f"approved by {brief_doc.get('approvedBy')}")
         elif policy.get("requireOptimization", True) and not report:
             g["brief"] = ("missing", "the brief was never optimized (no brief-optimization-report)")
         elif report and self.read(report) is not None:
@@ -118,7 +196,17 @@ class Harness:
                 g["brief"] = ("note", f"optimized; edge-case sweep complete{extra}")
         # scope
         a = self.artifact(p, "scope-overlap-report")
-        if not a:
+        if not a and lite and brief and brief.get("path") and self.resolve(brief["path"]):
+            # lite: the scope tool decides; a record is only needed when there's an overlap to settle
+            res = subprocess.run([sys.executable, os.path.join(HERE, "scope_check.py"), self.resolve(brief["path"]),
+                                  "--index", self.index_path, "--manifest", self.manifest_path], capture_output=True, text=True)
+            out_lines = [l.strip() for l in res.stdout.splitlines()]
+            if res.returncode == 0:
+                g["scope"] = ("pass", "new work: no other design owns it (scope_check)")
+            else:
+                g["scope"] = ("fail", "overlaps to decide with the author: " + "; ".join(out_lines[1:3])
+                              + " — record the decision as a scope-overlap-report")
+        elif not a:
             required = self.manifest.get("scopePolicy", {}).get("requireScopeCheck", True)
             g["scope"] = ("missing", "no scope check on record") if required else ("pass", "scope check not required")
         else:
@@ -158,7 +246,7 @@ class Harness:
         else:
             last = max(audits, key=lambda x: x.get("version", 1))
             r = self.read(last)
-            verdict = r.get("overallVerdict") if r else None
+            verdict = (r.get("overallVerdict") or r.get("verdict")) if r else None
             if verdict in (None, "pass", "minor-issues"):
                 g["audit"] = ("pass", f"audit {verdict or 'on record'}")
             else:
@@ -196,7 +284,7 @@ class Harness:
         r = self.read(a) if a else None
         if not a:
             g["verify"] = ("missing", "the built UI hasn't been reviewed against the design")
-        elif r and r.get("overallVerdict") not in ("pass", "minor-issues"):
+        elif r and (r.get("overallVerdict") or r.get("verdict")) not in ("pass", "minor-issues"):
             g["verify"] = ("fail", f"implementation review verdict is '{r.get('overallVerdict')}'")
         else:
             g["verify"] = ("pass", "built as designed")
@@ -280,6 +368,90 @@ def cmd_next(h, pid):
     return 0
 
 
+def cmd_check(h, pid, page, out):
+    """Every mechanical check for one design, in one call. Prints failures only, so the model
+    reads a few lines instead of each tool's full output."""
+    p = h.projects.get(pid)
+    lines = []
+    if p:
+        g = h.gates(p)
+        stage = h.stage(g, p)
+        lines.append(f"{pid} — stage {stage.upper()}")
+        for s in STAGES:
+            state, detail = g[s]
+            if state in ("fail", "stale") or (state == "missing" and not h.legacy(p) and STAGES.index(s) <= STAGES.index(stage)):
+                lines.append(f"  {s}: {detail[:220]}")
+    else:
+        lines.append(f"{pid}: not in the design index yet (use `record`)")
+    if page:
+        out = out or os.path.join(h.root, ".design-agent", "shots", pid or "page")
+        res = subprocess.run([sys.executable, os.path.join(HERE, "screenshots.py"), page, "--out", out,
+                              "--manifest", h.manifest_path, "--id", f"{pid}-shots"], capture_output=True, text=True)
+        record = load(os.path.join(out, "screenshot-set.yaml")) or {}
+        groups = {}
+        for f in record.get("findings", []):  # one line per problem, not per width or element
+            groups.setdefault((f["severity"], f["rubricItem"]), []).append(f["description"])
+        order = {"blocker": 0, "major": 1, "minor": 2}
+        lines.append(f"  page: {sum(len(v) for v in groups.values())} finding(s) in {len(groups)} problem(s); "
+                     f"screenshots in {os.path.relpath(out)}")
+        for (sev, item), descs in sorted(groups.items(), key=lambda kv: order[kv[0][0]]):
+            more = f" (+{len(descs) - 1} similar)" if len(descs) > 1 else ""
+            lines.append(f"    [{sev}] {item}: {descs[0][:150]}{more}")
+    ok = len(lines) == 1 or (len(lines) == 2 and lines[1].startswith("  page: 0 "))
+    print("\n".join(lines + (["  all checks pass"] if ok else [])))
+    return 0 if ok else 2
+
+
+def cmd_new(kind):
+    if kind not in SKELETONS:
+        sys.exit(f"Unknown skeleton '{kind}'. Choose: {', '.join(SKELETONS)}")
+    print(SKELETONS[kind], end="")
+    return 0
+
+
+def cmd_record(h, pid, kind, path, title, depends):
+    """Register or bump a record, so the model doesn't hand-edit the index. Rewrites the index
+    file (YAML comments aren't kept)."""
+    if kind not in STAGE_OF and kind != "page-brief":
+        sys.exit(f"Unknown type '{kind}'.")
+    index = h.index
+    p = h.projects.get(pid)
+    if not p:
+        p = {"id": pid, "title": title or pid, "status": "in-progress", "scopeSummary": "", "scopeTerms": [],
+             "surfaces": [], "artifacts": []}
+        index.setdefault("projects", []).append(p)
+    art_id = f"{pid}-{kind}" if kind != "ticket-brief" else pid
+    existing = next((a for a in p["artifacts"] if a["id"] == art_id), None)
+    deps = []
+    for d in (depends or "").split(","):
+        if d.strip():
+            ref, _, ver = d.strip().partition(":")
+            deps.append({"artifactId": ref, "version": int(ver or 1)})
+    if existing:
+        existing["version"] = existing.get("version", 1) + 1
+        existing["path"], existing["reviewStatus"] = path, "current"
+        existing.pop("reviewReason", None)
+        if deps:
+            existing["dependsOn"] = deps
+        # flag direct dependents built on the old version (change propagation)
+        for a in p["artifacts"]:
+            for d in a.get("dependsOn", []):
+                if d["artifactId"] == art_id and d["version"] < existing["version"]:
+                    a["reviewStatus"], a["reviewReason"] = "needs-review", f"{art_id} v{d['version']} → v{existing['version']}"
+        v = existing["version"]
+    else:
+        entry = {"id": art_id, "type": kind, "path": path, "version": 1, "reviewStatus": "current"}
+        if deps:
+            entry["dependsOn"] = deps
+        p["artifacts"].append(entry)
+        v = 1
+    with open(h.index_path, "w") as f:
+        yaml.safe_dump(index, f, sort_keys=False, allow_unicode=True)
+    flagged = [a["id"] for a in p["artifacts"] if a.get("reviewStatus") == "needs-review"]
+    print(f"{art_id} v{v} recorded on {pid}" + (f"; needs review: {', '.join(flagged)}" if flagged else ""))
+    return 0
+
+
 def cmd_learn(h, min_count):
     findings, conflicts, gaps, rewrites = defaultdict(set), defaultdict(set), defaultdict(set), Counter()
     late = []  # found only after build: the edge cases the sweep should have asked about
@@ -289,6 +461,10 @@ def cmd_learn(h, min_count):
             if not r:
                 continue
             if a["type"] in ("audit-report", "implementation-review"):
+                for f in r.get("findings", []):  # the compact critique format
+                    findings[("critique", f.get("rule") or f.get("what", "")[:60])].add(pid)
+                    if a["type"] == "implementation-review":
+                        late.append((pid, f.get("what", "")))
                 for c in r.get("categories", []):
                     for f in c.get("findings", []):
                         findings[(c["category"], f.get("manifestReference") or f["rubricItem"][:60])].add(pid)
@@ -328,13 +504,22 @@ def cmd_learn(h, min_count):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("command", choices=["status", "next", "learn"])
+    ap.add_argument("command", choices=["status", "next", "check", "new", "record", "learn"])
+    ap.add_argument("kind", nargs="?", help="for new: the skeleton")
     ap.add_argument("--project")
+    ap.add_argument("--page")
+    ap.add_argument("--out")
+    ap.add_argument("--type")
+    ap.add_argument("--path")
+    ap.add_argument("--title")
+    ap.add_argument("--depends")
     ap.add_argument("--min", type=int, default=2)
     ap.add_argument("--index", default="design-index.yaml")
     ap.add_argument("--manifest", default="design-system-manifest.yaml")
     ap.add_argument("--root", default=os.environ.get("CLAUDE_PROJECT_DIR", "."))
     args = ap.parse_args()
+    if args.command == "new":
+        return cmd_new(args.kind)
     h = Harness(args.index, args.manifest, args.root)
     h.manifest_path = args.manifest
     if args.command == "status":
@@ -344,6 +529,14 @@ def main():
         if not args.project:
             sys.exit("next needs --project")
         return cmd_next(h, args.project)
+    if args.command == "check":
+        if not args.project:
+            sys.exit("check needs --project")
+        return cmd_check(h, args.project, args.page, args.out)
+    if args.command == "record":
+        if not (args.project and args.type and args.path):
+            sys.exit("record needs --project, --type and --path")
+        return cmd_record(h, args.project, args.type, args.path, args.title, args.depends)
     return cmd_learn(h, args.min)
 
 

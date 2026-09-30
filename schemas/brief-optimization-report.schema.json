@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://example.com/schemas/brief-optimization-report.schema.json",
   "title": "Brief Optimization Report",
-  "description": "What skills/brief-optimization.md changed when turning a page brief, PRD or ticket into a design-ready ticket brief, and why. Shown to the author before generation; nothing in the optimized brief is hidden from them.",
+  "description": "What skills/design-agent/reference/brief-optimization.md changed when turning a page brief, PRD or ticket into a design-ready ticket brief, and why. Shown to the author before generation; nothing in the optimized brief is hidden from them.",
   "type": "object",
   "required": ["id", "sourceRef", "briefRef", "manifestVersion", "generatedAt", "changes", "conflicts", "readiness"],
   "properties": {
@@ -29,7 +29,7 @@
           "kind": {
             "type": "string",
             "enum": ["vague-term", "solution-to-need", "testable-criterion", "added-state", "added-volume", "ranked-goal", "component-hint", "inferred", "edge-case"],
-            "description": "Which optimization rule produced it (skills/brief-optimization.md, 'Fit it to the design system')."
+            "description": "Which optimization rule produced it (skills/design-agent/reference/brief-optimization.md, 'Fit it to the design system')."
           },
           "section": { "type": "string", "description": "Section of the source it came from." },
           "original": { "type": "string" },
@@ -67,7 +67,7 @@
     },
     "edgeCaseSweep": {
       "type": "object",
-      "description": "Result of skills/edge-case-sweep.md: tools/edge_case_check.py's verdict and the counts by disposition.",
+      "description": "Result of skills/design-agent/reference/edge-case-sweep.md: tools/edge_case_check.py's verdict and the counts by disposition.",
       "properties": {
         "result": { "type": "string", "enum": ["complete", "needs-answers", "incomplete"] },
         "entities": { "type": "integer" },

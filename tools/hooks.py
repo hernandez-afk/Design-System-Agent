@@ -108,6 +108,9 @@ def pre_edit(data):
     owners, text = context_for(rel, ROOT, manifest, index)
     if not owners or seen(data.get("session_id", "default"), "design-" + "+".join(owners)):
         return 0
+    lines = text.splitlines()
+    if len(lines) > 14:  # keep the interruption cheap; the full context is one command away
+        text = "\n".join(lines[:14] + [f"… run design_context.py {rel} for the rest"])
     reason = (f"{text}\n\nThis is the design context for `{rel}`. Read it, then retry the edit following these "
               "decisions and components. If the change you intend contradicts a decision, stop and raise it as a "
               "design change instead of editing.")

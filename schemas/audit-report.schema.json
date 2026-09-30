@@ -4,7 +4,8 @@
   "title": "Design Audit Report",
   "description": "Structured output of running design-audit-rubric.md against a design. Drives the pipeline's approve/revise routing.",
   "type": "object",
-  "required": ["ticket", "manifestVersion", "overallVerdict", "consistencyInventory", "categories"],
+  "required": ["ticket", "manifestVersion", "overallVerdict", "categories"],
+  "anyOf": [{ "required": ["consistencyInventory"] }, { "required": ["consistencyInventoryRef"] }, { "required": ["screenshotSetRef"] }],
   "properties": {
     "ticket": { "type": "string" },
     "manifestVersion": { "type": "string" },
@@ -46,6 +47,7 @@
         }
       }
     },
+    "consistencyInventoryRef": { "type": "string", "description": "Path to `consistency_check.py --inventory` output, instead of writing the inventory out by hand." },
     "screenshotSetRef": { "type": "string", "description": "The screenshot set the critic reviewed, if any." },
     "consistencyInventory": {
       "type": "object",
@@ -145,7 +147,7 @@
                 "relatedGapReportId": { "type": "string", "description": "For reuse-discipline findings, the gap report this should have referenced." },
                 "evidence": {
                   "type": "object",
-                  "description": "What the finding rests on (skills/screenshot-review.md). A finding estimated from an image (kind: screenshot, measured: false) is at most major.",
+                  "description": "What the finding rests on (skills/design-agent/reference/screenshot-review.md). A finding estimated from an image (kind: screenshot, measured: false) is at most major.",
                   "properties": {
                     "kind": { "type": "string", "enum": ["rendered-measurement", "screenshot", "code", "artifact"] },
                     "ref": { "type": "string", "description": "e.g. 'narrow-320-text200.png', 'src/app/dashboard/KpiDetails.tsx:10'." },

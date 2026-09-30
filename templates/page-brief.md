@@ -1,7 +1,7 @@
 # Page brief: [page name]
 
 <!-- Write in plain language; you don't need to know the design system. The agent's
-     brief optimization (skills/brief-optimization.md) turns this into design-ready
+     brief optimization (skills/design-agent/reference/brief-optimization.md) turns this into design-ready
      instructions and shows you every change before designing.
      Check it first:  python3 tools/brief_lint.py <this file>
      Replace every [bracketed] placeholder and delete these comments. -->

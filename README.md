@@ -2,6 +2,28 @@
 
 **A harness for iterative, holistic design when developing with AI.** Every design, whether a person or an agent starts it, runs through the same loop: brief → scope → flow → design → audit → approval → build → verify. Each stage has a gate that can't be skipped, and all of it shares one memory of the product: the design-system manifest and the design index. People decide at the points that matter, and a feedback loop turns recurring findings into improvements to the design system itself. **See [HARNESS.md](HARNESS.md) for the operating model.**
 
+## Install and cost
+
+```
+./install.sh /path/to/your-app --with-baseline   # skill, tools, agents, hooks; Baseline as a starting design system
+```
+
+It runs in **lite mode** by default (`harness.mode` in the manifest), built to keep credits low:
+- **Tools do the checking.** `harness.py check --project ID --page page.html` runs every mechanical check in one call and prints only the failures, in about 250 tokens.
+- **The model reads little.** It loads a ~1,000-token core skill (`skills/design-agent/SKILL.md`) and a ~600-token critic checklist. The long references are opened only when a step is unclear.
+- **`CLAUDE.md` is about 400 tokens,** because it's loaded every turn.
+- **Records come from short skeletons** (`harness.py new …`), and `harness.py record` keeps the design index. The model never reads the schemas.
+- **One human stop per stage,** one critic pass, and at most one revision.
+
+| Loaded per run | Before | Lite |
+|---|---|---|
+| Instructions | ~30,600 tokens | ~2,500 tokens |
+| Schemas | ~16,600 | 0 (skeletons ~600) |
+| `CLAUDE.md`, every turn | ~1,800 | ~400 |
+| Mechanical checking | done by the model | ~250-token tool summary |
+
+**Full mode** (`harness.mode: full`) runs everything: every record, the 14-category rubric and the presentation template. Use it for flagship work.
+
 Its first job is **consistency**: the product stays consistent as it's built, because design context is present wherever it's worked on, in design and in development.
 
 ```
@@ -48,7 +70,7 @@ The first shows DES-512's decisions, components and review flags. The second cat
 
 Describe a new page in plain language using **`templates/page-brief.md`**: purpose, ranked goals, what users need to do, content, states, constraints and acceptance criteria. You don't need to know the design system.
 
-The brief is then optimized in a standard way (**`skills/brief-optimization.md`**, generation Step 1) so it fits the design system and the output can be checked against it:
+The brief is then optimized in a standard way (**`skills/design-agent/reference/brief-optimization.md`**, generation Step 1) so it fits the design system and the output can be checked against it:
 
 - **Lint:** `python3 tools/brief_lint.py brief.md` catches missing sections, placeholders, vague words, solution-first wording, lists with no amounts, missing states and untestable criteria.
 - **Fit to the design system:**
@@ -63,7 +85,7 @@ Your team's own terms can be added to the vocabulary in the manifest (`briefPoli
 
 ## Screenshots: reading them, and taking them
 
-The agent reads screenshots (`skills/screenshot-review.md`): existing pages to audit, the current product for context in a brief, or a design system that only exists as images. A screenshot shows what something looks like, not what it's made of, so values read off an image are marked as estimates and are never blockers on their own.
+The agent reads screenshots (`skills/design-agent/reference/screenshot-review.md`): existing pages to audit, the current product for context in a brief, or a design system that only exists as images. A screenshot shows what something looks like, not what it's made of, so values read off an image are marked as estimates and are never blockers on their own.
 
 It also takes its own. `python3 tools/screenshots.py page.html --out shots/` renders a page at the narrowest width, the phone, each breakpoint and desktop, plus 200% text, and **measures** what a picture can only estimate:
 - sideways scrolling, and which element causes it
@@ -77,7 +99,7 @@ The critic reads the screenshots and the measurements together. See `examples/re
 
 ## Edge cases, caught at the brief
 
-Most edge cases are found in testing. The **edge-case sweep** (`skills/edge-case-sweep.md`) catches the obvious ones before anything is designed, the same way every time:
+Most edge cases are found in testing. The **edge-case sweep** (`skills/design-agent/reference/edge-case-sweep.md`) catches the obvious ones before anything is designed, the same way every time:
 
 - **What the page depends on.** Every thing the page shows or acts on gets an owner for each part of its life: who creates it, where its data comes from, who changes it, what ends it. This is where the most expensive gaps hide. A voting page with no admin side to create the hackathon and import the games fails here.
 - **Twelve lenses:** ecosystem, roles, setup, time, concurrency, integrity, scale, failure, ending, communication, privacy and access, plus your product's own (`briefPolicy.edgeCaseLenses`).
@@ -126,7 +148,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 
 ## Platforms: Claude Code and Claude Design
 
-The same manifest, skills and rubric run on both. `platform.targets` in the manifest says which; **`skills/platform-adapters.md`** maps every step to each platform.
+The same manifest, skills and rubric run on both. `platform.targets` in the manifest says which; **`skills/design-agent/reference/platform-adapters.md`** maps every step to each platform.
 
 | | Claude Code | Claude Design |
 |---|---|---|
@@ -169,11 +191,11 @@ Before the agent runs in your app repo, that repo needs a `CLAUDE.md` holding yo
 1. **`schemas/ticket-brief.schema.json`** — structured extraction from a Jira ticket or PRD, including the `scopeTerms` and `surfaces` it touches. See `examples/ticket-brief.example.yaml` (ticket) and `examples/ticket-brief-prd.example.yaml` (PRD).
    - **Scope placement check** — before any design starts, the brief is compared against every project in the **`schemas/design-index.schema.json`** (example included) by shared terms, shared surfaces and shared priorities. Each required element is routed individually: to this project, as a revision of an existing design that already owns that surface, or here but reusing a related design's approved pattern. The result is a **`schemas/scope-overlap-report.schema.json`** — see `examples/scope-overlap-report.example.yaml`, where a PRD that looks like one new project turns out to be two revisions of existing designs.
 2. **`schemas/design-system-manifest.schema.json`** — the project's design system as data (tokens, components, thresholds, policies). See `examples/design-system-manifest.example.yaml`. This is what makes the rest of the system generalizable to any design system — swap this file, same skills work elsewhere.
-3. **`skills/design-principles.md`** — the fixed philosophy (simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion, structural rationale) that generation and audit both answer to, plus two checkable sets of criteria: the **3-3-3 rule** (understood in 3 seconds, reached in 3 clicks, done in 3 minutes — walked for every core task and recorded as `glanceTest` / `taskPaths` in the design output) and **Wickens' 13 principles of display design** (perception, mental models, attention, memory).
-4. **`skills/design-generation-skill.md`** — reads the brief + manifest, runs the reuse/similarity check against the component registry, files gap reports for anything missing, shapes layout/typography/color/motion from manifest tokens, and follows the Decision Protocol on consequential choices. Produces a `design-output` (schema + example included).
+3. **`skills/design-agent/reference/design-principles.md`** — the fixed philosophy (simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion, structural rationale) that generation and audit both answer to, plus two checkable sets of criteria: the **3-3-3 rule** (understood in 3 seconds, reached in 3 clicks, done in 3 minutes — walked for every core task and recorded as `glanceTest` / `taskPaths` in the design output) and **Wickens' 13 principles of display design** (perception, mental models, attention, memory).
+4. **`skills/design-agent/reference/design-generation-skill.md`** — reads the brief + manifest, runs the reuse/similarity check against the component registry, files gap reports for anything missing, shapes layout/typography/color/motion from manifest tokens, and follows the Decision Protocol on consequential choices. Produces a `design-output` (schema + example included).
    - Along the way it may file a **`schemas/component-gap-report.schema.json`** (example included) for anything not in the registry, and — before that gap report's component can be approved for reuse — a **`schemas/component-verification-report.schema.json`** (two examples included: `StatTile` and `Button/icon-only`) confirming the new component is operational (every state implemented, accessible, token-compliant) and documenting *why* it was built that way.
-5. **`skills/design-audit-rubric.md`** — runs automatically after every generation. 14 categories (including scope & cross-artifact integrity, the 3-3-3 usability rule, Wickens' 13 display-design principles, and mobile & dynamic components), `pass`/`minor-issues`/`major-issues`/`blocker` verdicts. `blocker` halts for a human; `major-issues` auto-revises and re-audits up to a configurable cap before escalating. Produces an **`schemas/audit-report.schema.json`** (example included).
-6. **`skills/audit-presentation-template.md`** — the exact, fixed format audit findings are rendered in for a human (Phase 1 Critical / Phase 2 Refinement / Phase 3 Polish / Design System Updates Required / Implementation Notes). See `examples/audit-report-rendered.example.md` for what this looks like filled in.
+5. **`skills/design-agent/reference/design-audit-rubric.md`** — runs automatically after every generation. 14 categories (including scope & cross-artifact integrity, the 3-3-3 usability rule, Wickens' 13 display-design principles, and mobile & dynamic components), `pass`/`minor-issues`/`major-issues`/`blocker` verdicts. `blocker` halts for a human; `major-issues` auto-revises and re-audits up to a configurable cap before escalating. Produces an **`schemas/audit-report.schema.json`** (example included).
+6. **`skills/design-agent/reference/audit-presentation-template.md`** — the exact, fixed format audit findings are rendered in for a human (Phase 1 Critical / Phase 2 Refinement / Phase 3 Polish / Design System Updates Required / Implementation Notes). See `examples/audit-report-rendered.example.md` for what this looks like filled in.
 
 7. **Design index update** (generation Step 12) — every artifact is registered with the exact versions it was built from. When one changes, its direct dependents are flagged `needs-review` (and projects sharing a pattern are flagged too); nothing is silently regenerated. See the flagged artifacts in `examples/design-index.example.yaml`.
 

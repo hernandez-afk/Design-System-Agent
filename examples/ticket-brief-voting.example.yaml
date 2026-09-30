@@ -1,5 +1,5 @@
 # The voting brief after brief optimization and the edge-case sweep
-# (skills/edge-case-sweep.md). The author's draft (page-brief-voting.example.md)
+# (skills/design-agent/reference/edge-case-sweep.md). The author's draft (page-brief-voting.example.md)
 # covered the voter's side only. The sweep found what the page depends on but
 # nobody briefed: an admin side to create the hackathon and import its games,
 # and a results page. Those become new briefs, not extra screens here.

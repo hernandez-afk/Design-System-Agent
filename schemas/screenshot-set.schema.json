@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://example.com/schemas/screenshot-set.schema.json",
   "title": "Screenshot Set",
-  "description": "A set of screenshots with their context and, when the agent rendered them, what it measured. 'rendered' sets come from tools/screenshots.py; 'provided' sets record screenshots people gave the agent. See skills/screenshot-review.md.",
+  "description": "A set of screenshots with their context and, when the agent rendered them, what it measured. 'rendered' sets come from tools/screenshots.py; 'provided' sets record screenshots people gave the agent. See skills/design-agent/reference/screenshot-review.md.",
   "type": "object",
   "required": ["id", "source", "shots"],
   "properties": {

@@ -7,7 +7,7 @@ Finds the mechanical problems that make designs go wrong: missing sections,
 leftover template placeholders, vague words (with what they mean in the design
 system), solution-first wording, lists with no amounts, missing states, and
 acceptance criteria that can't be checked. The judgment calls (ranking,
-conflicts with the design system, rewrites) are skills/brief-optimization.md.
+conflicts with the design system, rewrites) are skills/design-agent/reference/brief-optimization.md.
 
 Result: READY (exit 0), NEEDS WORK (exit 1), or NOT READY (exit 2).
 """

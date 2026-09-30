@@ -70,7 +70,7 @@
     },
     "acceptanceCriteria": {
       "type": "array",
-      "description": "Testable statements the design must meet, from the brief (optimized by skills/brief-optimization.md). Each is checked against the design output in the audit (rubric category 9).",
+      "description": "Testable statements the design must meet, from the brief (optimized by skills/design-agent/reference/brief-optimization.md). Each is checked against the design output in the audit (rubric category 9).",
       "items": {
         "type": "object",
         "required": ["id", "statement"],
@@ -94,7 +94,7 @@
     },
     "entities": {
       "type": "array",
-      "description": "The things this page shows, acts on or needs, and who handles each part of their life (skills/edge-case-sweep.md, Step 1). This is where missing parts of the product surface, like an admin side nobody briefed.",
+      "description": "The things this page shows, acts on or needs, and who handles each part of their life (skills/design-agent/reference/edge-case-sweep.md, Step 1). This is where missing parts of the product surface, like an admin side nobody briefed.",
       "items": {
         "type": "object",
         "required": ["name", "operations"],
@@ -123,7 +123,7 @@
     },
     "edgeCases": {
       "type": "array",
-      "description": "The edge-case sweep's findings (skills/edge-case-sweep.md, Step 2), each with a decision.",
+      "description": "The edge-case sweep's findings (skills/design-agent/reference/edge-case-sweep.md, Step 2), each with a decision.",
       "items": {
         "type": "object",
         "required": ["id", "lens", "case", "disposition"],
@@ -141,6 +141,7 @@
       "items": { "type": "string" },
       "description": "What the page deliberately doesn't do. The design must not include these."
     },
+    "approvedBy": { "type": "string", "description": "Who approved the optimized brief. In lite mode this replaces a separate brief-optimization report." },
     "optimizationReportRef": { "type": "string", "description": "The brief-optimization-report that produced this brief from its source." },
     "coreTasks": {
       "type": "array",

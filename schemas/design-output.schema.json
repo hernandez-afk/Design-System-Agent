@@ -4,7 +4,8 @@
   "title": "Design Output",
   "description": "What design-generation-skill.md produces for one ticket. This is what gets audited (design-audit-rubric.md / audit-report.schema.json) and, on approval, what a human reviews.",
   "type": "object",
-  "required": ["ticket", "projectId", "manifestVersion", "artifact", "mobileCheck", "componentsUsed", "decisionLog"],
+  "required": ["ticket", "projectId", "manifestVersion", "artifact", "componentsUsed", "decisionLog"],
+  "anyOf": [{ "required": ["screenshotSetRef"] }, { "required": ["mobileCheck"] }],
   "properties": {
     "ticket": { "type": "string" },
     "projectId": { "type": "string", "description": "design-index project this output belongs to. Equals ticket for a new project; for an 'extend-existing' scope outcome it is the existing project's ID." },

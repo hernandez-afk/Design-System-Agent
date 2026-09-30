@@ -44,6 +44,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 - **Accessibility:** `minTouchTargetPx`, `requireVisibleFocusStates`, `requireSemanticHtml`
 - **Registry:** `registryPolicy` in full, including `similarityCheck`, `requireOperationalVerification` and `verificationReviewer`
 - **Behavior:** `automation`, `compositionHeuristics`, `navigationHeuristics`, `motionUsagePolicy`, `usabilityHeuristics`, `scopePolicy`
+- **Harness:** `harness.mode` (`lite` for everyday work, `full` for flagship work)
 - **Briefs:** `briefPolicy` in full, including `requireEdgeCaseSweep` and any product-specific `edgeCaseLenses`
 - **Consistency by role:** `spacing.roles` (card, control, related, group and section spacing) and `typography.styles` (page title, section heading, body, label, caption), each naming the elements it applies to
 - **Mobile:** `mobile` in full (narrowest width, text scale, target spacing, largest fixed size, text expansion, thumb zone, orientations)
@@ -67,7 +68,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 
 ### Dynamic components
 
-Every component, baseline or new, must be **dynamic**: fluid (no fixed size above `mobile.maxFixedSizePx`), container-aware, content-proof, able to scale with text, touch-first, data-driven and token-driven (`skills/design-principles.md`). The standard enforces this in three places:
+Every component, baseline or new, must be **dynamic**: fluid (no fixed size above `mobile.maxFixedSizePx`), container-aware, content-proof, able to scale with text, touch-first, data-driven and token-driven (`skills/design-agent/reference/design-principles.md`). The standard enforces this in three places:
 
 - **Approval:** a verification report needs a `dynamicBehavior` section and `dynamicPass: true` before a component can be approved.
 - **Every design:** each design output carries a `mobileCheck`, and rubric category 14 audits it.

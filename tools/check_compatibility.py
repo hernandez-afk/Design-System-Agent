@@ -41,7 +41,7 @@ EXPLICIT = [
     "registryPolicy.onMissingComponent", "registryPolicy.onMissingVariant", "registryPolicy.requireApprovalBeforeReuse",
     "registryPolicy.requireOperationalVerification", "registryPolicy.verificationReviewer", "registryPolicy.similarityCheck",
     "automation", "compositionHeuristics", "navigationHeuristics", "motionUsagePolicy",
-    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy", "spacing.roles", "typography.styles",
+    "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy", "spacing.roles", "typography.styles", "harness.mode",
 ]
 
 # The components the rubric's checks assume exist, with the variants they need.

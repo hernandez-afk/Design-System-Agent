@@ -1,8 +1,11 @@
 # Example design-system manifest — fill this in per project.
 # Swap this file to reuse the same agent/skill across different design systems.
 
+harness:
+  mode: "lite"             # lite: core skill + tool checks + one critic pass. full: every record and the full rubric
+
 platform:
-  targets: ["claude-code", "claude-design"]   # same manifest drives both — see skills/platform-adapters.md
+  targets: ["claude-code", "claude-design"]   # same manifest drives both — see skills/design-agent/reference/platform-adapters.md
   claudeDesign:
     designSystemUrl: ""       # filled in on first export
     markAsDefault: true       # every new Design canvas applies Acme without being asked
@@ -253,10 +256,10 @@ navigationHeuristics:
   breadcrumbThresholdDepth: 2
 
 briefPolicy:
-  requireOptimization: true          # every brief goes through skills/brief-optimization.md
+  requireOptimization: true          # every brief goes through skills/design-agent/reference/brief-optimization.md
   approvalBeforeGeneration: true     # the author approves the optimized brief first
   requireAcceptanceCriteria: true
-  requireEdgeCaseSweep: true       # skills/edge-case-sweep.md: every entity owned, every lens covered
+  requireEdgeCaseSweep: true       # skills/design-agent/reference/edge-case-sweep.md: every entity owned, every lens covered
   edgeCaseLenses: []                # your product's own lenses, e.g. { name: content-ratings, ask: "Age ratings for games?" }
   vocabulary: {}                     # your own terms, e.g. { hero: "Card/feature at the top of the page" }
 

@@ -17,13 +17,23 @@ The goal is the one the whole system serves: **the product stays consistent as i
                                    a changed record sends the design back to that stage     └── token lint + design context on every edit
 ```
 
+## Lite and full
+
+By default the harness runs in **lite mode** (`harness.mode: lite`):
+- **The brief:** carries its own open questions and the author's approval (`approvedBy`), so no separate report is needed.
+- **Scope:** decided by `scope_check.py`. A record is only needed when there's an overlap to settle.
+- **Checking:** tools do all the mechanical checks in one `harness.py check` call.
+- **The critic:** one pass with the 15-item checklist (`skills/design-agent/critic.md`).
+
+**Full mode** keeps every record and the full rubric. The stages and gates below are the same in both.
+
 ## Stages and gates
 
 A design's stage is **worked out from its records**, never typed in: it's the first stage whose gate doesn't pass. `python3 tools/harness.py status` shows every design's stage, gates and blockers. `python3 tools/harness.py next --project ID` says what to do next.
 
 | Stage | What happens | Gate: what must be true to move on | Who decides | Tools |
 |---|---|---|---|---|
-| **brief** | A page brief, PRD or ticket is optimized to fit the design system, and swept for edge cases | Optimization report is `ready` and the author approved it; the edge-case sweep is complete with no open questions | The author | `brief_lint.py`, `edge_case_check.py`, `skills/brief-optimization.md`, `skills/edge-case-sweep.md` |
+| **brief** | A page brief, PRD or ticket is optimized to fit the design system, and swept for edge cases | Optimization report is `ready` and the author approved it; the edge-case sweep is complete with no open questions | The author | `brief_lint.py`, `edge_case_check.py`, `skills/design-agent/reference/brief-optimization.md`, `skills/design-agent/reference/edge-case-sweep.md` |
 | **scope** | The brief is placed against existing designs | Scope report exists; overlaps have a human decision | A person, when there's overlap | Generation Step 2b |
 | **flow** | Entry points, flows, the way back, integration changes | `flow_check.py` passes with no errors | — | `flow_check.py` |
 | **design** | Reuse check, structure, phone-first layout, 3-3-3 and the mobile pass | Design output has its task paths, glance test and mobile check | A person, at each Decision Protocol choice | Generation Steps 3–10 |

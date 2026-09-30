@@ -7,6 +7,9 @@
 # Requirements and reasons: standard/REQUIREMENTS.md.
 # Check any manifest: python3 tools/check_compatibility.py <manifest>
 
+harness:
+  mode: "lite"             # lite: core skill + tool checks + one critic pass. full: every record and the full rubric
+
 platform:
   targets: ["claude-code", "claude-design"]
   claudeDesign:
@@ -303,7 +306,7 @@ registryPolicy:
 
 automation:
   auditTrigger: "automatic-post-generation"
-  maxAutoReviseAttempts: 2
+  maxAutoReviseAttempts: 1    # each revise loop re-runs the checks and the critic: one is usually enough
   notifyOnAutoRevise: true
 
 compositionHeuristics:
@@ -321,10 +324,10 @@ motionUsagePolicy:
   requireDataVizAnimation: true
 
 briefPolicy:
-  requireOptimization: true          # every brief goes through skills/brief-optimization.md
+  requireOptimization: true          # every brief goes through skills/design-agent/reference/brief-optimization.md
   approvalBeforeGeneration: true     # the author approves the optimized brief first
   requireAcceptanceCriteria: true
-  requireEdgeCaseSweep: true       # skills/edge-case-sweep.md: every entity owned, every lens covered
+  requireEdgeCaseSweep: true       # skills/design-agent/reference/edge-case-sweep.md: every entity owned, every lens covered
   edgeCaseLenses: []                # your product's own lenses, e.g. { name: content-ratings, ask: "Age ratings for games?" }
   vocabulary: {}                     # your own terms, e.g. { hero: "Card/feature at the top of the page" }
 

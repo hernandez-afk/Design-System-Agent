@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a brief's edge-case sweep (skills/edge-case-sweep.md) is complete.
+"""Check a brief's edge-case sweep (skills/design-agent/reference/edge-case-sweep.md) is complete.
 
 Usage: python3 tools/edge_case_check.py <ticket-brief.yaml> [--index design-index.yaml]
                                         [--manifest design-system-manifest.yaml]

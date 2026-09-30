@@ -14,9 +14,17 @@
   },
   "properties": {
 
+    "harness": {
+      "type": "object",
+      "description": "How much process each design gets. 'lite' (default): the core skill, tool checks, one critic pass with skills/design-agent/critic.md, one human stop per stage. 'full': the complete process in skills/design-agent/reference/design-generation-skill.md, with every record and the full rubric; use it for flagship work. See the README's 'Cost' section.",
+      "properties": {
+        "mode": { "type": "string", "enum": ["lite", "full"], "default": "lite" }
+      }
+    },
+
     "platform": {
       "type": "object",
-      "description": "Where this design system is used. The same manifest drives both: Claude Code (a repo with CLAUDE.md and files) and Claude Design (a Design System artifact plus Design canvases on claude.ai). See skills/platform-adapters.md.",
+      "description": "Where this design system is used. The same manifest drives both: Claude Code (a repo with CLAUDE.md and files) and Claude Design (a Design System artifact plus Design canvases on claude.ai). See skills/design-agent/reference/platform-adapters.md.",
       "properties": {
         "targets": {
           "type": "array",
@@ -536,12 +544,12 @@
 
     "briefPolicy": {
       "type": "object",
-      "description": "How briefs (page briefs, PRDs, tickets) are optimized before design. See skills/brief-optimization.md.",
+      "description": "How briefs (page briefs, PRDs, tickets) are optimized before design. See skills/design-agent/reference/brief-optimization.md.",
       "properties": {
         "requireOptimization": { "type": "boolean", "default": true, "description": "Every brief goes through brief optimization (generation Step 1) before design." },
         "approvalBeforeGeneration": { "type": "boolean", "default": true, "description": "The author approves the optimized brief and its report before anything is designed." },
         "requireAcceptanceCriteria": { "type": "boolean", "default": true, "description": "A brief without testable acceptance criteria is not ready." },
-        "requireEdgeCaseSweep": { "type": "boolean", "default": true, "description": "Every brief goes through skills/edge-case-sweep.md: entities with an owner for every operation, every lens covered, no questions open." },
+        "requireEdgeCaseSweep": { "type": "boolean", "default": true, "description": "Every brief goes through skills/design-agent/reference/edge-case-sweep.md: entities with an owner for every operation, every lens covered, no questions open." },
         "edgeCaseLenses": {
           "type": "array",
           "description": "Product-specific lenses added to the standard twelve, e.g. content ratings for a games platform.",
