@@ -1,4 +1,4 @@
-# Content forms: is it a page, and is each thing shown the right way?
+# Content forms: is it a page, is each thing shown the right way, and can people find it?
 
 Every page has one purpose: what's true once the user leaves it (the brief's `purpose`). Everything on the page serves that purpose, in the form that shows it fastest. `tools/purpose_check.py` checks the brief. The renderer (`tools/screenshots.py`) flags text that's too long and information in prose that has a better form.
 
@@ -43,3 +43,17 @@ Set each required element's `infoType` and `form` in the brief. A form that does
 | Over `maxWordsFirstScreen` before the first scroll at 320px | Cut, so the title and primary action are found in 3 seconds |
 
 Long-form text that is the purpose (an article, legal terms, a help page) goes in `[data-longform]` and is exempt.
+
+## Cards: at most 5 pieces of information
+
+A front-facing card (a game, a product, a person, a report in a list) shows at most `compositionHeuristics.maxCardInformationAreas` (5) separate pieces of information. Count text, images and badges; a table or list inside counts once; actions don't count. Keep the ones that serve the page's purpose and help someone choose. The rest goes in the detail view the card opens. The renderer counts them.
+
+## Navigation and controls: few on screen, everything findable
+
+- **Most-used first.** The top level holds the most-used options, in order of use from the brief's core tasks, at most `navigationHeuristics.maxItemsPerLevel` (7). Everything else is grouped one level down, under a label that says what's inside.
+- **Few clicks.** Every option is within `maxClicksToAnyOption` (2) clicks of the navigation, counting the menu button when it's collapsed.
+- **Findable.** Hidden options always sit behind a labelled control (a button with `aria-expanded`, or `<details><summary>`). Navigation hidden at a width always has a control that opens it. More than `searchWhenOptionsOver` (15) options means a search.
+- **Never crowded.** At most `maxVisibleControls` (12) controls on the first screen at 320px. Less-used controls are nested behind one labelled control ("Filters", "More", "Settings").
+- **Easy to customize.** Settings and filters people change often sit where they're used, one tap away. The current choice is always visible (a chip, a label on the control), and one control resets it. Personal choices, like pinned items or a saved view, are kept.
+
+The renderer measures the first four. The critic judges the order and the customization.

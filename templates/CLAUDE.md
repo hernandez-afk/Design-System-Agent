@@ -20,6 +20,7 @@ All UI follows this, even quick edits. New pages and features: use the **design-
 **Rules:**
 - Only these tokens, roles, styles and components. The same kind of element looks the same everywhere.
 - One primary action per screen.
+- Cards show at most 5 pieces of information. Navigation keeps the most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and less-used controls nested behind one labelled control (≤ 12 controls on the first screen at 320px).
 - Every page has one purpose, and everything on it serves it; what doesn't goes elsewhere. Say little: a text block is ≤ {{contentPolicy.maxWordsPerBlock}} words, an intro ≤ {{contentPolicy.maxIntroWords}}, and the first screen at {{mobile.minViewportPx}}px ≤ {{contentPolicy.maxWordsFirstScreen}} words, with the title and primary action in view. Numbers are stats, change over time a chart, steps a stepper, a state a badge, help the control's label.
 - Say each thing once: no sentence, figure or status appears twice on a screen. If it matters that much, make it one stronger element.
 - Brand guidelines: {{brandGuidelines — for each profile: name (path), and whether it is this product's own (applies: always) or a reference used only when declared (brandGuidelines: ["<name>"] in the brief or page), with its reference system's CLAUDE.md}}. The tools warn when declared work doesn't match.

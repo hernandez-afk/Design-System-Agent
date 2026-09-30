@@ -42,6 +42,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 - Only the components in `CLAUDE.md`. Spacing by role, text by style.
 - One primary action per screen.
 - **Say little.** A text block is one or two short sentences (`contentPolicy`). Numbers are stats, steps are a stepper, a state is a badge, and help is the control's label. The first screen at 320px shows the title and the primary action, with little to read.
+- **Cards show at most 5 pieces of information**; the rest is in the detail view. **Navigation:** most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and the less-used controls nested behind one labelled control, so the screen is never crowded and everything can be found.
 - **Say each thing once.** No sentence, figure or status twice on a screen: if it matters that much, make it one stronger element.
 - Real content or `[PLACEHOLDER]`, never filler copy or invented numbers.
 - Type is the manifest's pair. A new design system gets a chosen pair, never a default font: offer 2 or 3 from `reference/type-pairing.md` at the brief's stop.
@@ -83,7 +84,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 | `design-audit-rubric.md` | settling a disputed finding |
 | `platform-adapters.md` | working in Claude Design |
 | `type-pairing.md` | choosing fonts for a new design system |
-| `content-forms.md` | is it a page, and which form fits the information |
+| `content-forms.md` | is it a page, which form fits the information, cards and navigation |
 | `design-generation-skill.md` (and `HARNESS.md` at the repo root) | full mode only |
 
 **Full mode** (`harness.mode: full` in the manifest) runs the complete process in `reference/design-generation-skill.md`: every record, the full rubric and the presentation template. Use it for flagship work, not everyday pages.

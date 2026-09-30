@@ -1,0 +1,391 @@
+id: structure-test-shots
+source: rendered
+target: examples/rendered/structure-test.html
+capturedAt: '2026-09-30T13:10:44Z'
+designSystem: Baseline
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: CompactCard
+    property: gap
+    found:
+    - px: 4
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ narrow-320.png
+    - px: 4
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ desktop-1440.png
+    consistent: true
+  - element: CompactCard
+    property: padding-x
+    found:
+    - px: 16
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ narrow-320.png
+    - px: 16
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ desktop-1440.png
+    consistent: true
+  - element: CompactCard
+    property: padding-y
+    found:
+    - px: 16
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ narrow-320.png
+    - px: 16
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ desktop-1440.png
+    consistent: true
+  - element: GameCard
+    property: gap
+    found:
+    - px: 4
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ narrow-320.png
+    - px: 4
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ narrow-320.png
+    - px: 4
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ desktop-1440.png
+    - px: 4
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ desktop-1440.png
+    consistent: true
+  - element: GameCard
+    property: padding-x
+    found:
+    - px: 16
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ narrow-320.png
+    - px: 16
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ narrow-320.png
+    - px: 16
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ desktop-1440.png
+    - px: 16
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ desktop-1440.png
+    consistent: true
+  - element: GameCard
+    property: padding-y
+    found:
+    - px: 16
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ narrow-320.png
+    - px: 16
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ narrow-320.png
+    - px: 16
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ desktop-1440.png
+    - px: 16
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-x
+    found:
+    - px: 6
+      where: button "All" @ narrow-320.png
+    - px: 6
+      where: button "Arcade" @ narrow-320.png
+    - px: 6
+      where: button "Racing" @ narrow-320.png
+    - px: 6
+      where: button "Puzzle" @ narrow-320.png
+    - px: 6
+      where: button "Sports" @ narrow-320.png
+    - px: 6
+      where: button "Strategy" @ narrow-320.png
+    - px: 6
+      where: button "Play" @ narrow-320.png
+    - px: 6
+      where: button "Play" @ narrow-320.png
+    - px: 6
+      where: button "Play" @ narrow-320.png
+    - px: 6
+      where: button "All" @ desktop-1440.png
+    - px: 6
+      where: button "Arcade" @ desktop-1440.png
+    - px: 6
+      where: button "Racing" @ desktop-1440.png
+    - px: 6
+      where: button "Puzzle" @ desktop-1440.png
+    - px: 6
+      where: button "Sports" @ desktop-1440.png
+    - px: 6
+      where: button "Strategy" @ desktop-1440.png
+    - px: 6
+      where: button "Play" @ desktop-1440.png
+    - px: 6
+      where: button "Play" @ desktop-1440.png
+    - px: 6
+      where: button "Play" @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-y
+    found:
+    - px: 1
+      where: button "All" @ narrow-320.png
+    - px: 1
+      where: button "Arcade" @ narrow-320.png
+    - px: 1
+      where: button "Racing" @ narrow-320.png
+    - px: 1
+      where: button "Puzzle" @ narrow-320.png
+    - px: 1
+      where: button "Sports" @ narrow-320.png
+    - px: 1
+      where: button "Strategy" @ narrow-320.png
+    - px: 1
+      where: button "Play" @ narrow-320.png
+    - px: 1
+      where: button "Play" @ narrow-320.png
+    - px: 1
+      where: button "Play" @ narrow-320.png
+    - px: 1
+      where: button "All" @ desktop-1440.png
+    - px: 1
+      where: button "Arcade" @ desktop-1440.png
+    - px: 1
+      where: button "Racing" @ desktop-1440.png
+    - px: 1
+      where: button "Puzzle" @ desktop-1440.png
+    - px: 1
+      where: button "Sports" @ desktop-1440.png
+    - px: 1
+      where: button "Strategy" @ desktop-1440.png
+    - px: 1
+      where: button "Play" @ desktop-1440.png
+    - px: 1
+      where: button "Play" @ desktop-1440.png
+    - px: 1
+      where: button "Play" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: CompactCard
+    found:
+    - value: 16px / 400
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ narrow-320.png
+    - value: 16px / 400
+      where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ desktop-1440.png
+    consistent: true
+  - element: GameCard
+    found:
+    - value: 16px / 400
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ narrow-320.png
+    - value: 16px / 400
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ narrow-320.png
+    - value: 16px / 400
+      where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ desktop-1440.png
+    - value: 16px / 400
+      where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ desktop-1440.png
+    consistent: true
+  - element: button
+    found:
+    - value: 16px / 400
+      where: button "All" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Arcade" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Racing" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Puzzle" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Sports" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Strategy" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Play" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Play" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Play" @ narrow-320.png
+    - value: 16px / 400
+      where: button "All" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Arcade" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Racing" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Puzzle" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Sports" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Strategy" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Play" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Play" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Play" @ desktop-1440.png
+    consistent: true
+  - element: h1
+    style: page-title
+    expected: 33px / 700
+    found:
+    - value: 32px / 700
+      where: h1 "Game library" @ narrow-320.png
+    - value: 32px / 700
+      where: h1 "Game library" @ desktop-1440.png
+    consistent: false
+  - element: h2
+    style: section-heading
+    expected: 23px / 600
+    found:
+    - value: 24px / 700
+      where: h2 "Pixel Pilots" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Crater Run" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Neon Drift" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Pixel Pilots" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Crater Run" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Neon Drift" @ desktop-1440.png
+    consistent: false
+findings:
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h1>: 32px / 700; style ''page-title'' is 33px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h2>: 24px / 700; style ''section-heading'' is 23px / 600.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Sans 3'' (a "Home") renders in the fallback: load it (@font-face
+    or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Serif 4'' (h1 "Game library") renders in the fallback: load
+    it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: composition-and-density
+  rubricItem: 'A card shows more than 5 pieces of information: keep the ones that
+    serve the page''s purpose, and move the rest to the detail view'
+  description: 'GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa": 8 (svg, h2 "Pixel
+    Pilots", span "Team Nova", span "Arcade", span "2–4 players", span "Rated 4.6").
+    (and 1 more like it)'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: navigation-color-and-motion-feedback
+  rubricItem: 'More than 7 items at one level: keep the most-used at the top, and
+    group the rest one level down'
+  description: 'ul "HomeGamesTeamsEvents ScoresNewsShopHelp ": 9 items.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: navigation-color-and-motion-feedback
+  rubricItem: 'An option is more than 2 clicks deep: flatten the menu'
+  description: 'nav "HomeGamesTeamsEvents ScoresNewsShopHelp ": 3 clicks to the deepest
+    option.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: navigation-color-and-motion-feedback
+  rubricItem: 'Over 15 options and no search: add one, so anything can be found by
+    name'
+  description: 'nav "HomeGamesTeamsEvents ScoresNewsShopHelp ": 16 options.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: navigation-color-and-motion-feedback
+  rubricItem: 'Hidden options with no labelled control to open them: they can''t be
+    found'
+  description: ul "Settings PrivacyEmailDevices ProfileBill" in nav "HomeGamesTeamsEvents
+    ScoresNewsShopHelp ".
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: navigation-color-and-motion-feedback
+  rubricItem: 'Hidden options with no labelled control to open them: they can''t be
+    found'
+  description: ul "PrivacyEmailDevices" in nav "HomeGamesTeamsEvents ScoresNewsShopHelp
+    ".
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: navigation-color-and-motion-feedback
+  rubricItem: 'More than 12 controls on the first screen: nest the less-used ones
+    behind one labelled control'
+  description: 15 controls in the first screen at 320px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

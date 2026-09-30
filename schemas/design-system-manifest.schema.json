@@ -1066,6 +1066,11 @@
           "type": "boolean",
           "default": true,
           "description": "Every major layout/content decision should be traceable back to a stated priority in the source ticket, not general assumption. Checked in audit category 9 (Composition & Density)."
+        },
+        "maxCardInformationAreas": {
+          "type": "integer",
+          "default": 5,
+          "description": "Most separate pieces of information a front-facing card shows (text, images; a table or list inside counts once; actions don't count). The rest belongs in the card's detail view. Measured by the renderer."
         }
       }
     },
@@ -1082,6 +1087,26 @@
           "type": "integer",
           "default": 2,
           "description": "Minimum navigation depth (levels below a top-level page) at which a breadcrumb trail becomes required rather than optional. Below this depth a simple back button may be sufficient."
+        },
+        "maxItemsPerLevel": {
+          "type": "integer",
+          "default": 7,
+          "description": "Items in one menu level. The most-used options stay at the top level, in order of use; the rest are grouped one level down."
+        },
+        "maxClicksToAnyOption": {
+          "type": "integer",
+          "default": 2,
+          "description": "Clicks from the navigation to its deepest option, counting the menu button when the navigation is collapsed."
+        },
+        "searchWhenOptionsOver": {
+          "type": "integer",
+          "default": 15,
+          "description": "Navigation with more options than this needs a search, so anything can be found by name."
+        },
+        "maxVisibleControls": {
+          "type": "integer",
+          "default": 12,
+          "description": "Controls on the first screen at mobile.minViewportPx. Less-used ones are nested behind one labelled control, so the screen is never crowded but everything can still be found."
         }
       }
     },

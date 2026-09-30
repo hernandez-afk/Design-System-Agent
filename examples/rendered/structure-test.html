@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game library: cards and navigation test page</title>
+<!-- A test page for the card and navigation checks (tools/screenshots.py with standard/design-system-manifest.yaml).
+     Planted problems: game cards with 8 pieces of information, a top menu with 9 items at one level, an
+     option 3 clicks deep, 16 options and no search, a submenu hidden with no labelled control, and more than
+     12 controls on the first screen at 320px. Not a problem: the compact card with 4 pieces. -->
+<style>
+  body { margin: 0; background: #fafafa; color: #18181b; font-family: "Source Sans 3", sans-serif; font-size: 1rem; line-height: 1.5; }
+  nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  nav a, nav button { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; padding: 0 0.5rem; }
+  nav ul ul { display: none; }
+  main { padding: 1rem; display: grid; gap: 1rem; }
+  h1 { font-family: "Source Serif 4", serif; margin: 0; }
+  .card { background: #fff; border: 1px solid #d4d4d8; border-radius: 8px; padding: 1rem; display: grid; gap: 0.25rem; }
+  .card button, .chips button { font: inherit; min-height: 44px; min-width: 44px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body>
+<nav aria-label="Main">
+  <ul>
+    <li><a href="#">Home</a></li><li><a href="#">Games</a></li><li><a href="#">Teams</a></li><li><a href="#">Events</a></li>
+    <li><a href="#">Scores</a></li><li><a href="#">News</a></li><li><a href="#">Shop</a></li><li><a href="#">Help</a></li>
+    <li>
+      <span>More</span>
+      <ul>
+        <li><a href="#">Settings</a>
+          <ul><li><a href="#">Privacy</a></li><li><a href="#">Email</a></li><li><a href="#">Devices</a></li></ul>
+        </li>
+        <li><a href="#">Profile</a></li><li><a href="#">Billing</a></li><li><a href="#">Log out</a></li><li><a href="#">About</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+<main>
+  <h1>Game library</h1>
+  <div class="chips" role="group" aria-label="Genre"><button>All</button><button>Arcade</button><button>Racing</button><button>Puzzle</button><button>Sports</button><button>Strategy</button></div>
+  <article class="card" data-component="GameCard">
+    <svg width="64" height="64" aria-hidden="true"><rect width="64" height="64" fill="#d4d4d8"/></svg>
+    <h2>Pixel Pilots</h2><span>Team Nova</span><span>Arcade</span><span>2–4 players</span><span>Rated 4.6</span><span>1,204 plays</span><span>Updated 2 days ago</span>
+    <button>Play</button>
+  </article>
+  <article class="card" data-component="GameCard">
+    <svg width="64" height="64" aria-hidden="true"><rect width="64" height="64" fill="#d4d4d8"/></svg>
+    <h2>Crater Run</h2><span>Team Orbit</span><span>Racing</span><span>1 player</span><span>Rated 4.2</span><span>877 plays</span><span>Updated today</span>
+    <button>Play</button>
+  </article>
+  <article class="card" data-component="CompactCard">
+    <h2>Neon Drift</h2><span>Team Flux</span><span>Racing</span><span>Rated 4.8</span>
+    <button>Play</button>
+  </article>
+</main>
+</body>
+</html>

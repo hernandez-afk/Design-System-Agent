@@ -290,6 +290,10 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** A text block over `maxWordsPerBlock` or `maxSentencesPerBlock`, an intro over `maxIntroWords`, or a screen over `maxWordsPerScreen` (measured), outside `[data-longform]`.
 - [ ] **Minor:** Instructions for the interface, a list written as a sentence, or a one-row table (measured).
 - [ ] **Minor:** A small page reached from one place, with no `pageJustification`: it may fit where it's reached from.
+- [ ] **Major:** A front-facing card shows more than `compositionHeuristics.maxCardInformationAreas` pieces of information (measured). The rest goes to its detail view.
+- [ ] **Major:** Navigation with more than `navigationHeuristics.maxItemsPerLevel` items at a level, an option more than `maxClicksToAnyOption` clicks deep, more than `searchWhenOptionsOver` options with no search, hidden options with no labelled control, or navigation that vanishes at a width with nothing to open it (measured).
+- [ ] **Major:** More than `navigationHeuristics.maxVisibleControls` controls on the first screen at the narrowest width (measured); the less-used ones belong behind one labelled control.
+- [ ] **Major:** The top level isn't the most-used options in order of use, or settings and filters aren't where they're used, don't show the current choice, or can't be reset in one tap.
 
 ---
 

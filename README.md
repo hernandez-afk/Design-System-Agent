@@ -119,7 +119,7 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
 
   Test pages: `examples/rendered/atari-brand-test.html` declares the guidelines and has nine planted mistakes, all caught. `examples/rendered/atari-mention-test.html` only mentions Atari, so it's checked against the Baseline; only its undersized logo is flagged. `examples/brand/acme-brand.example.yaml` shows a brand that is the product's own (`applies: always`).
 
-## Purpose, fewer words, and 3-3-3, measured
+## Purpose, fewer words, 3-3-3, cards and navigation, measured
 
 - **Is it a page?** Every brief states its `purpose`: what's true once the user leaves. `tools/purpose_check.py`, run by the brief gate, flags a page that has no task and only shows information. That's usually better as a section of the page it's reached from, a panel, a tooltip or a notification, unless a `pageJustification` says why it's a page. It also flags anything that serves no ranked priority.
 - **The right form for each piece of information.** Each required element gets an `infoType` and a `form`. A mismatch comes with the forms that fit: one number as a stat, change over time as a line, a state as a badge, steps as a stepper. See `skills/design-agent/reference/content-forms.md`.
@@ -136,7 +136,17 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
   - **3 taps:** counted from the user flow (`flow_check.py`).
   - **3 minutes:** estimated per screen from its words, fields and choices.
 
-`examples/rendered/content-test.html` has ten planted problems, and the renderer catches all ten.
+- **Cards and navigation.**
+  - A front-facing card shows at most 5 pieces of information; the rest goes in its detail view.
+  - Navigation keeps the most-used options at the top, at most 7 a level.
+  - Every option is within 2 clicks.
+  - Past 15 options, there must be a search.
+  - Hidden options always sit behind a labelled control.
+  - At most 12 controls appear on the first screen at 320px, with the rest nested behind one labelled control.
+
+  The renderer measures all of these. The critic judges the order of the options, and whether settings and filters sit where they're used, show the current choice, and reset in one tap.
+
+`examples/rendered/content-test.html` has ten planted text and 3-3-3 problems, and `examples/rendered/structure-test.html` six card and navigation problems. The renderer catches all of them.
 
 ## Edge cases, caught at the brief
 

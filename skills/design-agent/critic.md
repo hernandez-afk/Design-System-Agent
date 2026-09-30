@@ -7,6 +7,7 @@ You review a design you didn't make. **The tools have already checked everything
 - brief readiness and the edge-case sweep
 - the same sentence or figure twice on one screen, default fonts and fonts that don't load
 - text length, numbers, steps, lists and instructions written as prose, and the 3-second and 3-minute measurements
+- cards over 5 pieces of information; navigation that's crowded, too deep, unsearchable or has unlabelled hidden options
 - brand guidelines: near-miss colors, fonts, how the name is written, logo size, proportions and clear space
 
 Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px at 200% text screenshot. Check each item; skip the ones that don't apply.
@@ -33,10 +34,11 @@ Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px
 | 18 | When the work declares a brand's guidelines, nothing breaks its profile's `never` rules | major |
 | 19 | Each piece of information is in the form that fits it: one number → a stat; change over time → a line; items against a measure → bars or a table; a state → a badge; steps → a stepper; help → a label or one line. Name the better form (`reference/content-forms.md`) | major |
 | 20 | Nothing explains what the interface should make obvious; every text block earns its place (fewer, shorter words) | minor |
+| 21 | The most-used options are at the top level, in order of use; settings and filters sit where they're used, show the current choice, and reset in one tap | major |
 
 **Rules:**
 - A value you read off a screenshot is an estimate, never a blocker on its own.
 - No finding without a rule behind it: a check number, a token, or a tool finding.
 - Don't list passes.
 
-**Return** `harness.py new critique`: the verdict (blocker if any blocker; major-issues if any major; else pass), then each finding as `where: what → fix (rule)`. At most 20 findings, most severe first.
+**Return** `harness.py new critique`: the verdict (blocker if any blocker; major-issues if any major; else pass), then each finding as `where: what → fix (rule)`. At most 21 findings, most severe first.

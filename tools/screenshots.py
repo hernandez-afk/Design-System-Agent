@@ -161,6 +161,64 @@ def content_findings(m, shots):
     return out
 
 
+def structure_findings(m, shots):
+    """Cards with too many pieces of information, and navigation that's crowded, deep or hard to search."""
+    comp = {"maxCardInformationAreas": 5, **((m.get("compositionHeuristics") or {}))}
+    nh = {"maxItemsPerLevel": 7, "maxClicksToAnyOption": 2, "searchWhenOptionsOver": 15, "maxVisibleControls": 12,
+          **((m.get("navigationHeuristics") or {}))}
+    out, seen = [], {}
+
+    def add(sev, cat, item, key, desc, shot):
+        if key in seen:  # one finding per kind of card or nav; count the other instances, once each
+            if desc not in seen[key]["_descs"]:
+                seen[key]["_descs"].add(desc)
+                seen[key]["_more"] = seen[key].get("_more", 0) + 1
+            return
+        f = {"severity": sev, "category": cat, "rubricItem": item, "description": desc,
+             "evidence": {"kind": "rendered-measurement", "ref": shot["file"], "measured": True}}
+        f["_descs"] = {desc}
+        seen[key] = f
+        out.append(f)
+    N = "navigation-color-and-motion-feedback"
+    for s in shots:
+        st = (s.get("antiAi") or {}).get("structure")
+        if not st:
+            continue
+        w = f"{s['viewport']['w']}px"
+        for c in st["cards"]:
+            if c["areas"] > comp["maxCardInformationAreas"]:
+                kind = c["where"].split(' "')[0]
+                add("major", "composition-and-density",
+                    f"A card shows more than {comp['maxCardInformationAreas']} pieces of information: keep the ones that serve the page's purpose, and move the rest to the detail view",
+                    ("card", kind), f"{c['where']}: {c['areas']} ({', '.join(c['parts'][:6])}).", s)
+        for n in st["nav"]:
+            if not n["visible"] and not n["hasOpener"]:
+                add("major", N, "Navigation disappears at this width with no control to open it", ("nav-gone", n["where"], w),
+                    f"{n['where']} is hidden at {w}.", s)
+            for lv in n["levels"]:
+                if lv["items"] > nh["maxItemsPerLevel"]:
+                    add("major", N, f"More than {nh['maxItemsPerLevel']} items at one level: keep the most-used at the top, and group the rest one level down",
+                        ("nav-level", lv["where"]), f"{lv['where']}: {lv['items']} items.", s)
+            if n["maxClicks"] > nh["maxClicksToAnyOption"]:
+                add("major", N, f"An option is more than {nh['maxClicksToAnyOption']} clicks deep: flatten the menu",
+                    ("nav-deep", n["where"]), f"{n['where']}: {n['maxClicks']} clicks to the deepest option.", s)
+            if n["options"] > nh["searchWhenOptionsOver"] and not st["search"]:
+                add("major", N, f"Over {nh['searchWhenOptionsOver']} options and no search: add one, so anything can be found by name",
+                    ("nav-search", n["where"]), f"{n['where']}: {n['options']} options.", s)
+            for h in n["unlabelledHidden"]:
+                add("major", N, "Hidden options with no labelled control to open them: they can't be found",
+                    ("nav-hidden", h), f"{h} in {n['where']}.", s)
+        if s["viewport"]["name"] == "narrow" and s["textScalePercent"] == 100 and st["controlsOnFirstScreen"] > nh["maxVisibleControls"]:
+            add("major", N, f"More than {nh['maxVisibleControls']} controls on the first screen: nest the less-used ones behind one labelled control",
+                ("controls", w), f"{st['controlsOnFirstScreen']} controls in the first screen at {w}.", s)
+    for f in out:
+        f.pop("_descs", None)
+        more = f.pop("_more", 0)
+        if more:
+            f["description"] += f" (and {more} more like it)"
+    return out
+
+
 def step_px(m):
     t = (m.get("typography", {}) or {}).get("scale", {}) or {}
     steps = t.get("steps") or ["base"]
@@ -386,6 +444,7 @@ def main():
     findings, inventory = inventory_and_findings(m, shots)
     findings += anti_ai_findings(m, shots, system_path, args.brand)
     findings += content_findings(m, shots)
+    findings += structure_findings(m, shots)
     record = {
         "id": args.id or os.path.basename(out.rstrip("/")),
         "source": "rendered",

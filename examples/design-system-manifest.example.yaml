@@ -265,12 +265,17 @@ automation:
   notifyOnAutoRevise: true
 
 compositionHeuristics:
+  maxCardInformationAreas: 5   # a front-facing card shows at most 5 pieces of information; the rest goes to its detail view
   listPaginationThreshold: 10
   maxInlineInputs: 7
   requireProgressiveDisclosure: true
   requireTicketPriorityTraceability: true
 
 navigationHeuristics:
+  maxItemsPerLevel: 7          # the most-used options at the top, the rest grouped one level down
+  maxClicksToAnyOption: 2      # every option within 2 clicks of the navigation
+  searchWhenOptionsOver: 15    # more options than this need a search
+  maxVisibleControls: 12       # controls on the first screen at the narrowest width; nest the rest behind one labelled control
   requireNavigationalTies: true
   breadcrumbThresholdDepth: 2
 

@@ -206,10 +206,48 @@ async function antiAi(page, cfg) {
     const tables = [...document.querySelectorAll("table")].filter(visible).map((t) => ({ where: label(t),
       rows: [...t.querySelectorAll("tr")].filter((r) => r.querySelector("td")).length,
       cols: Math.max(0, ...[...t.querySelectorAll("tr")].map((r) => r.children.length)) }));
+    // Cards: how many separate pieces of information each one shows (actions aren't counted).
+    const cardSel = "[data-component*='Card'], [data-component*='Tile'], .card, article";
+    const cards = [...document.querySelectorAll(cardSel)].filter((c) => visible(c) && !c.querySelector(cardSel)).map((c) => {
+      // A table or list inside a card is one area; its cells and items aren't counted one by one.
+      const units = [...c.querySelectorAll("*")].filter((el) => visible(el) && !el.closest("button, a, [role=button], input, select, textarea") && (
+        el.matches("table, ul, ol, dl") && !el.parentElement.closest("table, ul, ol, dl") ||
+        !el.closest("table, ul, ol, dl") && [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) ||
+        (el.matches("img, svg, video, canvas, picture") && el.getBoundingClientRect().width > 24 && !el.parentElement.closest("img, svg, picture"))));
+      return { where: label(c), areas: units.length, parts: units.slice(0, 8).map((u) => u.tagName.toLowerCase() +
+        (u.textContent.trim() ? ` "${u.textContent.replace(/\s+/g, " ").trim().slice(0, 20)}"` : "")) };
+    });
+    // Navigation: items per level, clicks to reach each option, search, and how hidden options open.
+    const navs = [...document.querySelectorAll("nav, [role=navigation], [role=menubar]")].filter((n) => !n.parentElement.closest("nav, [role=navigation], [role=menubar]"));
+    const opener = (el) => { const id = el.id; const byId = id && document.querySelector(`[aria-controls="${id}"]`);
+      if (byId && visible(byId)) return byId;
+      const li = el.closest("li, details"); if (!li) return null;
+      return [...li.querySelectorAll(":scope > button[aria-expanded], :scope > [role=button][aria-expanded], :scope > summary, :scope > a[aria-expanded]")].find(visible) || null; };
+    const nav = navs.map((n) => {
+      const links = [...n.querySelectorAll("a[href], button:not([aria-expanded]), [role=menuitem], [role=tab]")];
+      const hiddenLists = [...n.querySelectorAll("ul, ol, [role=menu], [id]")].filter((l) => !visible(l) && l.querySelector("a, button, [role=menuitem]"));
+      const unlabelled = hiddenLists.filter((l) => { const o = opener(l); return !o || !(o.getAttribute("aria-label") || o.textContent.trim()); });
+      const depthOf = (a) => { let d = 1; for (let p = a.parentElement; p && p !== n.parentElement; p = p.parentElement)
+        if (p.matches("ul ul, ol ol, ul ol, ol ul, [role=menu], details > ul, details > ol") ) d++;
+        return d + (visible(n) ? 0 : 1); };
+      const levels = new Map();  // items per list: its entries, whether links, buttons or submenu headings
+      for (const l of n.querySelectorAll("ul, ol, [role=menu], [role=menubar], [role=tablist]"))
+        levels.set(l, l.matches("ul, ol") ? [...l.children].filter((c) => c.matches("li")).length : l.querySelectorAll(":scope > *").length);
+      if (!levels.size) levels.set(n, links.length);
+      const toggle = !visible(n) && (opener(n) || [...document.querySelectorAll("[aria-controls], button[aria-expanded]")].find((b) => visible(b) && !b.closest("nav")));
+      return { where: label(n), visible: visible(n), hasOpener: !!toggle, options: links.length,
+        maxClicks: links.length ? Math.max(...links.map(depthOf)) : 0,
+        levels: [...levels.entries()].map(([l, k]) => ({ where: label(l), items: k })),
+        unlabelledHidden: unlabelled.map(label) };
+    });
+    const search = !!document.querySelector("input[type=search], [role=search], [data-command-palette], input[aria-label*='search' i], input[placeholder*='search' i]");
+    const onScreen = [...document.querySelectorAll("a[href], button, input:not([type=hidden]), select, textarea, [role=button], [role=switch], [role=tab], summary")]
+      .filter((el) => visible(el) && el.getBoundingClientRect().top < vh && el.getBoundingClientRect().bottom > 0).length;
+    const structure = { cards, nav, search, controlsOnFirstScreen: onScreen };
     const content = { viewportH: vh, blocks: contentBlocks, firstScreenWords, totalWords,
       glance: { h1: h1 ? { where: label(h1), top: Math.round(h1.getBoundingClientRect().top) } : null, primaries },
       effort: { words: totalWords, fields, choices, actions: actions.length }, tables };
-    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos, type }, content };
+    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos, type }, content, structure };
   }, { rep: cfg.repetition || {}, logoSelectors: cfg.logoSelectors || [], primaryHexes: cfg.primaryHexes || [] });
 }
 
