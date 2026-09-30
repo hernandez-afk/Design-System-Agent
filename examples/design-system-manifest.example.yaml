@@ -33,6 +33,16 @@ brandGuidelines:           # Acme's own guidelines; the tools warn when somethin
   - profile: "brand/acme-brand.example.yaml"
     applies: "always"      # this is Acme's product: the manifest and every page are checked
 
+contentPolicy:            # say less: every block short, and a first screen that's scanned, not read
+  maxWordsPerBlock: 30     # a paragraph, helper text or description; the rest goes behind a disclosure
+  maxSentencesPerBlock: 2
+  maxIntroWords: 20        # the line under a page or section title
+  maxWordsFirstScreen: 60  # before the first scroll at the narrowest width, so the title and primary action stand out in 3 s
+  maxWordsPerScreen: 250
+  maxNumbersInProse: 2     # more figures than this in a sentence become stats, a table or a chart
+  taskTime: { readingWordsPerMinute: 200, secondsPerField: 8, secondsPerChoice: 3 }   # the 3-minute estimate
+  # Long-form text (articles, legal, help) sits in [data-longform] and is exempt.
+
 antiAiDesign:
   repetition: { enabled: true, minWords: 3, figures: true }
   typefaces:

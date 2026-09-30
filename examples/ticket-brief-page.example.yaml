@@ -4,6 +4,7 @@
 # the author approves it (briefPolicy.approvalBeforeGeneration).
 ticketKey: "DES-530"
 title: "Notification preferences"
+purpose: "Admins leave with only the notification emails they want switched on, and know it worked."
 sourceType: "page-brief"
 sourceRef: "examples/page-brief.example.md"
 optimizationReportRef: "DES-530-brief-1"

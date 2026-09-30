@@ -1,0 +1,259 @@
+id: content-test-shots
+source: rendered
+target: examples/rendered/content-test.html
+capturedAt: '2026-09-30T13:05:16Z'
+designSystem: Baseline
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 157
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 87
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: button.primary
+    property: padding-x
+    found:
+    - px: 16
+      where: button.primary "Book now" @ narrow-320.png
+    - px: 16
+      where: button.primary "Save for later" @ narrow-320.png
+    - px: 16
+      where: button.primary "Book now" @ desktop-1440.png
+    - px: 16
+      where: button.primary "Save for later" @ desktop-1440.png
+    consistent: true
+  - element: button.primary
+    property: padding-y
+    found:
+    - px: 12
+      where: button.primary "Book now" @ narrow-320.png
+    - px: 12
+      where: button.primary "Save for later" @ narrow-320.png
+    - px: 12
+      where: button.primary "Book now" @ desktop-1440.png
+    - px: 12
+      where: button.primary "Save for later" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: button.primary
+    found:
+    - value: 16px / 400
+      where: button.primary "Book now" @ narrow-320.png
+    - value: 16px / 400
+      where: button.primary "Save for later" @ narrow-320.png
+    - value: 16px / 400
+      where: button.primary "Book now" @ desktop-1440.png
+    - value: 16px / 400
+      where: button.primary "Save for later" @ desktop-1440.png
+    consistent: true
+  - element: h1
+    style: page-title
+    expected: 33px / 700
+    found:
+    - value: 32px / 700
+      where: h1 "Book a studio session" @ narrow-320.png
+    - value: 32px / 700
+      where: h1 "Book a studio session" @ desktop-1440.png
+    consistent: false
+  - element: p
+    style: body
+    expected: 16px / 400
+    found:
+    - value: 16px / 400
+      where: p "Welcome to the booking page, where you c" @ narrow-320.png
+    - value: 16px / 400
+      where: p "Last month 1,240 people booked a session" @ narrow-320.png
+    - value: 16px / 400
+      where: p "First pick a date on the calendar, then " @ narrow-320.png
+    - value: 16px / 400
+      where: p "Click the blue button below to save your" @ narrow-320.png
+    - value: 16px / 400
+      where: p "We support bookings for podcasts, rehear" @ narrow-320.png
+    - value: 16px / 400
+      where: p "Welcome to the booking page, where you c" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "Last month 1,240 people booked a session" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "First pick a date on the calendar, then " @ desktop-1440.png
+    - value: 16px / 400
+      where: p "Click the blue button below to save your" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "We support bookings for podcasts, rehear" @ desktop-1440.png
+    consistent: true
+findings:
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 157px at 320px at 200% text; widest: table "RoomPriceSizeStudio
+    A$40/hLarge".'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 87px at 390px at 200% text; widest: table "RoomPriceSizeStudio
+    A$40/hLarge".'
+  evidence:
+    kind: rendered-measurement
+    ref: phone-390-text200.png
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h1>: 32px / 700; style ''page-title'' is 33px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Serif 4'' (h1 "Book a studio session") renders in the fallback:
+    load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Sans 3'' (p "Welcome to the booking page, where you c") renders
+    in the fallback: load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: content-and-purpose
+  rubricItem: 'The line under a title is over 20 words: say what the page is for,
+    in one line'
+  description: 'p "Welcome to the booking page, where you c": 32 words.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: content-and-purpose
+  rubricItem: 'Numbers in a sentence: show them as stats, a table or a chart, not
+    prose'
+  description: 'p "Last month 1,240 people booked a session": 3 figures (1,240, 312,
+    18%).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: content-and-purpose
+  rubricItem: 'Steps written as prose: show them as a stepper or a numbered list'
+  description: 'p "First pick a date on the calendar, then ": ''First pick a date
+    on the calendar, then choose a time slot that suits …'''
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: content-and-purpose
+  rubricItem: 'Instructions for the interface in prose: make the control explain itself
+    (its label, one helper line, or the empty state)'
+  description: 'p "Click the blue button below to save your": ''Click the blue button
+    below to save your booking.…'''
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: content-and-purpose
+  rubricItem: 'Items listed in a sentence: show them as a list'
+  description: 'p "We support bookings for podcasts, rehear": ''We support bookings
+    for podcasts, rehearsals, voice-overs, mixing and …'''
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: content-and-purpose
+  rubricItem: 'A table with one row: show it as label-value pairs'
+  description: table "RoomPriceSizeStudio A$40/hLarge".
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: three-three-three-usability
+  rubricItem: '3 seconds: the primary action is below the first screen at 320px'
+  description: button.primary "Book now" starts at 906px; the screen is 640px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: three-three-three-usability
+  rubricItem: More than one primary action on the screen
+  description: button.primary "Book now", button.primary "Save for later".
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: three-three-three-usability
+  rubricItem: '3 seconds: over 60 words to read before the first scroll'
+  description: 85 words in the first 640px at 320px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

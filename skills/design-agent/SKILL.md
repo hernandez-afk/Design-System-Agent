@@ -27,6 +27,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
   - vague words become rules: "pop" → the one primary action; "easy/fast" → 3-3-3; "clean" → fewer elements; "modern", "like X" → ask
   - solutions become needs: "a dropdown" → "choose one of N"
   - each criterion becomes testable
+- **Purpose:** one sentence in `purpose`: what's true once the user leaves. If the page has no core task, or is small and reached from one place, it's probably not a page: propose the section, panel, dialog or tooltip it should be, unless a `pageJustification` holds. Give each required element an `infoType` and `form`. `T/purpose_check.py <brief>` checks all of this, and the brief gate runs it.
 - **Design system:** the project's, unless the author asks for a brand's guidelines ("follow the Atari brand guidelines"). Then set `brandGuidelines: ["Atari"]` in the brief and use `brand/atari/CLAUDE.md` instead of `CLAUDE.md`'s tokens and type. A page that only mentions the brand isn't a request.
 - Run `T/harness.py check --project <ID>`, and `T/scope_check.py <brief> --index design-index.yaml` if the index has designs.
 - **Stop once.** Send one message: your rewrites, conflicts with the design system, new briefs, work that belongs to another design, and every question. Wait for the answers.
@@ -40,6 +41,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 - Phone first, at 320px.
 - Only the components in `CLAUDE.md`. Spacing by role, text by style.
 - One primary action per screen.
+- **Say little.** A text block is one or two short sentences (`contentPolicy`). Numbers are stats, steps are a stepper, a state is a badge, and help is the control's label. The first screen at 320px shows the title and the primary action, with little to read.
 - **Say each thing once.** No sentence, figure or status twice on a screen: if it matters that much, make it one stronger element.
 - Real content or `[PLACEHOLDER]`, never filler copy or invented numbers.
 - Type is the manifest's pair. A new design system gets a chosen pair, never a default font: offer 2 or 3 from `reference/type-pairing.md` at the brief's stop.
@@ -81,6 +83,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 | `design-audit-rubric.md` | settling a disputed finding |
 | `platform-adapters.md` | working in Claude Design |
 | `type-pairing.md` | choosing fonts for a new design system |
+| `content-forms.md` | is it a page, and which form fits the information |
 | `design-generation-skill.md` (and `HARNESS.md` at the repo root) | full mode only |
 
 **Full mode** (`harness.mode: full` in the manifest) runs the complete process in `reference/design-generation-skill.md`: every record, the full rubric and the presentation template. Use it for flagship work, not everyday pages.

@@ -6,6 +6,7 @@ You review a design you didn't make. **The tools have already checked everything
 - flow dead ends, entry points and integration changes
 - brief readiness and the edge-case sweep
 - the same sentence or figure twice on one screen, default fonts and fonts that don't load
+- text length, numbers, steps, lists and instructions written as prose, and the 3-second and 3-minute measurements
 - brand guidelines: near-miss colors, fonts, how the name is written, logo size, proportions and clear space
 
 Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px at 200% text screenshot. Check each item; skip the ones that don't apply.
@@ -25,15 +26,17 @@ Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px
 | 11 | Nothing breaks convention (red means error, standard control placement) | major |
 | 12 | The user never has to remember something from an earlier screen | major |
 | 13 | Destructive actions confirm first, or can be undone | major |
-| 14 | Everything on the page serves a ranked goal; cut the rest | minor |
+| 14 | Everything serves the page's purpose (the brief's `purpose`). For anything that doesn't, say where it goes instead: another page, a panel, a disclosure, or cut | major |
 | 15 | Nothing from `CLAUDE.md`'s "Never" list | major |
 | 16 | Nothing is said twice, even in different words: a badge and a sentence giving the same status, a subtitle restating the title, a summary repeating the table below it. Merge them into one stronger element | major |
 | 17 | No AI tropes: filler copy or invented numbers (use `[PLACEHOLDER]`), gradient washes, a row of three identical icon cards, emoji as icons, accent-border cards, everything centered, decoration with no job | major |
 | 18 | When the work declares a brand's guidelines, nothing breaks its profile's `never` rules | major |
+| 19 | Each piece of information is in the form that fits it: one number → a stat; change over time → a line; items against a measure → bars or a table; a state → a badge; steps → a stepper; help → a label or one line. Name the better form (`reference/content-forms.md`) | major |
+| 20 | Nothing explains what the interface should make obvious; every text block earns its place (fewer, shorter words) | minor |
 
 **Rules:**
 - A value you read off a screenshot is an estimate, never a blocker on its own.
 - No finding without a rule behind it: a check number, a token, or a tool finding.
 - Don't list passes.
 
-**Return** `harness.py new critique`: the verdict (blocker if any blocker; major-issues if any major; else pass), then each finding as `where: what → fix (rule)`. At most 18 findings, most severe first.
+**Return** `harness.py new critique`: the verdict (blocker if any blocker; major-issues if any major; else pass), then each finding as `where: what → fix (rule)`. At most 20 findings, most severe first.

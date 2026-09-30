@@ -43,7 +43,7 @@ EXPLICIT = [
     "registryPolicy.requireOperationalVerification", "registryPolicy.verificationReviewer", "registryPolicy.similarityCheck",
     "automation", "compositionHeuristics", "navigationHeuristics", "motionUsagePolicy",
     "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy", "spacing.roles", "typography.styles", "harness.mode",
-    "antiAiDesign",
+    "antiAiDesign", "contentPolicy",
 ]
 
 # The components the rubric's checks assume exist, with the variants they need.
@@ -160,6 +160,12 @@ def check(m, schemas, claude_md, index_path, base="."):
                          f"(check it on its own); everything else uses this system.")
         elif entry.get("applies") == "always":
             gaps += [f"{prof.get('name')} guidelines: {w}" for w in brand_check.check_manifest(m, prof)]
+
+    cpol = get(m, "contentPolicy") or {}
+    if cpol and cpol.get("maxIntroWords", 20) > cpol.get("maxWordsPerBlock", 30):
+        gaps.append("contentPolicy.maxIntroWords is above maxWordsPerBlock: the line under a title should be the shortest text.")
+    if cpol and cpol.get("maxWordsFirstScreen", 60) > 90:
+        gaps.append(f"contentPolicy.maxWordsFirstScreen is {cpol['maxWordsFirstScreen']}: more than about 90 words before the first scroll buries the title and primary action (3 seconds).")
 
     sp = get(m, "spacing") or {}
     off_unit = [v for v in sp.get("scale", []) if v % sp.get("baseUnitPx", 4)]

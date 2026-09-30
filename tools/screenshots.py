@@ -22,6 +22,7 @@ import argparse
 import datetime
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -51,8 +52,113 @@ def config(m, target, out, manifest_path):
     return {"target": target, "outDir": out, "viewports": vps,
             "repetition": (m.get("antiAiDesign", {}) or {}).get("repetition", {}) or {},
             "logoSelectors": logos,
+            "primaryHexes": primary_hexes(m, base),
             "minTouch": (m.get("accessibility", {}) or {}).get("minTouchTargetPx", 44),
             "minTextPx": (m.get("usabilityHeuristics", {}) or {}).get("displayDesign", {}).get("minReadableTextPx", 12)}
+
+
+def primary_hexes(m, base):
+    """The primary action color of the project's system and of any reference brand system."""
+    out = []
+    for mm in [m] + [yaml.safe_load(open(os.path.join(base, e["designSystem"]))) or {}
+                     for e in m.get("brandGuidelines", []) or [] if e.get("designSystem") and os.path.exists(os.path.join(base, e["designSystem"]))]:
+        c = mm.get("color", {}) or {}
+        v = next(iter(((c.get("resolved") or {}).get("accents.primary") or {}).values()), None) or (c.get("accents") or {}).get("primary")
+        if isinstance(v, str) and v.startswith("#"):
+            out.append(v.lower())
+    return out
+
+
+CONTENT_DEFAULTS = {"maxWordsPerBlock": 30, "maxSentencesPerBlock": 2, "maxIntroWords": 20, "maxWordsFirstScreen": 60,
+                    "maxWordsPerScreen": 250, "maxNumbersInProse": 2}
+FIGURE = re.compile(r"(?:[$€£¥]\s?)?\d[\d,.]*(?:\s?(?:%|k|m|bn))?", re.I)
+STEPS = re.compile(r"\b(first|then|next|after that|afterwards|finally|step \d+|once you)\b", re.I)
+INSTRUCTS = re.compile(r"\b(click|tap|press|select the|use the \w+ (?:button|menu|link|tab)|scroll)\b", re.I)
+
+
+def inline_list(text):
+    """'a, b, c and d': three or more short items in a sentence."""
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        parts = sentence.rstrip(".!?").split(", ")
+        if len(parts) >= 3 and re.search(r"\b(and|or)\b", parts[-1]) and all(len(x.split()) <= 3 for x in parts[1:-1]):
+            return True
+    return False
+
+
+def content_findings(m, shots):
+    """Text limits, information in prose that has a better form, and the measurable parts of 3-3-3."""
+    cp = {**CONTENT_DEFAULTS, **((m.get("contentPolicy") or {}))}
+    t3 = ((m.get("usabilityHeuristics") or {}).get("threeThreeThree") or {})
+    tt = {"readingWordsPerMinute": 200, "secondsPerField": 8, "secondsPerChoice": 3, **(cp.get("taskTime") or {})}
+    out, seen = [], set()
+
+    def add(sev, cat, item, desc, shot):
+        if (item, desc) not in seen:
+            seen.add((item, desc))
+            out.append({"severity": sev, "category": cat, "rubricItem": item, "description": desc,
+                        "evidence": {"kind": "rendered-measurement", "ref": shot["file"], "measured": True}})
+    C, T = "content-and-purpose", "three-three-three-usability"
+    for s in shots:
+        c = (s.get("antiAi") or {}).get("content")
+        if not c:
+            continue
+        for b in c["blocks"]:
+            if b["intro"] and b["words"] > cp["maxIntroWords"]:
+                add("major", C, f"The line under a title is over {cp['maxIntroWords']} words: say what the page is for, in one line",
+                    f"{b['where']}: {b['words']} words.", s)
+            elif b["words"] > cp["maxWordsPerBlock"]:
+                add("major", C, f"Text block over {cp['maxWordsPerBlock']} words: keep one short sentence, and put the rest behind a disclosure or on another page",
+                    f"{b['where']}: {b['words']} words.", s)
+            elif b["sentences"] > cp["maxSentencesPerBlock"]:
+                add("major", C, f"Text block over {cp['maxSentencesPerBlock']} sentences", f"{b['where']}: {b['sentences']} sentences.", s)
+            figs = [f for f in FIGURE.findall(b["text"]) if re.search(r"\d", f)]
+            if b["words"] >= 8 and len(figs) > cp["maxNumbersInProse"]:
+                add("major", C, "Numbers in a sentence: show them as stats, a table or a chart, not prose",
+                    f"{b['where']}: {len(figs)} figures ({', '.join(figs[:4])}).", s)
+            if len(STEPS.findall(b["text"])) >= 2:
+                add("major", C, "Steps written as prose: show them as a stepper or a numbered list",
+                    f"{b['where']}: '{b['text'][:70]}…'", s)
+            if b["words"] >= 6 and INSTRUCTS.search(b["text"]):
+                add("minor", C, "Instructions for the interface in prose: make the control explain itself (its label, one helper line, or the empty state)",
+                    f"{b['where']}: '{b['text'][:70]}…'", s)
+            if inline_list(b["text"]):
+                add("minor", C, "Items listed in a sentence: show them as a list", f"{b['where']}: '{b['text'][:70]}…'", s)
+        for t in c["tables"]:
+            if t["rows"] <= 1:
+                add("minor", C, "A table with one row: show it as label-value pairs", f"{t['where']}.", s)
+            elif t["cols"] <= 1:
+                add("minor", C, "A table with one column: show it as a list", f"{t['where']}.", s)
+        if c["totalWords"] > cp["maxWordsPerScreen"]:
+            add("major", C, f"Over {cp['maxWordsPerScreen']} words on one screen: cut, or move reference text to a disclosure or another page",
+                f"{c['totalWords']} words.", s)
+        if s["viewport"]["name"] != "narrow":
+            continue
+        # 3 seconds, at the narrowest width: the purpose and the primary action, in the first screen
+        g, vh = c["glance"], c["viewportH"]
+        if not g["h1"]:
+            add("major", T, "3 seconds: no page title (h1), so the page's purpose isn't stated", "No visible h1.", s)
+        elif g["h1"]["top"] >= vh:
+            add("major", T, "3 seconds: the page title is below the first screen", f"{g['h1']['where']} starts at {g['h1']['top']}px; the screen is {vh}px.", s)
+        if g["primaries"] and min(p_["top"] for p_ in g["primaries"]) >= vh:
+            add("major", T, f"3 seconds: the primary action is below the first screen at {s['viewport']['w']}px",
+                f"{g['primaries'][0]['where']} starts at {g['primaries'][0]['top']}px; the screen is {vh}px.", s)
+        maxp = ((m.get("color") or {}).get("usagePolicy") or {}).get("maxPrimaryActionsPerScreen", 1)
+        if len(g["primaries"]) > maxp:
+            add("major", T, "More than one primary action on the screen", ", ".join(p_["where"] for p_ in g["primaries"][:4]) + ".", s)
+        if c["firstScreenWords"] > cp["maxWordsFirstScreen"]:
+            add("major", T, f"3 seconds: over {cp['maxWordsFirstScreen']} words to read before the first scroll",
+                f"{c['firstScreenWords']} words in the first {vh}px at {s['viewport']['w']}px.", s)
+        # 3 minutes: a rough estimate of this screen alone
+        e = c["effort"]
+        secs = e["words"] / tt["readingWordsPerMinute"] * 60 + e["fields"] * tt["secondsPerField"] + e["choices"] * tt["secondsPerChoice"]
+        limit = t3.get("maxCoreTaskMinutes", 3) * 60
+        if secs > limit:
+            add("major", T, f"3 minutes: this screen alone takes about {secs / 60:.1f} min (estimate)",
+                f"{e['words']} words to read, {e['fields']} fields, {e['choices']} choices.", s)
+        if not e["actions"] and not e["fields"]:
+            add("minor", C, "No action on this page: is it a page? It may fit as a section of the page it's reached from, a panel, or a tooltip",
+                "No buttons, links or fields outside navigation.", s)
+    return out
 
 
 def step_px(m):
@@ -279,6 +385,7 @@ def main():
         m = yaml.safe_load(open(system_path)) or {}
     findings, inventory = inventory_and_findings(m, shots)
     findings += anti_ai_findings(m, shots, system_path, args.brand)
+    findings += content_findings(m, shots)
     record = {
         "id": args.id or os.path.basename(out.rstrip("/")),
         "source": "rendered",

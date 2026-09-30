@@ -192,9 +192,9 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 *Whether a person can actually use the design: understood in 3 seconds, reached in 3 clicks, done in 3 minutes. Thresholds from `usabilityHeuristics.threeThreeThree`; evidence from the design output's `glanceTest` and `taskPaths`. Every finding cites its part in `principleRef`.*
 
 - [ ] **Major:** A core task in the brief has no `taskPaths` entry, or a screen has no `glanceTest` — the check can't be verified, so it's treated as failed.
-- [ ] **Major:** Glance test fails — at `glanceBreakpoint`, the screen's purpose or its primary action isn't visible without scrolling or reading body text. *(3 seconds)*
+- [ ] **Major:** Glance test fails — at `glanceBreakpoint`, the screen's purpose or its primary action isn't visible without scrolling or reading body text. *(3 seconds)* The renderer measures it at the narrowest width: no h1, the h1 or the primary action below the first screen, more than one primary action, or over `contentPolicy.maxWordsFirstScreen` words before the first scroll.
 - [ ] **Major:** A core task takes more than `maxClicksToCoreTask` clicks from its entry point with no `overLimitReason`. *(3 clicks)*
-- [ ] **Major:** A core task's estimated completion time is over `maxCoreTaskMinutes` with no stated reason. *(3 minutes)*
+- [ ] **Major:** A core task's estimated completion time is over `maxCoreTaskMinutes` with no stated reason. *(3 minutes)* The renderer estimates each screen from its words, fields and choices (`contentPolicy.taskTime`); one screen over the limit fails on its own.
 - [ ] **Major:** A path meets the click limit by breaking another rule — cramming more than `maxInlineInputs` fields onto one step, dropping pagination, or undoing progressive disclosure.
 - [ ] **Minor:** A path over the click limit has a reason but one or more steps have no documented `scent`.
 - [ ] **Minor:** A time estimate has no `estimateBasis`, or the basis leaves out reading or waiting time.
@@ -280,6 +280,19 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 ---
 
+## 17. Content & Purpose
+
+*Whether the page earns being a page, and says what it must in the fewest words and the right form. The brief's `purpose`, `pageJustification` and elements' `infoType`/`form` (`tools/purpose_check.py`); text limits from `contentPolicy` (measured by the renderer). See `content-forms.md`.*
+
+- [ ] **Major:** No `purpose`, or the page has no core task and no `pageJustification`: it should be a section of the page it's reached from, a panel, a tooltip or a notification.
+- [ ] **Major:** Something on the page doesn't serve the purpose or a ranked priority. The finding says where it goes instead, or to cut it.
+- [ ] **Major:** Information in a form that doesn't fit it (`content-forms.md`): figures in a sentence, steps as prose, a trend as a table, a status as a sentence. The finding names the form that fits.
+- [ ] **Major:** A text block over `maxWordsPerBlock` or `maxSentencesPerBlock`, an intro over `maxIntroWords`, or a screen over `maxWordsPerScreen` (measured), outside `[data-longform]`.
+- [ ] **Minor:** Instructions for the interface, a list written as a sentence, or a one-row table (measured).
+- [ ] **Minor:** A small page reached from one place, with no `pageJustification`: it may fit where it's reached from.
+
+---
+
 ## Evidence
 
 Every finding says what it rests on: a `rendered-measurement`, a `screenshot` (seen or estimated), the `code`, or an `artifact`. **A value estimated from an image is never a blocker by itself.** It's at most major, and says what would confirm it. See `screenshot-review.md`.
@@ -319,3 +332,4 @@ This audit runs **automatically immediately after every generation**, before a d
 | Mobile & Dynamic Components | WCAG 1.4.4 / 1.4.10, platform guidelines | Yes — `mobile`, `accessibility.minTouchTargetPx` |
 | Anti-AI Design | New | Yes — `antiAiDesign` |
 | Brand Guidelines | New (brand profiles) | Yes — `brandGuidelines`, `brand/*.yaml` |
+| Content & Purpose | New | Yes — `contentPolicy`, brief `purpose` |

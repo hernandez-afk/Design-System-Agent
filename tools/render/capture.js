@@ -73,7 +73,7 @@ async function measure(page, cfg, withInventory) {
 // Anti-AI-design and brand measurements, on the inventory shots only.
 async function antiAi(page, cfg) {
   await page.evaluate(() => document.fonts.ready);
-  return page.evaluate(({ rep, logoSelectors }) => {
+  return page.evaluate(({ rep, logoSelectors, primaryHexes }) => {
     const kind = (el) => el.getAttribute("data-component") ||
       (el.tagName.toLowerCase() + (el.classList.length ? "." + el.classList[0] : ""));
     const label = (el) => kind(el) + ` "${el.textContent.replace(/\s+/g, " ").trim().slice(0, 40)}"`;
@@ -176,8 +176,41 @@ async function antiAi(page, cfg) {
       const k = [t.tag, t.family, t.weight, t.transform].join("|");
       if (!seenType.has(k)) { seenType.add(k); type.push(t); }
     }
-    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos, type } };
-  }, { rep: cfg.repetition || {}, logoSelectors: cfg.logoSelectors || [] });
+    // Content: how much text there is, where, and information in prose that has a better form.
+    const vh = window.innerHeight;
+    const words = (t) => (t.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu) || []).length;
+    const longform = (el) => el.closest("[data-longform], nav, footer");
+    const own = (el) => [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" ");
+    const textBlocks = texty.filter((el) => !longform(el) && el.matches("p, li, dd, figcaption, label, small, span, div, td"))
+      .filter((el) => !el.closest("button, a, label") || el.matches("label"))
+      .map((el) => ({ el, text: el.textContent.replace(/\s+/g, " ").trim() }))
+      .filter((b) => !texty.some((o) => o !== b.el && b.el.contains(o) && o.matches("p, li")));
+    const sentenceCount = (t) => t.split(/(?<=[.!?])\s+/).filter((x) => words(x) > 0).length;
+    const contentBlocks = textBlocks.map((b) => ({ where: label(b.el), words: words(b.text), sentences: sentenceCount(b.text),
+      intro: !!(b.el.previousElementSibling && b.el.previousElementSibling.matches("h1, h2")), text: b.text.slice(0, 400) }));
+    const firstScreenWords = texty.filter((el) => !el.closest("nav") && el.getBoundingClientRect().top < vh)
+      .reduce((n, el) => n + words(own(el)), 0);
+    const screensWords = [...document.querySelectorAll("[data-screen], [data-artboard], [data-state]")];
+    const totalWords = screensWords.length ? Math.max(...screensWords.map((sc) => words(sc.innerText || "")))
+      : words(document.body.innerText.replace(/\n+/g, " "));
+    // The 3-second glance: the purpose (h1) and the primary action in the first screen.
+    const h1 = [...document.querySelectorAll("h1")].find(visible);
+    const isPrimary = (el) => el.matches("[data-variant=primary], [data-primary], .primary, .btn-primary, .button-primary, button[type=submit]") ||
+      (primaryHexes || []).includes(hex(getComputedStyle(el).backgroundColor) || "");
+    const actions = [...document.querySelectorAll("button, a[href], input[type=submit], [role=button]")].filter((el) => visible(el) && !el.closest("nav"));
+    const primaries = actions.filter(isPrimary).map((el) => ({ where: label(el), top: Math.round(el.getBoundingClientRect().top) }));
+    // For the 3-minute estimate: what a person has to read and fill in on this screen.
+    const fields = [...document.querySelectorAll("input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]), textarea, select")].filter(visible).length;
+    const choices = new Set([...document.querySelectorAll("input[type=checkbox], input[type=radio], [role=switch]")].filter(visible)
+      .map((el) => el.name || el.id || Math.random())).size;
+    const tables = [...document.querySelectorAll("table")].filter(visible).map((t) => ({ where: label(t),
+      rows: [...t.querySelectorAll("tr")].filter((r) => r.querySelector("td")).length,
+      cols: Math.max(0, ...[...t.querySelectorAll("tr")].map((r) => r.children.length)) }));
+    const content = { viewportH: vh, blocks: contentBlocks, firstScreenWords, totalWords,
+      glance: { h1: h1 ? { where: label(h1), top: Math.round(h1.getBoundingClientRect().top) } : null, primaries },
+      effort: { words: totalWords, fields, choices, actions: actions.length }, tables };
+    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos, type }, content };
+  }, { rep: cfg.repetition || {}, logoSelectors: cfg.logoSelectors || [], primaryHexes: cfg.primaryHexes || [] });
 }
 
 (async () => {

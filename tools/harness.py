@@ -49,6 +49,8 @@ SKELETONS = {
     "ticket-brief": """ticketKey: ""            # e.g. DES-600
 approvedBy: ""           # set once the author approves (after their questions are answered)
 title: ""
+purpose: ""              # one sentence: what's true once the user leaves this page
+pageJustification: ""    # only if it has no task, or is small and reached from one place: why it's a page
 sourceType: "page-brief"
 scopeTerms: []           # specific nouns: ["hackathon", "vote"]
 surfaces: []             # ["hackathon/vote"]
@@ -58,7 +60,9 @@ priorities:              # ranked; P1 decides the one primary action
 coreTasks:
   - { id: "T1", statement: "", linkedPriority: "P1", entryPoint: "" }
 requiredElements:
-  - { description: "", targetCategory: "display", linkedPriority: "P1", states: [] }
+  - { description: "", targetCategory: "display", linkedPriority: "P1", infoType: "", form: "", states: [] }
+    # infoType: single-value comparison trend part-to-whole status sequence list records explanation reference
+    #           choice-few choice-many toggle action input   (form: what it's shown as; purpose_check suggests)
 acceptanceCriteria:      # testable: who, action, measurable result
   - { id: "AC1", statement: "", source: "explicit" }
 entities:                # handledBy: this-project | existing-design | new-brief | out-of-scope | question (+ ref)
@@ -194,6 +198,14 @@ class Harness:
                 g["brief"] = ("fail", f"edge-case sweep has {n} open question(s){extra}")
             elif new:
                 g["brief"] = ("note", f"optimized; edge-case sweep complete{extra}")
+        if g["brief"][0] in OK and brief and brief.get("path") and brief["path"].endswith((".yaml", ".yml")) \
+                and self.resolve(brief["path"]):
+            res = subprocess.run([sys.executable, os.path.join(HERE, "purpose_check.py"), self.resolve(brief["path"])],
+                                 capture_output=True, text=True)
+            if res.returncode == 2:
+                first = next((l.strip()[2:] for l in res.stdout.splitlines() if l.strip().startswith("✗")), "")
+                n = sum(1 for l in res.stdout.splitlines() if l.strip().startswith("✗"))
+                g["brief"] = ("fail", f"purpose check: {first}" + (f" (+{n - 1} more: purpose_check.py)" if n > 1 else ""))
         # scope
         a = self.artifact(p, "scope-overlap-report")
         if not a and lite and brief and brief.get("path") and self.resolve(brief["path"]):

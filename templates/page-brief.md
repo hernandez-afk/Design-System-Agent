@@ -11,7 +11,10 @@
 [One or two sentences: what this page is for, and what should be true once the user leaves it.]
 
 <!-- Good: "Let team admins decide which events send email, so they stop getting alerts they ignore."
-     Not: "A modern, clean settings page." That's a look, not a purpose. -->
+     Not: "A modern, clean settings page." That's a look, not a purpose.
+     If people don't *do* anything here, only read, it may not need to be a page: it could be a
+     section of the page they come from, a panel or a tooltip. The agent will suggest it; say why
+     it's a page if it should stay one. -->
 
 ## Users and context
 

@@ -20,6 +20,7 @@ All UI follows this, even quick edits. New pages and features: use the **design-
 **Rules:**
 - Only these tokens, roles, styles and components. The same kind of element looks the same everywhere.
 - One primary action per screen.
+- Every page has one purpose, and everything on it serves it; what doesn't goes elsewhere. Say little: a text block is ≤ 30 words, an intro ≤ 20, and the first screen at 320px ≤ 60 words, with the title and primary action in view. Numbers are stats, change over time a chart, steps a stepper, a state a badge, help the control's label.
 - Say each thing once: no sentence, figure or status appears twice on a screen. If it matters that much, make it one stronger element.
 - Brand guidelines: Atari's are a reference, not this project's system. Use them only when a brief, design or page asks to follow the Atari brand guidelines (`brandGuidelines: ["Atari"]`): then design with `brand/atari/CLAUDE.md` instead of this file's tokens and type. A page that only mentions Atari still uses this system. An Atari logo always follows the logo rules.
 - Touch targets ≥ 44px, text ≥ 12px, WCAG-AA contrast, and never color alone for a state.

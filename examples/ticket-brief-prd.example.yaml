@@ -2,6 +2,7 @@
 # existing designs. See scope-overlap-report.example.yaml for how it's placed.
 ticketKey: "PRD-031"
 title: "Q4 reporting improvements"
+purpose: "Finance leaves with the reports for the dates they need, exported, and sees revenue next to the other core KPIs."
 sourceType: "prd"
 sourceRef: "/docs/prd/PRD-031-q4-reporting.md"
 rawDescription: >

@@ -6,6 +6,7 @@
 # Check:  python3 tools/edge_case_check.py examples/ticket-brief-voting.example.yaml --index examples/design-index.example.yaml
 ticketKey: "DES-600"
 title: "Hackathon voting"
+purpose: "Every attendee leaves having cast their three votes, and knows they counted."
 sourceType: "page-brief"
 sourceRef: "examples/page-brief-voting.example.md"
 
@@ -26,10 +27,10 @@ coreTasks:
   - { id: "T2", statement: "Change my votes before voting closes.", linkedPriority: "P1", entryPoint: "the voting page" }
 
 requiredElements:
-  - { description: "The games, as cards: title, team, thumbnail", targetCategory: "display", linkedPriority: "P1", estimatedVolume: "about 40 per hackathon", states: ["loading", "empty"] }
+  - { description: "The games, as cards: title, team, thumbnail", targetCategory: "display", linkedPriority: "P1", infoType: "list", form: "card-grid", estimatedVolume: "about 40 per hackathon", states: ["loading", "empty"] }
   - { description: "Search or filter the games (40 is over listPaginationThreshold)", targetCategory: "input", linkedPriority: "P1" }
   - { description: "Cast, change and see my 3 votes", targetCategory: "action", linkedPriority: "P1", states: ["loading", "error", "success"] }
-  - { description: "Voting status: not open yet, open until a time, closed", targetCategory: "feedback", linkedPriority: "P2", states: ["empty", "success"] }
+  - { description: "Voting status: not open yet, open until a time, closed", targetCategory: "feedback", linkedPriority: "P2", infoType: "status", form: "badge", states: ["empty", "success"] }
 
 acceptanceCriteria:
   - { id: "AC1", statement: "An attendee can cast 3 votes in under a minute on a phone at 320px.", linkedTask: "T1", source: "explicit" }

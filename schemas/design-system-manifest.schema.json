@@ -42,6 +42,57 @@
     }
   },
   "properties": {
+    "contentPolicy": {
+      "type": "object",
+      "description": "How much text a design may use, and when information in prose should take another form. The renderer measures it (tools/screenshots.py); text inside [data-longform] (articles, legal, help) is exempt.",
+      "properties": {
+        "maxWordsPerBlock": {
+          "type": "integer",
+          "default": 30
+        },
+        "maxSentencesPerBlock": {
+          "type": "integer",
+          "default": 2
+        },
+        "maxIntroWords": {
+          "type": "integer",
+          "default": 20,
+          "description": "The line under a page or section title."
+        },
+        "maxWordsFirstScreen": {
+          "type": "integer",
+          "default": 60,
+          "description": "Words before the first scroll at mobile.minViewportPx. The first screen is scanned, not read: few words, so the title and the primary action are found in 3 seconds."
+        },
+        "maxWordsPerScreen": {
+          "type": "integer",
+          "default": 250
+        },
+        "maxNumbersInProse": {
+          "type": "integer",
+          "default": 2,
+          "description": "More figures than this in one text block should be stats, a table or a chart."
+        },
+        "taskTime": {
+          "type": "object",
+          "description": "The 3-minute estimate for one screen: reading time plus time per field and per choice.",
+          "properties": {
+            "readingWordsPerMinute": {
+              "type": "number",
+              "default": 200
+            },
+            "secondsPerField": {
+              "type": "number",
+              "default": 8
+            },
+            "secondsPerChoice": {
+              "type": "number",
+              "default": 3
+            }
+          }
+        }
+      }
+    },
     "antiAiDesign": {
       "type": "object",
       "description": "Checks for what AI-made designs tend to get wrong. The renderer (tools/screenshots.py) measures them; the critic judges the rest (critic.md checks 16-17).",

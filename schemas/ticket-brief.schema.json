@@ -183,6 +183,60 @@
           "estimatedVolume": {
             "type": "string",
             "description": "If this is a list/collection, rough expected item count — feeds compositionHeuristics.listPaginationThreshold check, e.g. '~30 rows, grows over time'."
+          },
+          "infoType": {
+            "type": "string",
+            "enum": [
+              "single-value",
+              "comparison",
+              "trend",
+              "part-to-whole",
+              "status",
+              "sequence",
+              "list",
+              "records",
+              "explanation",
+              "reference",
+              "choice-few",
+              "choice-many",
+              "toggle",
+              "action",
+              "input"
+            ],
+            "description": "What kind of information this is. It decides the form it's shown in (tools/purpose_check.py, reference/content-forms.md)."
+          },
+          "form": {
+            "type": "string",
+            "enum": [
+              "badge",
+              "button",
+              "card-grid",
+              "chart-bar",
+              "chart-line",
+              "checkbox",
+              "combobox",
+              "disclosure",
+              "form-field",
+              "helper-text",
+              "inline-alert",
+              "key-value",
+              "link",
+              "list",
+              "numbered-list",
+              "paragraph",
+              "radio-group",
+              "secondary-page",
+              "segmented-control",
+              "select",
+              "sparkline",
+              "stat",
+              "stepper",
+              "switch",
+              "table",
+              "timeline",
+              "tooltip"
+            ],
+            "description": "How it's shown. purpose_check flags a form that doesn't fit the infoType and suggests the forms that do."
           }
         }
       }
@@ -413,6 +467,14 @@
         "type": "string"
       },
       "description": "Brand guidelines this work follows, e.g. ['Atari']. Only when the author asks for them: a mention of the brand isn't a request. Declared work is designed, linted and checked against that brand's reference design system (the manifest's brandGuidelines designSystem) instead of the project's."
+    },
+    "purpose": {
+      "type": "string",
+      "description": "One sentence: what's true once the user leaves this page (from the page brief's Purpose). tools/purpose_check.py checks that everything on the page serves it."
+    },
+    "pageJustification": {
+      "type": "string",
+      "description": "Why this is a page and not a section, panel, tooltip or notification: people come back to it on its own, other pages link to it, or it's too big to fit where it's reached from. Needed when the page has no core task, or is small and reached from one place."
     }
   }
 }

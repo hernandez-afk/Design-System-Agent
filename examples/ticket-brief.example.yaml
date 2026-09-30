@@ -1,5 +1,6 @@
 ticketKey: "DES-512"
 title: "Add KPI summary to main dashboard"
+purpose: "Someone opening the dashboard knows in 3 seconds how the 4 core KPIs are doing, and can narrow the whole dashboard to a date range."
 sourceType: "jira-ticket"
 scopeTerms: ["kpi", "trend indicator", "date-range filter", "dashboard summary"]
 surfaces: ["dashboard", "dashboard/toolbar"]
@@ -24,6 +25,8 @@ requiredElements:
   - description: "4 KPI values with trend arrows, at-a-glance"
     targetCategory: "data-viz"
     linkedPriority: "P1"
+    infoType: "single-value"   # each KPI is one number with its direction
+    form: "stat"
     estimatedVolume: "fixed at 4"
   - description: "toolbar with icon-only buttons for filter actions"
     targetCategory: "action"

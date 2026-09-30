@@ -22,6 +22,7 @@ Use this only when the brief, design or page follows the Atari brand guidelines.
 **Rules:**
 - Only these tokens, roles, styles and components. The same kind of element looks the same everywhere.
 - One primary action per screen.
+- Every page has one purpose, and everything on it serves it; what doesn't goes elsewhere. Say little: a text block is ≤ 30 words, an intro ≤ 20, and the first screen at 320px ≤ 60 words, with the title and primary action in view. Numbers are stats, change over time a chart, steps a stepper, a state a badge, help the control's label.
 - Say each thing once: no sentence, figure or status appears twice on a screen. If it matters that much, make it one stronger element.
 - The name is "Atari", or "ATARI" in capitals; never "atari".
 - Touch targets ≥ 44px, text ≥ 12px, WCAG-AA contrast, and never color alone for a state.

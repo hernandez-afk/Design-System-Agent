@@ -119,6 +119,25 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
 
   Test pages: `examples/rendered/atari-brand-test.html` declares the guidelines and has nine planted mistakes, all caught. `examples/rendered/atari-mention-test.html` only mentions Atari, so it's checked against the Baseline; only its undersized logo is flagged. `examples/brand/acme-brand.example.yaml` shows a brand that is the product's own (`applies: always`).
 
+## Purpose, fewer words, and 3-3-3, measured
+
+- **Is it a page?** Every brief states its `purpose`: what's true once the user leaves. `tools/purpose_check.py`, run by the brief gate, flags a page that has no task and only shows information. That's usually better as a section of the page it's reached from, a panel, a tooltip or a notification, unless a `pageJustification` says why it's a page. It also flags anything that serves no ranked priority.
+- **The right form for each piece of information.** Each required element gets an `infoType` and a `form`. A mismatch comes with the forms that fit: one number as a stat, change over time as a line, a state as a badge, steps as a stepper. See `skills/design-agent/reference/content-forms.md`.
+- **Fewer words.** `contentPolicy` sets the limits: ≤ 30 words and 2 sentences per text block, ≤ 20 for the line under a title, ≤ 60 words before the first scroll at 320px, ≤ 250 per screen. The renderer measures them and flags information written as prose that has a better form:
+  - figures in a sentence
+  - "first… then… finally" steps
+  - "click the blue button" instructions
+  - a list written as a sentence
+  - a table with one row
+
+  Articles and legal text go in `[data-longform]` and are exempt.
+- **3-3-3, measured where it can be:**
+  - **3 seconds:** at 320px, the page title and the primary action must be on the first screen, with little to read before the first scroll, and only one primary action.
+  - **3 taps:** counted from the user flow (`flow_check.py`).
+  - **3 minutes:** estimated per screen from its words, fields and choices.
+
+`examples/rendered/content-test.html` has ten planted problems, and the renderer catches all ten.
+
 ## Edge cases, caught at the brief
 
 Most edge cases are found in testing. The **edge-case sweep** (`skills/design-agent/reference/edge-case-sweep.md`) catches the obvious ones before anything is designed, the same way every time:
@@ -164,7 +183,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, REQUIREMENTS.md, and `brand/` (brand guidelines profiles, starting with Atari's).
-- **tools/** — `harness.py` (stages, gates, next steps, learning), `screenshots.py` + `render/capture.js` (render, screenshot and measure a page; record provided screenshots), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `brand_check.py` (warns when something meant to follow brand guidelines doesn't), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `harness.py` (stages, gates, next steps, learning), `screenshots.py` + `render/capture.js` (render, screenshot and measure a page; record provided screenshots), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `brand_check.py` (warns when something meant to follow brand guidelines doesn't), `purpose_check.py` (is it a page, does everything serve its purpose, is each thing in the right form), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 
@@ -216,7 +235,7 @@ Before the agent runs in your app repo, that repo needs a `CLAUDE.md` holding yo
 3. **`skills/design-agent/reference/design-principles.md`** — the fixed philosophy (simplicity, hierarchy, consistency, alignment, whitespace, mobile-first, motion, structural rationale) that generation and audit both answer to, plus two checkable sets of criteria: the **3-3-3 rule** (understood in 3 seconds, reached in 3 clicks, done in 3 minutes — walked for every core task and recorded as `glanceTest` / `taskPaths` in the design output) and **Wickens' 13 principles of display design** (perception, mental models, attention, memory).
 4. **`skills/design-agent/reference/design-generation-skill.md`** — reads the brief + manifest, runs the reuse/similarity check against the component registry, files gap reports for anything missing, shapes layout/typography/color/motion from manifest tokens, and follows the Decision Protocol on consequential choices. Produces a `design-output` (schema + example included).
    - Along the way it may file a **`schemas/component-gap-report.schema.json`** (example included) for anything not in the registry, and — before that gap report's component can be approved for reuse — a **`schemas/component-verification-report.schema.json`** (two examples included: `StatTile` and `Button/icon-only`) confirming the new component is operational (every state implemented, accessible, token-compliant) and documenting *why* it was built that way.
-5. **`skills/design-agent/reference/design-audit-rubric.md`** — runs automatically after every generation. 16 categories (including scope & cross-artifact integrity, the 3-3-3 usability rule, Wickens' 13 display-design principles, mobile & dynamic components, anti-AI design and brand guidelines), `pass`/`minor-issues`/`major-issues`/`blocker` verdicts. `blocker` halts for a human; `major-issues` auto-revises and re-audits up to a configurable cap before escalating. Produces an **`schemas/audit-report.schema.json`** (example included).
+5. **`skills/design-agent/reference/design-audit-rubric.md`** — runs automatically after every generation. 17 categories (including scope & cross-artifact integrity, the 3-3-3 usability rule, Wickens' 13 display-design principles, mobile & dynamic components, anti-AI design, brand guidelines, and content & purpose), `pass`/`minor-issues`/`major-issues`/`blocker` verdicts. `blocker` halts for a human; `major-issues` auto-revises and re-audits up to a configurable cap before escalating. Produces an **`schemas/audit-report.schema.json`** (example included).
 6. **`skills/design-agent/reference/audit-presentation-template.md`** — the exact, fixed format audit findings are rendered in for a human (Phase 1 Critical / Phase 2 Refinement / Phase 3 Polish / Design System Updates Required / Implementation Notes). See `examples/audit-report-rendered.example.md` for what this looks like filled in.
 
 7. **Design index update** (generation Step 12) — every artifact is registered with the exact versions it was built from. When one changes, its direct dependents are flagged `needs-review` (and projects sharing a pattern are flagged too); nothing is silently regenerated. See the flagged artifacts in `examples/design-index.example.yaml`.

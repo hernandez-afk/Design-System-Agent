@@ -1,7 +1,7 @@
 id: atari-mention-test-shots
 source: rendered
 target: examples/rendered/atari-mention-test.html
-capturedAt: '2026-09-30T12:24:41Z'
+capturedAt: '2026-09-30T13:05:45Z'
 designSystem: Baseline
 manifestVersion: 1.0.0
 shots:
@@ -105,6 +105,15 @@ findings:
   category: brand-guidelines
   rubricItem: The Atari logo breaks its rules
   description: 'svg (Fuji logo): 40px wide; the Atari minimum is 50px.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: content-and-purpose
+  rubricItem: 'No action on this page: is it a page? It may fit as a section of the
+    page it''s reached from, a panel, or a tooltip'
+  description: No buttons, links or fields outside navigation.
   evidence:
     kind: rendered-measurement
     ref: narrow-320.png
