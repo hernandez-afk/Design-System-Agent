@@ -29,10 +29,12 @@ from collections import defaultdict
 
 import yaml
 
+import brand_check
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def config(m, target, out):
+def config(m, target, out, manifest_path):
     mob, bps = m.get("mobile", {}) or {}, (m.get("layout", {}) or {}).get("breakpoints", {}) or {}
     boards = (m.get("platform", {}) or {}).get("claudeDesign", {}).get("canvasBoards", {}) or {}
     narrow, scale = mob.get("minViewportPx", 320), mob.get("maxTextScalePercent", 200)
@@ -44,7 +46,11 @@ def config(m, target, out):
         if name in bps:
             vps.append({"name": name, "w": bps[name], "h": 900, "textScales": [100], "inventory": False})
     vps.append({"name": "desktop", "w": desktop, "h": 900, "textScales": [100], "inventory": True})
+    base = os.path.dirname(os.path.abspath(manifest_path))
+    logos = [(p.get("logo", {}) or {}).get("selector") for _, p, _ in brand_check.profiles(m, base) if p]
     return {"target": target, "outDir": out, "viewports": vps,
+            "repetition": (m.get("antiAiDesign", {}) or {}).get("repetition", {}) or {},
+            "logoSelector": ", ".join(s for s in logos if s),
             "minTouch": (m.get("accessibility", {}) or {}).get("minTouchTargetPx", 44),
             "minTextPx": (m.get("usabilityHeuristics", {}) or {}).get("displayDesign", {}).get("minReadableTextPx", 12)}
 
@@ -138,6 +144,58 @@ def inventory_and_findings(m, shots):
     return unique, {"spacing": inv_sp, "typography": inv_ty}
 
 
+def anti_ai_findings(m, shots, manifest_path):
+    """Repetition, fonts, and brand guidelines, from the inventory shots."""
+    out, seen = [], set()
+    base = os.path.dirname(os.path.abspath(manifest_path))
+
+    def add(sev, cat, item, desc, shot):
+        if (item, desc) not in seen:
+            seen.add((item, desc))
+            out.append({"severity": sev, "category": cat, "rubricItem": item, "description": desc,
+                        "evidence": {"kind": "rendered-measurement", "ref": shot["file"], "measured": True}})
+    tf = (m.get("typography", {}) or {}).get("typefaces", {}) or {}
+    ours = {v.lower() for v in tf.values() if isinstance(v, str)}
+    generic, required = set(brand_check.generic_fonts(m)), brand_check.brand_fonts(m, base)
+    max_fam = ((m.get("antiAiDesign", {}) or {}).get("typefaces", {}) or {}).get("maxFamilies", 2)
+    for s in shots:
+        a = s.get("antiAi")
+        if not a:
+            continue
+        for r in a["repeatedText"]:
+            add("major", "anti-ai-design", "The same information appears twice on one screen: say it once, as one stronger element",
+                f"'{r['value'][:60]}' appears in {', '.join(r['where'])}.", s)
+        for r in a["repeatedFigures"]:
+            add("major", "anti-ai-design", "The same figure appears twice on one screen: show it once, where it matters most",
+                f"{r['value']} appears in {', '.join(r['where'])}.", s)
+        fams = {f: v for f, v in a["fonts"].items() if f.lower() not in brand_check.GENERIC_FAMILIES}
+        for fam, v in fams.items():
+            if not v["renders"]:
+                add("major", "anti-ai-design", "A font the page asks for doesn't load, so it renders in a fallback",
+                    f"'{fam}' ({v['where']}) renders in the fallback: load it (@font-face or a font link).", s)
+            elif ours and fam.lower() not in ours:
+                add("major", "token-and-scale-consistency", "Text uses a font that isn't one of the manifest's typefaces",
+                    f"'{fam}' ({v['where']}); the typefaces are {', '.join(sorted(set(tf.values())))}.", s)
+            if fam.lower() in generic and fam.lower() not in required:
+                add("major", "anti-ai-design", "A default font: choose a pairing for this product (reference/type-pairing.md)",
+                    f"'{fam}' ({v['where']}) is a default font.", s)
+        mono = [f for f in fams if "mono" in f.lower() or f.lower() == (tf.get("mono") or "").lower()]
+        if len(fams) - len(mono) > max_fam:
+            add("minor", "anti-ai-design", f"More than {max_fam} type families (plus one mono)", f"{', '.join(fams)}.", s)
+        text = a["brand"]["text"]
+        for entry, p, path in brand_check.profiles(m, base):
+            if not p or not brand_check.referenced(text, p, entry):
+                continue
+            item = f"Meant to follow the {p.get('name')} guidelines, and doesn't match"
+            if not brand_check.filled(p):
+                add("minor", "brand-guidelines", item, brand_check.unfilled_warning(p, entry['profile'], "The page"), s)
+                continue
+            kinds = {"color": "colors", "font": "fonts", "name": "how the name is written", "logo": "the logo"}
+            for kind, w in brand_check.check_rendered(a["brand"], p):
+                add("major", "brand-guidelines", f"{item}: {kinds[kind]}", w, s)
+    return out
+
+
 def image_size(path):
     """(width, height) of a PNG or JPEG, without extra libraries."""
     import struct
@@ -191,7 +249,7 @@ def main():
     m = yaml.safe_load(open(args.manifest)) or {}
     target = args.target if "://" in args.target else "file://" + os.path.abspath(args.target)
     out = os.path.abspath(args.out)
-    cfg = config(m, target, out)
+    cfg = config(m, target, out, args.manifest)
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump(cfg, f)
     env = dict(os.environ)
@@ -206,6 +264,7 @@ def main():
     shots = json.load(open(os.path.join(out, "results.json")))["shots"]
     os.unlink(os.path.join(out, "results.json"))
     findings, inventory = inventory_and_findings(m, shots)
+    findings += anti_ai_findings(m, shots, args.manifest)
     record = {
         "id": args.id or os.path.basename(out.rstrip("/")),
         "source": "rendered",

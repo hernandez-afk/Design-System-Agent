@@ -36,6 +36,15 @@ meta:
     - "emoji as icons"
     - "color as the only signal for a state"
 
+brandGuidelines:          # checked whenever a page, file or design refers to the brand
+  - profile: "brand/atari.yaml"     # empty until filled from the official guidelines; until then it warns, it can't check
+    applies: "when-referenced"      # "always" for a system that is an Atari product's own
+
+antiAiDesign:             # what AI-made designs tend to get wrong; the renderer measures these
+  repetition: { enabled: true, minWords: 3, figures: true }   # say each thing once per screen
+  typefaces:
+    maxFamilies: 2        # plus one mono; the default-font list is in tools/brand_check.py
+
 color:
   neutrals:
     background: "#fafafa"
@@ -82,7 +91,7 @@ color:
     interactionStates.focus:  { light: "#1d4ed8" }
 
 typography:
-  typefaces:
+  typefaces:               # a new system replaces these with a pairing chosen for the product (reference/type-pairing.md)
     display: "Source Serif 4"
     body: "Source Sans 3"
     ui: "Source Sans 3"

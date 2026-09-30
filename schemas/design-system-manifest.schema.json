@@ -14,6 +14,42 @@
   },
   "properties": {
 
+    "antiAiDesign": {
+      "type": "object",
+      "description": "Checks for what AI-made designs tend to get wrong. The renderer (tools/screenshots.py) measures them; the critic judges the rest (critic.md checks 16-17).",
+      "properties": {
+        "repetition": {
+          "type": "object",
+          "description": "Information is said once. The same sentence or figure twice on one screen is a finding: if it matters that much, make it one stronger element. Repeated list items (the same button on every card) and separate screens or states (data-screen, data-artboard, data-state) don't count.",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "minWords": { "type": "integer", "default": 3, "description": "Shorter text, like a one- or two-word label, may repeat." },
+            "figures": { "type": "boolean", "default": true, "description": "Also flag a figure (with a separator, decimal, %, currency or 3+ digits) shown twice." }
+          }
+        },
+        "typefaces": {
+          "type": "object",
+          "properties": {
+            "generic": { "type": "array", "items": { "type": "string" }, "description": "Fonts that read as a default choice. Defaults to tools/brand_check.py DEFAULT_GENERIC_FONTS (Inter, Roboto, Arial, Helvetica, Open Sans, Lato, Montserrat, Poppins, system fonts…). A brand profile's typefaces are exempt." },
+            "maxFamilies": { "type": "integer", "default": 2, "description": "Type families on one page, not counting one mono." }
+          }
+        }
+      }
+    },
+
+    "brandGuidelines": {
+      "type": "array",
+      "description": "Brand guidelines this system's work may have to follow. Each profile (schemas/brand-guidelines.schema.json) is checked whenever something refers to that brand, and warns when it doesn't match.",
+      "items": {
+        "type": "object",
+        "required": ["profile"],
+        "properties": {
+          "profile": { "type": "string", "description": "Path to the profile, relative to the manifest, e.g. 'brand/atari.yaml'." },
+          "applies": { "type": "string", "enum": ["when-referenced", "always"], "default": "when-referenced", "description": "'always': this is that brand's product, so the manifest and every page are checked. 'when-referenced': only what mentions or declares the brand." }
+        }
+      }
+    },
+
     "harness": {
       "type": "object",
       "description": "How much process each design gets. 'lite' (default): the core skill, tool checks, one critic pass with skills/design-agent/critic.md, one human stop per stage. 'full': the complete process in skills/design-agent/reference/design-generation-skill.md, with every record and the full rubric; use it for flagship work. See the README's 'Cost' section.",

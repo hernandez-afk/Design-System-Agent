@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/brand-guidelines.schema.json",
+  "title": "Brand Guidelines Profile",
+  "description": "The checkable parts of a brand's guidelines (brand/<name>.yaml), listed in the manifest's brandGuidelines. tools/brand_check.py, the post-edit hook and tools/screenshots.py warn when something meant to follow them doesn't match. Values come from the official guidelines, never from memory; an empty profile still warns whenever it's referenced.",
+  "type": "object",
+  "required": ["name", "triggers"],
+  "properties": {
+    "name": { "type": "string", "description": "e.g. 'Atari'." },
+    "source": { "type": "string", "description": "The guidelines document this was filled from, with its date or version." },
+    "version": { "type": "string" },
+    "triggers": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "Words, alt text or aria-labels that mean something is meant to follow these guidelines. A page can also declare it: <meta name=\"brand-guidelines\" content=\"<name>\">." },
+    "colors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "hex"],
+        "properties": {
+          "name": { "type": "string" },
+          "hex": { "type": "string", "pattern": "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$" },
+          "use": { "type": "string" }
+        }
+      }
+    },
+    "nearMissDeltaE": { "type": "number", "default": 10, "description": "A color within this CIE76 distance of a brand color, but not it (ΔE ≥ 1.5), is flagged. About 2 is barely visible; 10 is a clearly different shade." },
+    "strictPalette": { "type": "boolean", "default": false, "description": "Also flag any non-neutral color outside the palette." },
+    "typefaces": { "type": "array", "items": { "type": "string" }, "description": "The families the guidelines allow. These are exempt from the generic-font warning." },
+    "nameForms": { "type": "array", "items": { "type": "string" }, "description": "The allowed ways to write the name. Any other casing of a trigger word is flagged." },
+    "logo": {
+      "type": "object",
+      "properties": {
+        "selector": { "type": "string", "description": "CSS selector that finds the logo on a rendered page." },
+        "aspectRatio": { "type": ["number", "null"], "description": "Width ÷ height. Null: compare with the image's own proportions." },
+        "minWidthPx": { "type": ["number", "null"] },
+        "minClearSpacePx": { "type": ["number", "null"], "description": "The smallest allowed gap between the logo and any other text, image or control." }
+      }
+    },
+    "never": { "type": "array", "items": { "type": "string" }, "description": "Rules only a person can judge. The critic reads these." }
+  }
+}

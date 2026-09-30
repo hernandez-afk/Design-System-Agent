@@ -7,7 +7,7 @@ All UI follows this, even quick edits. New pages and features: use the **design-
 
 **Color:** background `#fafafa` · surface `#ffffff` · border `#d4d4d8` · text `#18181b` / `#52525b` · primary `#1d4ed8` (text on it `#ffffff`) · secondary `#7c3aed` (max 1) · success/warning/error/info `#15803d`/`#b45309`/`#b91c1c`/`#0369a1` · hover/focus `#1e40af`/`#1d4ed8`
 
-**Type:** Source Serif 4 (display), Source Sans 3 (body/UI). Styles: page-title 33/700 · section-heading 23/600 · subheading 19/600 · body 16/400 · label 13/600 · caption 13/400
+**Type:** Source Serif 4 (display), Source Sans 3 (body/UI), and no other family. Styles: page-title 33/700 · section-heading 23/600 · subheading 19/600 · body 16/400 · label 13/600 · caption 13/400
 
 **Spacing:** scale 4 8 12 16 24 32 48 64. Roles: card-padding 16 (Card, Dialog, InlineAlert) · control 16×12 (Button, Input, Select) · stack-related 8 · stack-group 24 · section 48 · page-gutter 16. Radius 4/8/12.
 
@@ -20,6 +20,8 @@ All UI follows this, even quick edits. New pages and features: use the **design-
 **Rules:**
 - Only these tokens, roles, styles and components. The same kind of element looks the same everywhere.
 - One primary action per screen.
+- Say each thing once: no sentence, figure or status appears twice on a screen. If it matters that much, make it one stronger element.
+- Brand: Atari (`brand/atari.yaml`). Anything that uses that name or logo follows those guidelines, and the tools warn when it doesn't match.
 - Touch targets ≥ 44px, text ≥ 12px, WCAG-AA contrast, and never color alone for a state.
 - Every core task is understood in 3 s, reached in ≤ 3 taps, and done in ≤ 3 min.
 - Before editing UI, `python3 .claude/design-agent/tools/design_context.py <file>` shows the design that owns it, and the hook shows it on the first edit. Contradicting that design's decision is a design change: raise it, don't just edit.

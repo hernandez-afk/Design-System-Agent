@@ -30,6 +30,10 @@ if [ "${2:-}" = "--with-baseline" ]; then
   for f in design-system-manifest.yaml CLAUDE.md design-index.yaml; do
     if [ ! -f "$DEST/$f" ]; then cp "$SRC/standard/$f" "$DEST/$f"; echo "✓ $f (Baseline: replace its values with yours)"; fi
   done
+  mkdir -p "$DEST/brand"
+  for f in "$SRC/standard/brand/"*.yaml; do
+    [ -f "$DEST/brand/$(basename "$f")" ] || { cp "$f" "$DEST/brand/"; echo "✓ brand/$(basename "$f") (fill it from the official guidelines)"; }
+  done
 fi
 for f in design-system-manifest.yaml CLAUDE.md; do
   [ -f "$DEST/$f" ] || echo "! No $f yet: start from $SRC/standard/ (or rerun with --with-baseline)"

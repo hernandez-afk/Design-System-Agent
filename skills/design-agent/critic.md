@@ -5,6 +5,8 @@ You review a design you didn't make. **The tools have already checked everything
 - sideways scrolling, touch targets, text that's small, clipped or doesn't scale
 - flow dead ends, entry points and integration changes
 - brief readiness and the edge-case sweep
+- the same sentence or figure twice on one screen, default fonts and fonts that don't load
+- brand guidelines: near-miss colors, fonts, how the name is written, logo size, proportions and clear space
 
 Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px at 200% text screenshot. Check each item; skip the ones that don't apply.
 
@@ -25,10 +27,13 @@ Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px
 | 13 | Destructive actions confirm first, or can be undone | major |
 | 14 | Everything on the page serves a ranked goal; cut the rest | minor |
 | 15 | Nothing from `CLAUDE.md`'s "Never" list | major |
+| 16 | Nothing is said twice, even in different words: a badge and a sentence giving the same status, a subtitle restating the title, a summary repeating the table below it. Merge them into one stronger element | major |
+| 17 | No AI tropes: filler copy or invented numbers (use `[PLACEHOLDER]`), gradient washes, a row of three identical icon cards, emoji as icons, accent-border cards, everything centered, decoration with no job | major |
+| 18 | When the page refers to a brand, nothing breaks its profile's `never` rules | major |
 
 **Rules:**
 - A value you read off a screenshot is an estimate, never a blocker on its own.
 - No finding without a rule behind it: a check number, a token, or a tool finding.
 - Don't list passes.
 
-**Return** `harness.py new critique`: the verdict (blocker if any blocker; major-issues if any major; else pass), then each finding as `where: what → fix (rule)`. At most 15 findings, most severe first.
+**Return** `harness.py new critique`: the verdict (blocker if any blocker; major-issues if any major; else pass), then each finding as `where: what → fix (rule)`. At most 18 findings, most severe first.

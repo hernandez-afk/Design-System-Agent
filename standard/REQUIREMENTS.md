@@ -48,6 +48,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 - **Briefs:** `briefPolicy` in full, including `requireEdgeCaseSweep` and any product-specific `edgeCaseLenses`
 - **Consistency by role:** `spacing.roles` (card, control, related, group and section spacing) and `typography.styles` (page title, section heading, body, label, caption), each naming the elements it applies to
 - **Mobile:** `mobile` in full (narrowest width, text scale, target spacing, largest fixed size, text expansion, thumb zone, orientations)
+- **Anti-AI design:** `antiAiDesign` (repetition and type-family limits)
 
 ### Values that pass the agent's own checks
 
@@ -64,6 +65,8 @@ The agent has a default for everything below. Leaving one out works, but the age
 | Breakpoints ascending; touch targets ≥ 44px | Mobile-first layout; rubric category 2 | 640 / 768 / 1024 / 1280; 44px |
 | Spacing roles are on the scale and step up (related < group < section); text styles use existing steps and weights | Consistency by role: the same kind of element is the same everywhere, and grouping is visible (Wickens 9) | 8 < 24 < 48 |
 | Designs verified at 360px or narrower; text scale ≥ 200%; target spacing ≥ 8px; a breakpoint at or below 640px | Mobile at all times (rubric category 14) | 320px, 200%, 8px, sm 640 |
+| Typefaces aren't default fonts (Inter, Roboto, Arial, Poppins, system fonts…), unless a brand profile requires them | A default font is the quickest tell of a design nobody chose (rubric category 15). New systems choose a pair (`skills/design-agent/reference/type-pairing.md`) | Source Serif 4 + Source Sans 3 |
+| Every `brandGuidelines` profile exists; a brand's own system (`applies: always`) matches its guidelines' colors and fonts | Anything meant to follow the brand is checked against it (rubric category 16) | Atari profile, `when-referenced`, to be filled from the official guidelines |
 | Similarity and overlap weights each sum to 1, with reuse > extend and merge > related | Otherwise the reuse and scope checks route work wrongly | Defaults |
 
 ### Dynamic components

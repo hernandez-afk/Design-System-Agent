@@ -1,0 +1,30 @@
+# Atari brand guidelines profile: what the tools compare against when a page,
+# file or design system is meant to follow Atari's guidelines.
+#
+# NOT FILLED IN YET. The values must come from Atari's official brand
+# guidelines, not from memory or from the web, so they're left empty here.
+# Until they're filled in, anything that refers to Atari gets one warning:
+# "refers to Atari, but this profile has no values yet". Nothing is checked.
+# Schema: schemas/brand-guidelines.schema.json. Worked example:
+# examples/brand/acme-brand.example.yaml.
+
+name: "Atari"
+source: ""               # the guidelines document this was filled from (link or file, and its date or version)
+version: ""
+triggers: ["Atari"]      # words, alt text or aria-labels that mean something is meant to follow these guidelines
+
+colors: []               # - { name: "…", hex: "#RRGGBB", use: "where it's allowed" }
+nearMissDeltaE: 10       # a color within this distance of a brand color, but not it, is flagged (ΔE 2 ≈ barely visible)
+strictPalette: false     # true: any non-neutral color outside the palette is flagged too
+
+typefaces: []            # the families the guidelines allow; any other is flagged
+
+nameForms: []            # the allowed ways to write the name; any other casing of a trigger is flagged
+
+logo:
+  selector: "img[alt*='Atari' i], svg[aria-label*='Atari' i], [data-brand-asset='atari-logo']"
+  aspectRatio: null      # width ÷ height of the mark; null = compare with the image's own proportions
+  minWidthPx: null
+  minClearSpacePx: null
+
+never: []                # rules only a person can judge (e.g. "don't place the logo on busy imagery"); the critic reads these

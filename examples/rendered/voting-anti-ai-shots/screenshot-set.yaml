@@ -1,0 +1,348 @@
+id: voting-anti-ai-shots
+source: rendered
+target: examples/rendered/voting-anti-ai.html
+capturedAt: '2026-09-30T11:39:15Z'
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 150
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 80
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: GameCard
+    property: padding-x
+    found:
+    - px: 16
+      where: GameCard "Pixel PilotsVote for this game" @ narrow-320.png
+    - px: 16
+      where: GameCard "Crater RunVote for this game" @ narrow-320.png
+    - px: 16
+      where: GameCard "Neon DriftVote for this game" @ narrow-320.png
+    - px: 16
+      where: GameCard "Pixel PilotsVote for this game" @ desktop-1440.png
+    - px: 16
+      where: GameCard "Crater RunVote for this game" @ desktop-1440.png
+    - px: 16
+      where: GameCard "Neon DriftVote for this game" @ desktop-1440.png
+    consistent: true
+  - element: GameCard
+    property: padding-y
+    found:
+    - px: 16
+      where: GameCard "Pixel PilotsVote for this game" @ narrow-320.png
+    - px: 16
+      where: GameCard "Crater RunVote for this game" @ narrow-320.png
+    - px: 16
+      where: GameCard "Neon DriftVote for this game" @ narrow-320.png
+    - px: 16
+      where: GameCard "Pixel PilotsVote for this game" @ desktop-1440.png
+    - px: 16
+      where: GameCard "Crater RunVote for this game" @ desktop-1440.png
+    - px: 16
+      where: GameCard "Neon DriftVote for this game" @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-x
+    found:
+    - px: 16
+      where: button "Vote for this game" @ narrow-320.png
+    - px: 16
+      where: button "Vote for this game" @ narrow-320.png
+    - px: 16
+      where: button "Vote for this game" @ narrow-320.png
+    - px: 16
+      where: button "Vote for this game" @ desktop-1440.png
+    - px: 16
+      where: button "Vote for this game" @ desktop-1440.png
+    - px: 16
+      where: button "Vote for this game" @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-y
+    found:
+    - px: 8
+      where: button "Vote for this game" @ narrow-320.png
+    - px: 8
+      where: button "Vote for this game" @ narrow-320.png
+    - px: 8
+      where: button "Vote for this game" @ narrow-320.png
+    - px: 8
+      where: button "Vote for this game" @ desktop-1440.png
+    - px: 8
+      where: button "Vote for this game" @ desktop-1440.png
+    - px: 8
+      where: button "Vote for this game" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: GameCard
+    found:
+    - value: 16px / 400
+      where: GameCard "Pixel PilotsVote for this game" @ narrow-320.png
+    - value: 16px / 400
+      where: GameCard "Crater RunVote for this game" @ narrow-320.png
+    - value: 16px / 400
+      where: GameCard "Neon DriftVote for this game" @ narrow-320.png
+    - value: 16px / 400
+      where: GameCard "Pixel PilotsVote for this game" @ desktop-1440.png
+    - value: 16px / 400
+      where: GameCard "Crater RunVote for this game" @ desktop-1440.png
+    - value: 16px / 400
+      where: GameCard "Neon DriftVote for this game" @ desktop-1440.png
+    consistent: true
+  - element: button
+    found:
+    - value: 16px / 400
+      where: button "Vote for this game" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Vote for this game" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Vote for this game" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Vote for this game" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Vote for this game" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Vote for this game" @ desktop-1440.png
+    consistent: true
+  - element: h1
+    style: page-title
+    expected: 39px / 700
+    found:
+    - value: 32px / 700
+      where: h1 "ACME Spring Hackathon" @ narrow-320.png
+    - value: 32px / 700
+      where: h1 "ACME Spring Hackathon" @ desktop-1440.png
+    consistent: false
+  - element: h2
+    style: section-heading
+    expected: 25px / 700
+    found:
+    - value: 24px / 700
+      where: h2 "Games in the running" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Games in the running" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Games in the running" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Games in the running" @ desktop-1440.png
+    consistent: false
+  - element: h3
+    style: subheading
+    expected: 20px / 500
+    found:
+    - value: 18.72px / 700
+      where: h3 "Pixel Pilots" @ narrow-320.png
+    - value: 18.72px / 700
+      where: h3 "Crater Run" @ narrow-320.png
+    - value: 18.72px / 700
+      where: h3 "Neon Drift" @ narrow-320.png
+    - value: 18.72px / 700
+      where: h3 "Pixel Pilots" @ desktop-1440.png
+    - value: 18.72px / 700
+      where: h3 "Crater Run" @ desktop-1440.png
+    - value: 18.72px / 700
+      where: h3 "Neon Drift" @ desktop-1440.png
+    consistent: false
+  - element: p
+    style: body
+    expected: 16px / 400
+    found:
+    - value: 16px / 400
+      where: p "Voting closes Friday at 5pm" @ narrow-320.png
+    - value: 16px / 400
+      where: p "1,248 votes cast" @ narrow-320.png
+    - value: 16px / 400
+      where: p "So far 1,248 people have voted. Voting c" @ narrow-320.png
+    - value: 16px / 400
+      where: p "No games have been submitted yet." @ narrow-320.png
+    - value: 16px / 400
+      where: p "Voting closes Friday at 5pm" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "1,248 votes cast" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "So far 1,248 people have voted. Voting c" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "No games have been submitted yet." @ desktop-1440.png
+    consistent: true
+findings:
+- severity: blocker
+  category: accessibility
+  rubricItem: Interactive targets smaller than accessibility.minTouchTargetPx
+  description: a "Hackathon" is 77×17px at 320px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 150px at 320px at 200% text; widest: nav "Hackathon",
+    header "ACME Spring Hackathon Voting closes Frid", p "1,248 votes cast", p "So
+    far 1,248 people have voted. Voting c", h2 "Games in the running".'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 80px at 390px at 200% text; widest: nav "Hackathon",
+    header "ACME Spring Hackathon Voting closes Frid", section.card "1,248 votes cast
+    So far 1,248 people hav", h2 "Games in the running", GameCard "Pixel PilotsVote
+    for this game".'
+  evidence:
+    kind: rendered-measurement
+    ref: phone-390-text200.png
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h1>: 32px / 700; style ''page-title'' is 39px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h2>: 24px / 700; style ''section-heading'' is 25px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h3>: 19px / 700; style ''subheading'' is 20px / 500.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'The same information appears twice on one screen: say it once, as one
+    stronger element'
+  description: '''voting closes friday at 5pm'' appears in p "Voting closes Friday
+    at 5pm", p "So far 1,248 people have voted. Voting c".'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'The same figure appears twice on one screen: show it once, where it
+    matters most'
+  description: 1,248 appears in strong "1,248 votes cast", p "So far 1,248 people
+    have voted. Voting c".
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Inter'' (a "Hackathon") renders in the fallback: load it (@font-face
+    or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Fraunces'' (h1 "ACME Spring Hackathon") renders in the fallback:
+    load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Acme guidelines, and doesn''t match: colors'
+  description: 'button "Vote for this game": #10b0a0 is close to Acme Teal #14B8A6
+    but isn''t it (ΔE 3); use the exact value.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Acme guidelines, and doesn''t match: the logo'
+  description: 'img "Acme": 8px of clear space around the logo; the Acme minimum is
+    16px.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Acme guidelines, and doesn''t match: the logo'
+  description: 'img "Acme": the logo is drawn at 120×60px, which stretches it (ratio
+    2.00, should be 4.00).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Acme guidelines, and doesn''t match: how the name
+    is written'
+  description: 'page text: the name is written ''ACME''; the Acme guidelines allow
+    ''Acme''.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

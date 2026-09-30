@@ -1,7 +1,7 @@
-id: DES-512-shots-1
+id: dashboard-shots
 source: rendered
 target: examples/rendered/dashboard.html
-capturedAt: '2026-09-28T08:46:23Z'
+capturedAt: '2026-09-30T11:38:34Z'
 manifestVersion: 1.0.0
 shots:
 - file: narrow-320.png
@@ -377,4 +377,46 @@ findings:
   evidence:
     kind: rendered-measurement
     ref: computed styles
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Fraunces'' (h1 "Dashboard") renders in the fallback: load it (@font-face
+    or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text uses a font that isn't one of the manifest's typefaces
+  description: '''Arial'' (button.icon-button "↻"); the typefaces are Fraunces, Inter.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'A default font: choose a pairing for this product (reference/type-pairing.md)'
+  description: '''Arial'' (button.icon-button "↻") is a default font.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Inter'' (button.chip "7d") renders in the fallback: load it (@font-face
+    or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: anti-ai-design
+  rubricItem: More than 2 type families (plus one mono)
+  description: Fraunces, Arial, Inter.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
     measured: true

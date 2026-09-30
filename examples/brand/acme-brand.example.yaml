@@ -1,0 +1,28 @@
+# Example brand guidelines profile for the fictional Acme, filled in so the
+# tools have something to check against. standard/brand/atari.yaml is the
+# same shape, left empty until it's filled from the official guidelines.
+
+name: "Acme"
+source: "Acme brand book v3 (fictional example)"
+version: "3.0"
+triggers: ["Acme"]
+
+colors:
+  - { name: "Acme Teal", hex: "#14b8a6", use: "primary actions and highlights" }
+  - { name: "Acme Ink", hex: "#0f172a", use: "text and text on teal" }
+  - { name: "Acme Amber", hex: "#f59e0b", use: "one accent per screen" }
+nearMissDeltaE: 10
+strictPalette: false
+
+typefaces: ["Fraunces", "Inter"]
+
+nameForms: ["Acme"]     # "ACME" and "acme" are wrong in running text
+
+logo:
+  selector: "img[alt*='Acme' i], [data-brand-asset='acme-logo']"
+  aspectRatio: 4         # the wordmark is 4:1
+  minWidthPx: 96
+  minClearSpacePx: 16
+
+never:
+  - "Don't put the logo on a photo"

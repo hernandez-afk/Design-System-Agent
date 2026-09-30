@@ -254,6 +254,32 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 ---
 
+## 15. Anti-AI Design
+
+*What AI-made designs tend to get wrong. `antiAiDesign` in the manifest; the renderer measures the first three.*
+
+- [ ] **Major:** The same sentence, figure or status appears twice on one screen (measured). Information is said once: if it matters enough to repeat, it's one stronger element instead. Repeated list items and separate screens or states don't count.
+- [ ] **Major:** The same information in different words: a badge and a sentence with the same status, a subtitle restating the title, a summary repeating the table below it.
+- [ ] **Major:** A default font (`antiAiDesign.typefaces.generic`) that no brand guidelines require, or a font that doesn't load and renders in its fallback (measured). New systems choose a pair (`type-pairing.md`).
+- [ ] **Minor:** More than `antiAiDesign.typefaces.maxFamilies` type families, not counting one mono (measured).
+- [ ] **Major:** Filler copy or invented numbers where real content or a `[PLACEHOLDER]` belongs.
+- [ ] **Major:** Template tropes: gradient washes, a row of three identical icon cards, emoji as icons, accent-border cards, everything centered, decoration with no job.
+
+---
+
+## 16. Brand Guidelines
+
+*`brandGuidelines` in the manifest, one profile per brand (`schemas/brand-guidelines.schema.json`). Applies when the page or file refers to the brand (a trigger word, alt text, or `<meta name="brand-guidelines">`), or always, for the brand's own product.*
+
+- [ ] **Major:** A color close to a brand color but not it (ΔE within `nearMissDeltaE`); with `strictPalette`, any non-neutral off-palette color (measured).
+- [ ] **Major:** A font the guidelines don't allow (measured).
+- [ ] **Major:** The brand name written in a form outside `nameForms` (measured).
+- [ ] **Major:** The logo below `minWidthPx`, stretched off its proportions, or with less than `minClearSpacePx` around it (measured).
+- [ ] **Major:** Breaks one of the profile's `never` rules.
+- [ ] **Minor:** The page refers to the brand, but the profile has no values yet, so nothing could be checked. Fill the profile from the official guidelines; never guess them.
+
+---
+
 ## Evidence
 
 Every finding says what it rests on: a `rendered-measurement`, a `screenshot` (seen or estimated), the `code`, or an `artifact`. **A value estimated from an image is never a blocker by itself.** It's at most major, and says what would confirm it. See `screenshot-review.md`.
@@ -291,3 +317,5 @@ This audit runs **automatically immediately after every generation**, before a d
 | 3-3-3 Usability | 3-3-3 rule | Yes — `usabilityHeuristics.threeThreeThree`, brief `coreTasks` |
 | Display Design (Wickens) | Wickens et al., 13 principles of display design | Partially — `usabilityHeuristics.displayDesign` |
 | Mobile & Dynamic Components | WCAG 1.4.4 / 1.4.10, platform guidelines | Yes — `mobile`, `accessibility.minTouchTargetPx` |
+| Anti-AI Design | New | Yes — `antiAiDesign` |
+| Brand Guidelines | New (brand profiles) | Yes — `brandGuidelines`, `brand/*.yaml` |

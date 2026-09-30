@@ -131,6 +131,13 @@ def post_edit(data):
     mode, report = lint_files([os.path.join(ROOT, rel)], ROOT, manifest)
     if report:
         messages.append(report)
+    import brand_check  # the edited file against any brand guidelines it's meant to follow
+    for entry, prof, path in brand_check.profiles(manifest, os.path.dirname(os.path.join(ROOT, MANIFEST))):
+        body = open(os.path.join(ROOT, rel), errors="replace").read() if os.path.exists(os.path.join(ROOT, rel)) else ""
+        if prof and brand_check.referenced(body, prof, entry):
+            warns = [brand_check.unfilled_warning(prof, entry['profile'], rel)] if not brand_check.filled(prof) else brand_check.check_text(body, rel, prof)
+            if warns and not (not brand_check.filled(prof) and seen(data.get("session_id", "default"), "brand-unfilled-" + prof.get("name", ""))):
+                messages.append(f"{prof.get('name')} guidelines (this file refers to {prof.get('name')}):\n" + "\n".join("• " + w for w in warns))
     owners, text = context_for(rel, ROOT, manifest, index)
     if owners:  # the edited file against every other file of the same design
         from design_context import globmatch

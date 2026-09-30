@@ -39,6 +39,10 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 - Phone first, at 320px.
 - Only the components in `CLAUDE.md`. Spacing by role, text by style.
 - One primary action per screen.
+- **Say each thing once.** No sentence, figure or status twice on a screen: if it matters that much, make it one stronger element.
+- Real content or `[PLACEHOLDER]`, never filler copy or invented numbers.
+- Type is the manifest's pair. A new design system gets a chosen pair, never a default font: offer 2 or 3 from `reference/type-pairing.md` at the brief's stop.
+- A page that uses a brand's name or logo follows its profile in `brand/`. The tools warn on anything that doesn't match. If the profile is empty, say so; don't guess the brand's values.
 - Loading, empty and error states wherever data or waiting is involved.
 - Output a renderable HTML page (or a Design canvas in Claude Design).
 - A needed component that doesn't exist gets one line as a gap in the design output. Don't build a look-alike.
@@ -75,6 +79,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 | `screenshot-review.md` | you were given screenshots |
 | `design-audit-rubric.md` | settling a disputed finding |
 | `platform-adapters.md` | working in Claude Design |
+| `type-pairing.md` | choosing fonts for a new design system |
 | `design-generation-skill.md` (and `HARNESS.md` at the repo root) | full mode only |
 
 **Full mode** (`harness.mode: full` in the manifest) runs the complete process in `reference/design-generation-skill.md`: every record, the full rubric and the presentation template. Use it for flagship work, not everyday pages.

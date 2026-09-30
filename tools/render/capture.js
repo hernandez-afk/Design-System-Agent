@@ -2,7 +2,10 @@
 // Renders a page at each viewport and text scale, saves full-page screenshots,
 // and measures what a screenshot alone can only estimate: sideways overflow,
 // touch-target sizes, text sizes, clipped text, and the computed padding and
-// type of every component. Driven by tools/screenshots.py, which passes a JSON
+// type of every component. On the inventory shots it also reads what an AI-made
+// page tends to get wrong: the same sentence or figure shown twice on one
+// screen, fonts that don't actually load, and (for brand checks) the colors,
+// fonts, text and logos in use. Driven by tools/screenshots.py, which passes a JSON
 // config file and reads results.json back.
 const fs = require("fs");
 const path = require("path");
@@ -67,6 +70,98 @@ async function measure(page, cfg, withInventory) {
   }, { minTouch: cfg.minTouch, minText: cfg.minTextPx, withInventory });
 }
 
+// Anti-AI-design and brand measurements, on the inventory shots only.
+async function antiAi(page, cfg) {
+  await page.evaluate(() => document.fonts.ready);
+  return page.evaluate(({ rep, logoSelector }) => {
+    const kind = (el) => el.getAttribute("data-component") ||
+      (el.tagName.toLowerCase() + (el.classList.length ? "." + el.classList[0] : ""));
+    const label = (el) => kind(el) + ` "${el.textContent.replace(/\s+/g, " ").trim().slice(0, 40)}"`;
+    const visible = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el);
+      return r.width > 1 && r.height > 1 && s.visibility !== "hidden" && s.display !== "none" && s.clipPath === "none" && s.clip === "auto"; };
+    const texty = [...document.querySelectorAll("body *")].filter((el) => visible(el) &&
+      [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()));
+    // Each screen is compared with itself: a design file showing several screens or states side by
+    // side marks them with data-screen, data-artboard or data-state.
+    const screen = (el) => el.closest("[data-screen], [data-artboard], [data-state]") || document.body;
+    const skipped = (el) => el.closest("nav, [aria-current], [aria-hidden=true], title, script, style, noscript, template");
+    // Items of a repeated list (rows, list items, repeated component instances) may share text:
+    // "Vote" on every card is structure, not repetition.
+    const item = (el) => { for (let p = el; p && p !== document.body; p = p.parentElement) {
+      if (p.matches("li, tr, [role=listitem], [role=row], option")) return p;
+      const c = p.getAttribute("data-component");
+      if (c && p.parentElement && [...p.parentElement.children].some((x) => x !== p && x.getAttribute("data-component") === c)) return p;
+    } return null; };
+    const structural = (a, b) => { const ia = item(a), ib = item(b); return ia && ib && ia !== ib && ia.parentElement === ib.parentElement; };
+    const norm = (t) => t.toLowerCase().replace(/\s+/g, " ").replace(/[.,:;!?…"'“”‘’()\[\]]/g, "").trim();
+    const groups = (entries) => { const g = new Map();
+      for (const [key, el] of entries) { const k = key + "\u0000" + [...document.querySelectorAll("[data-screen], [data-artboard], [data-state]")].indexOf(screen(el));
+        g.set(k, [...(g.get(k) || []), el]); }
+      const out = [];
+      for (const [k, els] of g) {
+        const leaves = els.filter((a) => !els.some((b) => b !== a && a.contains(b)));
+        const kept = leaves.filter((a) => leaves.some((b) => b !== a && !structural(a, b)));
+        if (kept.length > 1) out.push({ value: k.split("\u0000")[0], where: kept.slice(0, 4).map(label) });
+      }
+      return out; };
+    const blocks = texty.filter((el) => !skipped(el)).map((el) => [el.textContent.replace(/\s+/g, " ").trim(), el]);
+    // Compared sentence by sentence, so a sentence repeated inside a longer paragraph still counts.
+    const sentences = blocks.flatMap(([t, el]) => t.split(/(?<=[.!?])\s+/).map((x) => [norm(x), el]))
+      .filter(([x]) => x.split(" ").length >= (rep.minWords || 3));
+    const repeatedText = rep.enabled === false ? [] : groups(sentences);
+    // A figure counts when it can't be a coincidence: a separator, decimal, %, currency or 3+ digits.
+    const FIG = /(?:[$€£¥]\s?)?\d[\d,.]*\d(?:\s?(?:%|k|m|bn))?|(?:[$€£¥]\s?)?\d(?:\s?%)/gi;
+    const figs = [];
+    if (rep.enabled !== false && rep.figures !== false) {
+      for (const [t, el] of blocks) for (const f of t.match(FIG) || []) {
+        const v = f.replace(/\s/g, "").toLowerCase();
+        if (/^(19|20)\d\d$/.test(v) || !/[,.%$€£¥km]|\d{3}/.test(v)) continue;
+        figs.push([v, el]);
+      }
+    }
+    const repeatedFigures = groups(figs);
+
+    // Fonts: which families the text asks for, and whether each actually renders (a family that
+    // isn't installed or loaded measures the same as the fallback).
+    const ctx = document.createElement("canvas").getContext("2d");
+    const width = (font) => { ctx.font = font; return ctx.measureText("mmmmmmmmmwwwwwwwiiiiilll 0123456789").width; };
+    const fonts = {};
+    for (const el of texty) {
+      const fam = getComputedStyle(el).fontFamily.split(",")[0].replace(/["']/g, "").trim();
+      if (!(fam in fonts)) {
+        const generic = ["serif", "sans-serif", "monospace", "system-ui", "cursive", "fantasy"].includes(fam);
+        const renders = generic || ["monospace", "serif"].some((fb) => width(`40px "${fam}", ${fb}`) !== width(`40px ${fb}`));
+        fonts[fam] = { where: label(el), renders };
+      }
+    }
+    // Brand data: the text (with alt text and a brand-guidelines declaration), colors in use, logos.
+    const hex = (c) => { const m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/);
+      if (!m || (m[4] !== undefined && parseFloat(m[4]) === 0)) return null;
+      return "#" + [m[1], m[2], m[3]].map((x) => (+x).toString(16).padStart(2, "0")).join(""); };
+    const colors = {};
+    for (const el of [...document.querySelectorAll("body, body *")].filter(visible)) {
+      const s = getComputedStyle(el);
+      const used = [texty.includes(el) ? s.color : null, s.backgroundColor,
+        parseFloat(s.borderTopWidth) > 0 ? s.borderTopColor : null];
+      for (const c of used.map((c) => c && hex(c)).filter(Boolean)) if (!(c in colors)) colors[c] = label(el);
+    }
+    const meta = document.querySelector('meta[name="brand-guidelines"]');
+    const text = [document.body.innerText, ...[...document.querySelectorAll("img[alt], [aria-label]")]
+      .map((e) => e.getAttribute("alt") || e.getAttribute("aria-label")), meta ? `<meta name="brand-guidelines" content="${meta.content}">` : ""].join("\n");
+    const logos = logoSelector ? [...document.querySelectorAll(logoSelector)].filter(visible).map((el) => {
+      const r = el.getBoundingClientRect();
+      const others = [...document.querySelectorAll("body *")].filter((o) => visible(o) && !o.contains(el) && !el.contains(o) &&
+        ([...o.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) || o.matches("img, svg, button, input, a")));
+      const gap = (o) => { const q = o.getBoundingClientRect();
+        return Math.max(q.left - r.right, r.left - q.right, q.top - r.bottom, r.top - q.bottom); };
+      const clear = others.length ? Math.round(Math.min(...others.map(gap))) : null;
+      return { where: kind(el) + (el.getAttribute("alt") ? ` "${el.getAttribute("alt")}"` : ""), w: Math.round(r.width), h: Math.round(r.height),
+        naturalW: el.naturalWidth || null, naturalH: el.naturalHeight || null, clearPx: clear };
+    }) : [];
+    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos } };
+  }, { rep: cfg.repetition || {}, logoSelector: cfg.logoSelector || "" });
+}
+
 (async () => {
   const cfg = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
   const { chromium } = loadPlaywright();
@@ -93,6 +188,7 @@ async function measure(page, cfg, withInventory) {
       const file = `${vp.name}-${vp.w}${scale !== 100 ? `-text${scale}` : ""}.png`;
       await page.screenshot({ path: path.join(cfg.outDir, file), fullPage: true });
       const m = await measure(page, cfg, vp.inventory && scale === 100);
+      if (vp.inventory && scale === 100) m.antiAi = await antiAi(page, cfg);
       const sizes = await textSizes(page);
       if (scale === 100) base = sizes;
       const notScaling = scale !== 100 && base ? sizes.filter((s, i) => base[i] && s.size < base[i].size * (1 + (scale / 100 - 1) * 0.5))

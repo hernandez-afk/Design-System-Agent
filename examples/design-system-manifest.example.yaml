@@ -29,6 +29,15 @@ meta:
     - "drop shadows for depth"
     - "Inter / Roboto / Space Grotesk as primary display font"
 
+brandGuidelines:           # Acme's own guidelines; the tools warn when something meant to follow them doesn't
+  - profile: "brand/acme-brand.example.yaml"
+    applies: "always"      # this is Acme's product: the manifest and every page are checked
+
+antiAiDesign:
+  repetition: { enabled: true, minWords: 3, figures: true }
+  typefaces:
+    maxFamilies: 2         # plus one mono
+
 color:
   neutrals:
     background: "slate-50"

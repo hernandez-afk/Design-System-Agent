@@ -22,6 +22,7 @@ import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from export_claude_design import contrast  # noqa: E402
+import brand_check  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,6 +43,7 @@ EXPLICIT = [
     "registryPolicy.requireOperationalVerification", "registryPolicy.verificationReviewer", "registryPolicy.similarityCheck",
     "automation", "compositionHeuristics", "navigationHeuristics", "motionUsagePolicy",
     "usabilityHeuristics", "scopePolicy", "platform.targets", "mobile", "briefPolicy", "spacing.roles", "typography.styles", "harness.mode",
+    "antiAiDesign",
 ]
 
 # The components the rubric's checks assume exist, with the variants they need.
@@ -76,7 +78,7 @@ def color_value(m, role):
     return v if isinstance(v, str) and v.startswith("#") else None
 
 
-def check(m, schemas, claude_md, index_path):
+def check(m, schemas, claude_md, index_path, base="."):
     halt, gaps, notes = [], [], []
 
     # --- Minimum: the agent can run --------------------------------------
@@ -137,6 +139,22 @@ def check(m, schemas, claude_md, index_path):
         gaps.append(f"Type steps below the {floor}px legibility floor (Wickens 1): {', '.join(small)}.")
     if len(get(m, "typography.weights") or []) > 3:
         gaps.append("More than 3 font weights.")
+
+    # anti-AI design: typefaces someone chose for this product, not the defaults
+    generic, required = set(brand_check.generic_fonts(m)), brand_check.brand_fonts(m, base)
+    defaults = [f"{role} ({fam})" for role, fam in (get(m, "typography.typefaces") or {}).items()
+                if isinstance(fam, str) and fam.lower() in generic and fam.lower() not in required]
+    if defaults:
+        gaps.append(f"Default fonts: {', '.join(defaults)}. Choose a pairing for the product "
+                    "(skills/design-agent/reference/type-pairing.md), or list them in a brand profile if the brand requires them.")
+    for entry, prof, path in brand_check.profiles(m, base):
+        if prof is None:
+            gaps.append(f"brandGuidelines lists {entry['profile']}, which doesn't exist.")
+        elif not brand_check.filled(prof):
+            notes.append(f"{prof.get('name')} guidelines ({os.path.relpath(path)}) aren't filled in yet: references to "
+                         f"{prof.get('name')} are flagged but can't be checked.")
+        elif entry.get("applies") == "always":
+            gaps += [f"{prof.get('name')} guidelines: {w}" for w in brand_check.check_manifest(m, prof)]
 
     sp = get(m, "spacing") or {}
     off_unit = [v for v in sp.get("scale", []) if v % sp.get("baseUnitPx", 4)]
@@ -241,7 +259,7 @@ def main():
     m = yaml.safe_load(open(args.manifest))
     claude_md = args.claude_md or os.path.join(base, get(m, "meta.claudeMd.path") or "CLAUDE.md")
     index = args.index or os.path.join(base, get(m, "scopePolicy.designIndexPath") or "design-index.yaml")
-    halt, gaps, notes = check(m, args.schemas, claude_md, index)
+    halt, gaps, notes = check(m, args.schemas, claude_md, index, base)
 
     name = f"{get(m, 'meta.name')} v{get(m, 'meta.version')}"
     if halt:
