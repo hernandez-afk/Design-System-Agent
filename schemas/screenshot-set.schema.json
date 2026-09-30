@@ -10,6 +10,7 @@
     "source": { "type": "string", "enum": ["rendered", "provided"] },
     "target": { "type": "string", "description": "The page or URL rendered, or what the provided screenshots show." },
     "capturedAt": { "type": "string" },
+    "designSystem": { "type": "string", "description": "The design system the page was checked against: the project's, or a reference brand system when the page or its design declares those guidelines." },
     "manifestVersion": { "type": ["string", "null"] },
     "shots": {
       "type": "array",

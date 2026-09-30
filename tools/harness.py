@@ -385,13 +385,16 @@ def cmd_check(h, pid, page, out):
         lines.append(f"{pid}: not in the design index yet (use `record`)")
     if page:
         out = out or os.path.join(h.root, ".design-agent", "shots", pid or "page")
+        brands = [a for b in ((p or {}).get("brandGuidelines") or []) for a in ("--brand", b)]
         res = subprocess.run([sys.executable, os.path.join(HERE, "screenshots.py"), page, "--out", out,
-                              "--manifest", h.manifest_path, "--id", f"{pid}-shots"], capture_output=True, text=True)
+                              "--manifest", h.manifest_path, "--id", f"{pid}-shots", *brands], capture_output=True, text=True)
         record = load(os.path.join(out, "screenshot-set.yaml")) or {}
         groups = {}
         for f in record.get("findings", []):  # one line per problem, not per width or element
             groups.setdefault((f["severity"], f["rubricItem"]), []).append(f["description"])
         order = {"blocker": 0, "major": 1, "minor": 2}
+        if record.get("designSystem", "").find("reference") >= 0:
+            lines.append(f"  checked against: {record['designSystem']}")
         lines.append(f"  page: {sum(len(v) for v in groups.values())} finding(s) in {len(groups)} problem(s); "
                      f"screenshots in {os.path.relpath(out)}")
         for (sev, item), descs in sorted(groups.items(), key=lambda kv: order[kv[0][0]]):

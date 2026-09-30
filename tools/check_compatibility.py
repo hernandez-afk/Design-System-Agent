@@ -153,6 +153,11 @@ def check(m, schemas, claude_md, index_path, base="."):
         elif not brand_check.filled(prof):
             notes.append(f"{prof.get('name')} guidelines ({os.path.relpath(path)}) aren't filled in yet: references to "
                          f"{prof.get('name')} are flagged but can't be checked.")
+        elif entry.get("designSystem") and not os.path.exists(os.path.join(base, entry["designSystem"])):
+            gaps.append(f"{prof.get('name')}'s reference design system {entry['designSystem']} doesn't exist.")
+        elif entry.get("designSystem"):
+            notes.append(f"{prof.get('name')} guidelines are a reference: work that declares them uses {entry['designSystem']} "
+                         f"(check it on its own); everything else uses this system.")
         elif entry.get("applies") == "always":
             gaps += [f"{prof.get('name')} guidelines: {w}" for w in brand_check.check_manifest(m, prof)]
 

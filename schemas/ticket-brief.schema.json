@@ -4,52 +4,134 @@
   "title": "Ticket Brief",
   "description": "Structured extraction from a Jira ticket, PRD, or feature request, produced before generation starts. Keeps 'what does the ticket actually ask for' explicit and separate from the agent's interpretation, so requireTicketPriorityTraceability (composition-heuristics) has something concrete to check against.",
   "type": "object",
-  "required": ["ticketKey", "title", "sourceType", "priorities", "requiredElements", "scopeTerms", "surfaces"],
+  "required": [
+    "ticketKey",
+    "title",
+    "sourceType",
+    "priorities",
+    "requiredElements",
+    "scopeTerms",
+    "surfaces"
+  ],
   "definitions": {
     "operation": {
       "type": "object",
-      "required": ["handledBy"],
+      "required": [
+        "handledBy"
+      ],
       "properties": {
-        "handledBy": { "type": "string", "enum": ["this-project", "existing-design", "new-brief", "out-of-scope", "question"] },
-        "ref": { "type": "string", "description": "existing-design: its design-index ID. new-brief: the new brief's title. out-of-scope: the reason. question: the question." },
-        "note": { "type": "string" }
+        "handledBy": {
+          "type": "string",
+          "enum": [
+            "this-project",
+            "existing-design",
+            "new-brief",
+            "out-of-scope",
+            "question"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "description": "existing-design: its design-index ID. new-brief: the new brief's title. out-of-scope: the reason. question: the question."
+        },
+        "note": {
+          "type": "string"
+        }
       },
       "allOf": [
-        { "if": { "properties": { "handledBy": { "enum": ["existing-design", "new-brief", "out-of-scope", "question"] } } }, "then": { "required": ["ref"] } }
+        {
+          "if": {
+            "properties": {
+              "handledBy": {
+                "enum": [
+                  "existing-design",
+                  "new-brief",
+                  "out-of-scope",
+                  "question"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "ref"
+            ]
+          }
+        }
       ]
     }
   },
   "properties": {
-    "ticketKey": { "type": "string", "description": "e.g. 'DES-512' or 'PRD-031'." },
+    "ticketKey": {
+      "type": "string",
+      "description": "e.g. 'DES-512' or 'PRD-031'."
+    },
     "sourceType": {
       "type": "string",
-      "enum": ["jira-ticket", "prd", "page-brief", "feature-request", "other"],
+      "enum": [
+        "jira-ticket",
+        "prd",
+        "page-brief",
+        "feature-request",
+        "other"
+      ],
       "description": "Where this brief came from. 'page-brief' = written from templates/page-brief.md. A PRD often spans several designs, so it is the most common source of scope overlap — see the scope placement check."
     },
-    "sourceRef": { "type": "string", "description": "Link or path to the source ticket/PRD." },
+    "sourceRef": {
+      "type": "string",
+      "description": "Link or path to the source ticket/PRD."
+    },
     "scopeTerms": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Normalized domain terms this brief is about (lowercase, singular, specific — e.g. 'date-range filter', not 'filter'). Compared against design-index projects' scopeTerms in the scope placement check."
     },
     "surfaces": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Screens/areas of the product this brief would change, e.g. ['reports', 'reports/toolbar']. Use the same surface names as the design index."
     },
-    "scopeOverlapReportRef": { "type": "string", "description": "ID of the scope-overlap-report produced for this brief, once the scope placement check has run." },
-    "title": { "type": "string" },
-    "rawDescription": { "type": "string", "description": "Verbatim (paraphrased per copyright practice if fetched from Jira text) ticket description, kept for traceability." },
+    "scopeOverlapReportRef": {
+      "type": "string",
+      "description": "ID of the scope-overlap-report produced for this brief, once the scope placement check has run."
+    },
+    "title": {
+      "type": "string"
+    },
+    "rawDescription": {
+      "type": "string",
+      "description": "Verbatim (paraphrased per copyright practice if fetched from Jira text) ticket description, kept for traceability."
+    },
     "priorities": {
       "type": "array",
       "description": "The core things this design must accomplish, ranked. Every major generation decision must cite one of these.",
       "items": {
         "type": "object",
-        "required": ["id", "statement"],
+        "required": [
+          "id",
+          "statement"
+        ],
         "properties": {
-          "id": { "type": "string", "description": "e.g. 'P1'." },
-          "statement": { "type": "string" },
-          "source": { "type": "string", "enum": ["explicit", "acceptance-criterion", "inferred"], "description": "'explicit' = stated directly in the ticket. 'acceptance-criterion' = derived from a listed AC. 'inferred' = the agent's read on unstated intent — flagged separately so it can be confirmed rather than assumed." }
+          "id": {
+            "type": "string",
+            "description": "e.g. 'P1'."
+          },
+          "statement": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "acceptance-criterion",
+              "inferred"
+            ],
+            "description": "'explicit' = stated directly in the ticket. 'acceptance-criterion' = derived from a listed AC. 'inferred' = the agent's read on unstated intent — flagged separately so it can be confirmed rather than assumed."
+          }
         }
       }
     },
@@ -58,13 +140,50 @@
       "description": "Concrete UI needs pulled from the ticket, each destined for the reuse/similarity check against the manifest's components[].",
       "items": {
         "type": "object",
-        "required": ["description", "targetCategory"],
+        "required": [
+          "description",
+          "targetCategory"
+        ],
         "properties": {
-          "description": { "type": "string", "description": "e.g. 'a way to show 4 KPIs with trend indicators'." },
-          "targetCategory": { "type": "string", "enum": ["action", "input", "display", "feedback", "navigation", "layout", "overlay", "data-viz"] },
-          "linkedPriority": { "type": "string", "description": "id of the priority this element serves, for traceability." },
-          "states": { "type": "array", "items": { "type": "string", "enum": ["loading", "empty", "error", "success", "partial"] }, "description": "States this element must show, from the brief's States section." },
-          "estimatedVolume": { "type": "string", "description": "If this is a list/collection, rough expected item count — feeds compositionHeuristics.listPaginationThreshold check, e.g. '~30 rows, grows over time'." }
+          "description": {
+            "type": "string",
+            "description": "e.g. 'a way to show 4 KPIs with trend indicators'."
+          },
+          "targetCategory": {
+            "type": "string",
+            "enum": [
+              "action",
+              "input",
+              "display",
+              "feedback",
+              "navigation",
+              "layout",
+              "overlay",
+              "data-viz"
+            ]
+          },
+          "linkedPriority": {
+            "type": "string",
+            "description": "id of the priority this element serves, for traceability."
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "loading",
+                "empty",
+                "error",
+                "success",
+                "partial"
+              ]
+            },
+            "description": "States this element must show, from the brief's States section."
+          },
+          "estimatedVolume": {
+            "type": "string",
+            "description": "If this is a list/collection, rough expected item count — feeds compositionHeuristics.listPaginationThreshold check, e.g. '~30 rows, grows over time'."
+          }
         }
       }
     },
@@ -73,13 +192,34 @@
       "description": "Testable statements the design must meet, from the brief (optimized by skills/design-agent/reference/brief-optimization.md). Each is checked against the design output in the audit (rubric category 9).",
       "items": {
         "type": "object",
-        "required": ["id", "statement"],
+        "required": [
+          "id",
+          "statement"
+        ],
         "properties": {
-          "id": { "type": "string", "description": "e.g. 'AC1'." },
-          "statement": { "type": "string", "description": "Subject, action and measurable result, e.g. 'An admin can turn off email for one event type in 2 taps or fewer, at 320px.'" },
-          "linkedPriority": { "type": "string" },
-          "linkedTask": { "type": "string" },
-          "source": { "type": "string", "enum": ["explicit", "rewritten", "inferred"], "description": "'rewritten' = the author's criterion made testable; 'inferred' = added from a design-system requirement and confirmed by the author." }
+          "id": {
+            "type": "string",
+            "description": "e.g. 'AC1'."
+          },
+          "statement": {
+            "type": "string",
+            "description": "Subject, action and measurable result, e.g. 'An admin can turn off email for one event type in 2 taps or fewer, at 320px.'"
+          },
+          "linkedPriority": {
+            "type": "string"
+          },
+          "linkedTask": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "rewritten",
+              "inferred"
+            ],
+            "description": "'rewritten' = the author's criterion made testable; 'inferred' = added from a design-system requirement and confirmed by the author."
+          }
         }
       }
     },
@@ -87,9 +227,25 @@
       "type": "object",
       "description": "Where the page fits in the product, from the page brief's 'Where it fits' section. The starting point for the user flow (Step 2c).",
       "properties": {
-        "arrivesFrom": { "type": "array", "items": { "type": "string" } },
-        "goesNext": { "type": "array", "items": { "type": "string" } },
-        "mustLinkHere": { "type": "array", "items": { "type": "string" }, "description": "Existing pages that should link to this one." }
+        "arrivesFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "goesNext": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mustLinkHere": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Existing pages that should link to this one."
+        }
       }
     },
     "entities": {
@@ -97,20 +253,43 @@
       "description": "The things this page shows, acts on or needs, and who handles each part of their life (skills/design-agent/reference/edge-case-sweep.md, Step 1). This is where missing parts of the product surface, like an admin side nobody briefed.",
       "items": {
         "type": "object",
-        "required": ["name", "operations"],
+        "required": [
+          "name",
+          "operations"
+        ],
         "properties": {
-          "name": { "type": "string", "description": "e.g. 'hackathon', 'game', 'vote'." },
-          "description": { "type": "string" },
+          "name": {
+            "type": "string",
+            "description": "e.g. 'hackathon', 'game', 'vote'."
+          },
+          "description": {
+            "type": "string"
+          },
           "operations": {
             "type": "object",
-            "required": ["create", "source"],
+            "required": [
+              "create",
+              "source"
+            ],
             "properties": {
-              "create": { "$ref": "#/definitions/operation" },
-              "source": { "$ref": "#/definitions/operation" },
-              "update": { "$ref": "#/definitions/operation" },
-              "publish": { "$ref": "#/definitions/operation" },
-              "close": { "$ref": "#/definitions/operation" },
-              "delete": { "$ref": "#/definitions/operation" }
+              "create": {
+                "$ref": "#/definitions/operation"
+              },
+              "source": {
+                "$ref": "#/definitions/operation"
+              },
+              "update": {
+                "$ref": "#/definitions/operation"
+              },
+              "publish": {
+                "$ref": "#/definitions/operation"
+              },
+              "close": {
+                "$ref": "#/definitions/operation"
+              },
+              "delete": {
+                "$ref": "#/definitions/operation"
+              }
             }
           }
         }
@@ -118,7 +297,9 @@
     },
     "nonEntityTerms": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Scope terms that aren't things with a life of their own (e.g. 'voting window'), so the edge-case check doesn't ask who creates them."
     },
     "edgeCases": {
@@ -126,51 +307,112 @@
       "description": "The edge-case sweep's findings (skills/design-agent/reference/edge-case-sweep.md, Step 2), each with a decision.",
       "items": {
         "type": "object",
-        "required": ["id", "lens", "case", "disposition"],
+        "required": [
+          "id",
+          "lens",
+          "case",
+          "disposition"
+        ],
         "properties": {
-          "id": { "type": "string", "description": "e.g. 'EC1'." },
-          "lens": { "type": "string", "description": "One of the standard lenses (ecosystem, roles, setup, time, concurrency, integrity, scale, failure, ending, communication, privacy, access) or a product lens from briefPolicy.edgeCaseLenses." },
-          "case": { "type": "string" },
-          "disposition": { "type": "string", "enum": ["in-scope", "new-brief", "out-of-scope", "question", "not-applicable"] },
-          "action": { "type": "string", "description": "in-scope: which AC, element, state or flow path covers it (by id where there is one). new-brief: the brief's title. out-of-scope / not-applicable: the reason. question: the question." }
+          "id": {
+            "type": "string",
+            "description": "e.g. 'EC1'."
+          },
+          "lens": {
+            "type": "string",
+            "description": "One of the standard lenses (ecosystem, roles, setup, time, concurrency, integrity, scale, failure, ending, communication, privacy, access) or a product lens from briefPolicy.edgeCaseLenses."
+          },
+          "case": {
+            "type": "string"
+          },
+          "disposition": {
+            "type": "string",
+            "enum": [
+              "in-scope",
+              "new-brief",
+              "out-of-scope",
+              "question",
+              "not-applicable"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "description": "in-scope: which AC, element, state or flow path covers it (by id where there is one). new-brief: the brief's title. out-of-scope / not-applicable: the reason. question: the question."
+          }
         }
       }
     },
     "outOfScope": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "What the page deliberately doesn't do. The design must not include these."
     },
-    "approvedBy": { "type": "string", "description": "Who approved the optimized brief. In lite mode this replaces a separate brief-optimization report." },
-    "optimizationReportRef": { "type": "string", "description": "The brief-optimization-report that produced this brief from its source." },
+    "approvedBy": {
+      "type": "string",
+      "description": "Who approved the optimized brief. In lite mode this replaces a separate brief-optimization report."
+    },
+    "optimizationReportRef": {
+      "type": "string",
+      "description": "The brief-optimization-report that produced this brief from its source."
+    },
     "coreTasks": {
       "type": "array",
       "description": "The tasks users come to this design to do. Each is walked against the 3-3-3 rule (design-principles.md) — understood in 3 seconds, reached in 3 clicks, completed in 3 minutes.",
       "items": {
         "type": "object",
-        "required": ["id", "statement", "entryPoint"],
+        "required": [
+          "id",
+          "statement",
+          "entryPoint"
+        ],
         "properties": {
-          "id": { "type": "string", "description": "e.g. 'T1'." },
-          "statement": { "type": "string", "description": "What the user is trying to get done, e.g. 'Filter the dashboard to the last 30 days.'" },
-          "linkedPriority": { "type": "string" },
-          "entryPoint": { "type": "string", "description": "Where the user starts — the surface they land on, e.g. 'dashboard (after sign-in)'. Clicks are counted from here." }
+          "id": {
+            "type": "string",
+            "description": "e.g. 'T1'."
+          },
+          "statement": {
+            "type": "string",
+            "description": "What the user is trying to get done, e.g. 'Filter the dashboard to the last 30 days.'"
+          },
+          "linkedPriority": {
+            "type": "string"
+          },
+          "entryPoint": {
+            "type": "string",
+            "description": "Where the user starts — the surface they land on, e.g. 'dashboard (after sign-in)'. Clicks are counted from here."
+          }
         }
       }
     },
     "constraints": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Explicit constraints from the ticket (platform, deadline-driven scope cuts, must-integrate-with-X, etc.)."
     },
     "linkedDesigns": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "URLs/references to existing designs mentioned in the ticket (Figma links, prior screens) that this should be visually consistent with."
     },
     "openQuestions": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Ambiguities the agent couldn't resolve from the ticket alone — surfaced to the human before generation starts rather than silently assumed."
+    },
+    "brandGuidelines": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Brand guidelines this work follows, e.g. ['Atari']. Only when the author asks for them: a mention of the brand isn't a request. Declared work is designed, linted and checked against that brand's reference design system (the manifest's brandGuidelines designSystem) instead of the project's."
     }
   }
 }

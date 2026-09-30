@@ -48,6 +48,9 @@ def decisions_for(project, base):
 def describe(project, index, base):
     lines = [f"## Design context: {project['id']} — {project['title']} ({project['status']})",
              project.get("scopeSummary", "")]
+    for b in project.get("brandGuidelines", []):
+        lines.append(f"**Follows the {b} brand guidelines:** design and build with the {b} reference system "
+                     f"(brand/{b.lower()}/CLAUDE.md), not the project's tokens and type.")
     if project["status"] == "deprecated":
         lines.append("**Deprecated design.** Don't extend it; check `relatedProjects` for what replaced it.")
     if project.get("surfaces"):

@@ -1,11 +1,17 @@
-# Baseline: the standard design system for this agent.
+# Atari: the reference design system for work that follows the Atari brand guidelines.
 #
-# Every field the agent reads is set explicitly (nothing falls back to a
-# default), every value passes the agent's own checks, and the component set
-# covers every requirement in the audit rubric. Start a new product's design
-# system by copying this folder and replacing the values; keep the structure.
-# Requirements and reasons: standard/REQUIREMENTS.md.
-# Check any manifest: python3 tools/check_compatibility.py <manifest>
+# It is NOT the project's design system. It applies only when the Atari
+# guidelines are called for: a brief or design that declares
+# brandGuidelines: ["Atari"], a page with <meta name="brand-guidelines" content="Atari">,
+# a file with a "brand-guidelines: Atari" comment, or text asking to follow the
+# Atari brand guidelines. Everything else uses the project's own design system.
+#
+# Built from ATARI Brand Guidelines V1.1 (June 2023) on the Baseline's structure:
+# every color is an exact Atari palette color (the palette is strict), type is
+# Atari 1972 for headlines and Poppins Medium for everything else. What the
+# guidelines don't cover (spacing, radius, layout, components, behavior) is the
+# Baseline's, marked "not in the guidelines".
+# Brand rules: ../atari.yaml. Check: python3 tools/check_compatibility.py standard/brand/atari/design-system-manifest.yaml
 
 harness:
   mode: "lite"             # lite: core skill + tool checks + one critic pass. full: every record and the full rubric
@@ -21,7 +27,7 @@ platform:
       desktop: { w: 1440, h: 900 }
 
 meta:
-  name: "Baseline"
+  name: "Atari"
   version: "1.0.0"
   framework: "react"
   stylingEngine: "css-variables"
@@ -36,37 +42,36 @@ meta:
     - "emoji as icons"
     - "color as the only signal for a state"
 
-brandGuidelines:          # references, used only when a brief, design, page or file declares them
-  - profile: "brand/atari.yaml"                            # from ATARI Brand Guidelines V1.1 (June 2023)
-    applies: "when-declared"                               # a mention of Atari isn't a declaration; "always" for an Atari product's own system
-    designSystem: "brand/atari/design-system-manifest.yaml"   # used instead of this system for declared work
+brandGuidelines:
+  - profile: "../atari.yaml"
+    applies: "always"      # this system is Atari's: its tokens and every page built with it are checked
 
 antiAiDesign:             # what AI-made designs tend to get wrong; the renderer measures these
   repetition: { enabled: true, minWords: 3, figures: true }   # say each thing once per screen
   typefaces:
     maxFamilies: 2        # plus one mono; the default-font list is in tools/brand_check.py
 
-color:
+color:                     # every value is an exact Atari palette color (guidelines p. 22-25)
   neutrals:
-    background: "#fafafa"
-    surface: "#ffffff"
-    border: "#d4d4d8"
-    textPrimary: "#18181b"
-    textSecondary: "#52525b"
+    background: "#FFFFFF"    # White
+    surface: "#F5F5F5"       # White 5
+    border: "#E0E0E0"        # Light Grey 15
+    textPrimary: "#171717"   # Black 100
+    textSecondary: "#616161" # Dark Grey 70: 5.7:1 on surface
     temperature: "neutral"
   accents:
-    primary: "#1d4ed8"
-    onPrimary: "#ffffff"
-    secondary: "#7c3aed"   # distinct from every status color, so it never reads as a state
-    success: "#15803d"
-    warning: "#b45309"
-    error: "#b91c1c"
-    info: "#0369a1"
+    primary: "#E01E2B"       # Atari Red
+    onPrimary: "#FFFFFF"     # 4.8:1 on Atari Red
+    secondary: "#A4009F"     # Purple 100, distinct from every status color
+    success: "#4D6A31"       # Spectrum PMS 7743 C
+    warning: "#AD582A"       # Spectrum PMS 1605 C (Yellow 100 fails as text)
+    error: "#BD1E56"         # Spectrum PMS 7425 C, not Atari Red, so an error never reads as the primary action
+    info: "#0065B9"          # Blue 100
   contrastStandard: "WCAG-AA"
   interactionStates:
-    hover: "#1e40af"
-    active: "#1e3a8a"
-    focus: "#1d4ed8"
+    hover: "#C14340"         # Spectrum PMS 180 C
+    active: "#6C302E"        # Spectrum PMS 175 C
+    focus: "#0065B9"         # Blue 100: a focus ring that isn't the brand red
   usagePolicy:
     primaryAccentRole: "accents.primary"
     secondaryAccentRole: "accents.secondary"
@@ -75,46 +80,46 @@ color:
   themes:
     - { id: "light", name: "Light" }
   resolved:
-    neutrals.background:      { light: "#fafafa" }
-    neutrals.surface:         { light: "#ffffff" }
-    neutrals.border:          { light: "#d4d4d8" }
-    neutrals.textPrimary:     { light: "#18181b" }
-    neutrals.textSecondary:   { light: "#52525b" }
-    accents.primary:          { light: "#1d4ed8" }
-    accents.onPrimary:        { light: "#ffffff" }
-    accents.secondary:        { light: "#7c3aed" }
-    accents.success:          { light: "#15803d" }
-    accents.warning:          { light: "#b45309" }
-    accents.error:            { light: "#b91c1c" }
-    accents.info:             { light: "#0369a1" }
-    interactionStates.hover:  { light: "#1e40af" }
-    interactionStates.active: { light: "#1e3a8a" }
-    interactionStates.focus:  { light: "#1d4ed8" }
+    neutrals.background:      { light: "#FFFFFF" }
+    neutrals.surface:         { light: "#F5F5F5" }
+    neutrals.border:          { light: "#E0E0E0" }
+    neutrals.textPrimary:     { light: "#171717" }
+    neutrals.textSecondary:   { light: "#616161" }
+    accents.primary:          { light: "#E01E2B" }
+    accents.onPrimary:        { light: "#FFFFFF" }
+    accents.secondary:        { light: "#A4009F" }
+    accents.success:          { light: "#4D6A31" }
+    accents.warning:          { light: "#AD582A" }
+    accents.error:            { light: "#BD1E56" }
+    accents.info:             { light: "#0065B9" }
+    interactionStates.hover:  { light: "#C14340" }
+    interactionStates.active: { light: "#6C302E" }
+    interactionStates.focus:  { light: "#0065B9" }
 
-typography:
-  typefaces:               # a new system replaces these with a pairing chosen for the product (reference/type-pairing.md)
-    display: "Source Serif 4"
-    body: "Source Sans 3"
-    ui: "Source Sans 3"
-  weights: [400, 600, 700]
+typography:                # guidelines p. 27-29
+  typefaces:
+    display: "Atari 1972"    # headlines, Regular, in capitals
+    body: "Poppins"          # subheads, body, captions, legal: Medium
+    ui: "Poppins"
+  weights: [400, 500]        # Atari 1972 Regular; Poppins Medium
   scale:
     baseSizePx: 16
-    ratio: 1.2
-    steps: ["sm", "base", "lg", "xl", "2xl", "3xl", "4xl"]   # smallest is 13px — nothing below the 12px floor
+    ratio: 1.25
+    steps: ["sm", "base", "lg", "xl", "2xl", "3xl"]   # 13 · 16 · 20 · 25 · 31 · 39px
   lineHeightRatio: 1.5
-  styles:                  # every kind of text has one style, on every screen
-    - { name: "page-title",      step: "3xl",  weight: 700, typeface: "display", appliesTo: ["h1"] }
-    - { name: "section-heading", step: "xl",   weight: 600, typeface: "display", appliesTo: ["h2"] }
-    - { name: "subheading",      step: "lg",   weight: 600, typeface: "body",    appliesTo: ["h3"] }
-    - { name: "body",            step: "base", weight: 400, typeface: "body",    appliesTo: ["p"] }
-    - { name: "label",           step: "sm",   weight: 600, typeface: "ui",      appliesTo: ["label"] }
-    - { name: "caption",         step: "sm",   weight: 400, typeface: "body",    usage: "Supporting text, in textSecondary." }
+  styles:
+    - { name: "page-title",      step: "3xl",  weight: 400, typeface: "display", appliesTo: ["h1"], usage: "In capitals." }
+    - { name: "section-heading", step: "xl",   weight: 400, typeface: "display", appliesTo: ["h2"], usage: "In capitals." }
+    - { name: "subheading",      step: "lg",   weight: 500, typeface: "body",    appliesTo: ["h3"] }
+    - { name: "body",            step: "base", weight: 500, typeface: "body",    appliesTo: ["p"] }
+    - { name: "label",           step: "sm",   weight: 500, typeface: "ui",      appliesTo: ["label"], usage: "In textPrimary." }
+    - { name: "caption",         step: "sm",   weight: 500, typeface: "body",    usage: "Captions and legal lines, in textSecondary." }
   roles:
-    heading: "typefaces.display"        # Source Serif 4, 700
-    readableSubtext: "typefaces.body"   # Source Sans 3, 400, textSecondary
-    formLabel: "typefaces.ui"           # Source Sans 3, 600, textPrimary
+    heading: "typefaces.display"        # Atari 1972, 400, capitals
+    readableSubtext: "typefaces.body"   # Poppins, 500, textSecondary
+    formLabel: "typefaces.ui"           # Poppins, 500, textPrimary
 
-spacing:
+spacing:                   # not in the guidelines: the Baseline's
   baseUnitPx: 4
   scale: [4, 8, 12, 16, 24, 32, 48, 64]
   roles:                   # the same kind of space is the same value everywhere
@@ -126,7 +131,7 @@ spacing:
     - { name: "section",           px: 48, property: "margin", usage: "Between page sections." }
     - { name: "page-gutter",       px: 16, property: "padding-x", usage: "Page edges on phones; the grid gutter takes over from md." }
 
-radius:
+radius:                    # not in the guidelines: the Baseline's
   tokens:
     - { name: "radius-sm", px: 4, usage: "Inputs, chips, small buttons." }
     - { name: "radius-md", px: 8, usage: "Buttons, cards." }

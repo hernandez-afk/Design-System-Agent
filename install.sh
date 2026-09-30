@@ -31,8 +31,8 @@ if [ "${2:-}" = "--with-baseline" ]; then
     if [ ! -f "$DEST/$f" ]; then cp "$SRC/standard/$f" "$DEST/$f"; echo "✓ $f (Baseline: replace its values with yours)"; fi
   done
   mkdir -p "$DEST/brand"
-  for f in "$SRC/standard/brand/"*.yaml; do
-    [ -f "$DEST/brand/$(basename "$f")" ] || { cp "$f" "$DEST/brand/"; echo "✓ brand/$(basename "$f") (Atari Brand Guidelines V1.1)"; }
+  for f in "$SRC/standard/brand/"*; do   # brand profiles, and their reference design systems
+    [ -e "$DEST/brand/$(basename "$f")" ] || { cp -r "$f" "$DEST/brand/"; echo "✓ brand/$(basename "$f") (Atari Brand Guidelines V1.1: a reference, used only when declared)"; }
   done
 fi
 for f in design-system-manifest.yaml CLAUDE.md; do

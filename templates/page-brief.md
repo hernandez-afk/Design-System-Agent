@@ -17,6 +17,7 @@
 
 - **Who:** [who uses it, and how often]
 - **Device:** [mostly phone, desktop, or both. Every page is designed phone-first anyway, so say what's typical.]
+- **Brand guidelines:** [only if this page must follow a brand's guidelines, e.g. "Atari brand guidelines". Leave blank to use the project's design system.]
 
 ## Where it fits
 

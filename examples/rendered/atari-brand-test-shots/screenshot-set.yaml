@@ -1,7 +1,8 @@
 id: atari-brand-test-shots
 source: rendered
 target: examples/rendered/atari-brand-test.html
-capturedAt: '2026-09-30T12:15:53Z'
+capturedAt: '2026-09-30T12:24:36Z'
+designSystem: 'Atari (reference: the Atari guidelines are declared)'
 manifestVersion: 1.0.0
 shots:
 - file: narrow-320.png
@@ -88,7 +89,7 @@ computedInventory:
     consistent: true
   - element: h1
     style: page-title
-    expected: 33px / 700
+    expected: 39px / 400
     found:
     - value: 40px / 400
       where: h1 "Arcade night" @ narrow-320.png
@@ -97,13 +98,13 @@ computedInventory:
     consistent: false
   - element: p
     style: body
-    expected: 16px / 400
+    expected: 16px / 500
     found:
     - value: 16px / 500
       where: p "Doors open at 6pm." @ narrow-320.png
     - value: 16px / 500
       where: p "Doors open at 6pm." @ desktop-1440.png
-    consistent: false
+    consistent: true
   - element: p.intro
     found:
     - value: 16px / 400
@@ -115,15 +116,7 @@ findings:
 - severity: major
   category: token-and-scale-consistency
   rubricItem: Text of the same kind uses different styles, or isn't its style
-  description: '<h1>: 40px / 400; style ''page-title'' is 33px / 700.'
-  evidence:
-    kind: rendered-measurement
-    ref: computed styles
-    measured: true
-- severity: major
-  category: token-and-scale-consistency
-  rubricItem: Text of the same kind uses different styles, or isn't its style
-  description: '<p>: 16px / 500; style ''body'' is 16px / 400.'
+  description: '<h1>: 40px / 400; style ''page-title'' is 39px / 400.'
   evidence:
     kind: rendered-measurement
     ref: computed styles

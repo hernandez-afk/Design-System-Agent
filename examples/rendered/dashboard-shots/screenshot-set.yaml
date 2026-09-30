@@ -1,7 +1,8 @@
 id: dashboard-shots
 source: rendered
 target: examples/rendered/dashboard.html
-capturedAt: '2026-09-30T12:16:17Z'
+capturedAt: '2026-09-30T12:24:50Z'
+designSystem: Acme Product UI
 manifestVersion: 1.0.0
 shots:
 - file: narrow-320.png

@@ -5,9 +5,11 @@ Usage: python3 tools/brand_check.py [files…] [--manifest design-system-manifes
 
 The manifest's brandGuidelines lists guideline profiles (brand/<name>.yaml,
 schemas/brand-guidelines.schema.json). A profile applies to a file or page
-when it mentions one of the profile's triggers (e.g. "Atari"), declares it
-(<meta name="brand-guidelines" content="Atari">), or when the manifest entry
-says applies: always. Then:
+when it declares it (<meta name="brand-guidelines" content="Atari">, a
+`brand-guidelines: Atari` comment, or --brand from the brief or design), uses
+one of the profile's trigger phrases ("Atari brand guidelines"), or when the
+manifest entry says applies: always. A brand with a designSystem is a
+reference: for declared work, that system replaces the project's. Then:
   - colors close to a brand color but not it are flagged (the classic
     off-brand miss: a red that's nearly the brand red)
   - with strictPalette, any non-neutral color outside the palette is flagged
@@ -27,7 +29,7 @@ import sys
 import yaml
 
 HEX = re.compile(r"#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")
-FONT_DECL = re.compile(r"font-family\s*:\s*([^;}\"]+)|fontFamily\s*[:=]\s*[\"'`{]+([^\"'`}]+)", re.I)
+FONT_DECL = re.compile(r"font-family\s*:\s*((?:\"[^\"]*\"|'[^']*'|[^;}\"'])+)|fontFamily\s*[:=]\s*[\"'`{]+([^\"'`}]+)|\bfont-\[(?!\d)([^\]]+)\]", re.I)
 # Fonts that read as "nobody chose this": system defaults and the faces every template ships with.
 # A brand's own guidelines can still require one (brandGuidelines profile typefaces win).
 DEFAULT_GENERIC_FONTS = ["Inter", "Roboto", "Arial", "Helvetica", "Helvetica Neue", "Open Sans", "Lato", "Montserrat",
@@ -41,10 +43,10 @@ def generic_fonts(m):
     return [f.lower() for f in ((m.get("antiAiDesign", {}) or {}).get("typefaces", {}) or {}).get("generic", DEFAULT_GENERIC_FONTS)]
 
 
-def brand_fonts(m, base, text=None):
+def brand_fonts(m, base, text=None, declared=()):
     """Fonts an applicable brand's guidelines require, which the generic-font warning then allows:
     a brand the product always follows, or (given a page's text) one the page refers to."""
-    return {f.lower() for e, p, _ in profiles(m, base) if p and (e.get("applies") == "always" or (text and referenced(text, p)))
+    return {f.lower() for e, p, _ in profiles(m, base) if p and (e.get("applies") == "always" or referenced(text or "", p, e, declared))
             for f in p.get("typefaces", []) or []}
 
 
@@ -135,18 +137,40 @@ def name_findings(text, where, p):
     if not forms:
         return []
     out = []
-    for word in sorted({w for t in p.get("triggers", []) or [] for w in re.findall(rf"\b{re.escape(t)}\b", text, re.I)}):
+    for word in sorted(set(re.findall(rf"\b{re.escape(p['name'])}\b", text, re.I))):
         if word not in forms:
             out.append(f"{where}: the name is written '{word}'; the {p['name']} guidelines allow {', '.join(repr(f) for f in forms)}.")
     return out
 
 
-def referenced(text, p, entry=None):
-    if entry and entry.get("applies") == "always":
+def declares(text, name):
+    """An explicit declaration: <meta name="brand-guidelines" content="Atari">, data-brand-guidelines="Atari",
+    a `brand-guidelines: Atari` comment, or brandGuidelines: ["Atari"] in a brief or design record."""
+    return bool(re.search(r"brand-?guidelines[\"']?\s*(?:content\s*=|[:=])\s*[\[\s\"']*" + re.escape(name) + r"\b", text, re.I))
+
+
+def referenced(text, p, entry=None, declared=(), phrases=True):
+    """Do these guidelines apply? Always (the brand's own product), when declared (in the text, or by the
+    brief or design: `declared`), or when the text uses one of the profile's triggers. A reference brand's
+    triggers are phrases like "Atari brand guidelines", so a page that merely mentions Atari isn't covered."""
+    name = p.get("name", "")
+    if (entry and entry.get("applies") == "always") or name.lower() in {d.lower() for d in declared}:
         return True
-    if re.search(r'name=["\']brand-guidelines["\'][^>]*content=["\']' + re.escape(p.get("name", "")), text, re.I):
+    if declares(text, name):
         return True
-    return any(re.search(rf"\b{re.escape(t)}\b", text, re.I) for t in p.get("triggers", []) or [])
+    # Trigger phrases count in what people read (briefs, page text), not in source code, where a comment
+    # can mention the guidelines without asking for them; code declares with `brand-guidelines: <name>`.
+    return phrases and any(re.search(rf"\b{re.escape(t)}\b", text, re.I) for t in p.get("triggers", []) or [])
+
+
+def reference_system(m, base, text="", declared=(), phrases=True):
+    """(profile name, manifest path) of the brand design system that replaces the project's for this
+    work, or None. Only brands with a designSystem that applies here."""
+    for e, p, _ in profiles(m, base):
+        path = os.path.join(base, e.get("designSystem") or "")
+        if p and e.get("designSystem") and e.get("applies") != "always" and referenced(text, p, e, declared, phrases) and os.path.exists(path):
+            return p["name"], path
+    return None
 
 
 def unfilled_warning(p, path, where):
@@ -175,8 +199,8 @@ def check_text(text, where, p):
     out = name_findings(re.sub(r"<[^>]+>", " ", text), where, p)
     for h in sorted(set(HEX.findall(text))):
         out += color_findings(h, where, p)
-    for a, b in FONT_DECL.findall(text):
-        first = (a or b).split(",")[0]
+    for a, b, c in FONT_DECL.findall(text):
+        first = (a or b or c.replace("_", " ").strip("'\"")).split(",")[0]
         if first.strip().startswith(("var(", "$", "{")):
             continue
         out += font_findings(first, where, p)
@@ -230,6 +254,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("files", nargs="*")
     ap.add_argument("--manifest", default="design-system-manifest.yaml")
+    ap.add_argument("--brand", action="append", default=[], help="guidelines the work declares, e.g. --brand Atari")
     args = ap.parse_args()
     m = load(args.manifest)
     base = os.path.dirname(os.path.abspath(args.manifest))
@@ -242,7 +267,7 @@ def main():
             warnings += ([unfilled_warning(p, entry['profile'], "The manifest")] if not filled(p) else check_manifest(m, p))
         for f in args.files:
             text = open(f, errors="replace").read()
-            if not referenced(text, p, entry):
+            if not referenced(text, p, entry, args.brand, phrases=False):
                 continue
             warnings += [unfilled_warning(p, entry['profile'], f)] if not filled(p) else check_text(text, f, p)
     for w in warnings:

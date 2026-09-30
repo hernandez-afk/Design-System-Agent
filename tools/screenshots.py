@@ -144,7 +144,7 @@ def inventory_and_findings(m, shots):
     return unique, {"spacing": inv_sp, "typography": inv_ty}
 
 
-def anti_ai_findings(m, shots, manifest_path):
+def anti_ai_findings(m, shots, manifest_path, declared=()):
     """Repetition, fonts, and brand guidelines, from the inventory shots."""
     out, seen = [], set()
     base = os.path.dirname(os.path.abspath(manifest_path))
@@ -168,7 +168,7 @@ def anti_ai_findings(m, shots, manifest_path):
         for r in a["repeatedFigures"]:
             add("major", "anti-ai-design", "The same figure appears twice on one screen: show it once, where it matters most",
                 f"{r['value']} appears in {', '.join(r['where'])}.", s)
-        required = brand_check.brand_fonts(m, base, a["brand"]["text"])
+        required = brand_check.brand_fonts(m, base, a["brand"]["text"], declared)
         fams = {f: v for f, v in a["fonts"].items() if f.lower() not in brand_check.GENERIC_FAMILIES}
         for fam, v in fams.items():
             if not v["renders"]:
@@ -185,15 +185,20 @@ def anti_ai_findings(m, shots, manifest_path):
             add("minor", "anti-ai-design", f"More than {max_fam} type families (plus one mono)", f"{', '.join(fams)}.", s)
         text = a["brand"]["text"]
         for entry, p, path in brand_check.profiles(m, base):
-            if not p or not brand_check.referenced(text, p, entry):
+            if not p:
                 continue
+            applies = brand_check.referenced(text, p, entry, declared)
             item = f"Meant to follow the {p.get('name')} guidelines, and doesn't match"
             if not brand_check.filled(p):
-                add("minor", "brand-guidelines", item, brand_check.unfilled_warning(p, entry['profile'], "The page"), s)
+                if applies:
+                    add("minor", "brand-guidelines", item, brand_check.unfilled_warning(p, entry['profile'], "The page"), s)
                 continue
             kinds = {"color": "colors", "font": "fonts", "name": "how the name is written", "logo": "the logo", "type": "type roles"}
             for kind, w in brand_check.check_rendered(a["brand"], p):
-                add("major", "brand-guidelines", f"{item}: {kinds[kind]}", w, s)
+                if applies:
+                    add("major", "brand-guidelines", f"{item}: {kinds[kind]}", w, s)
+                elif kind == "logo":  # a brand's logo follows its rules on any page
+                    add("major", "brand-guidelines", f"The {p.get('name')} logo breaks its rules", w, s)
     return out
 
 
@@ -242,6 +247,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--manifest", default="design-system-manifest.yaml")
     ap.add_argument("--id", default=None)
+    ap.add_argument("--brand", action="append", default=[], help="brand guidelines the design declares, e.g. --brand Atari")
     args = ap.parse_args()
     if args.provided:
         return provided(args.provided, os.path.abspath(args.out), args.id)
@@ -264,13 +270,21 @@ def main():
         sys.exit("Rendering failed: " + res.stderr.strip())
     shots = json.load(open(os.path.join(out, "results.json")))["shots"]
     os.unlink(os.path.join(out, "results.json"))
+    # Work that declares a reference brand (e.g. the Atari guidelines) is checked against that
+    # brand's design system instead of the project's.
+    text = next((x["antiAi"]["brand"]["text"] for x in shots if x.get("antiAi")), "")
+    ref = brand_check.reference_system(m, os.path.dirname(os.path.abspath(args.manifest)), text, args.brand)
+    system_path = ref[1] if ref else args.manifest
+    if ref:
+        m = yaml.safe_load(open(system_path)) or {}
     findings, inventory = inventory_and_findings(m, shots)
-    findings += anti_ai_findings(m, shots, args.manifest)
+    findings += anti_ai_findings(m, shots, system_path, args.brand)
     record = {
         "id": args.id or os.path.basename(out.rstrip("/")),
         "source": "rendered",
         "target": args.target,
         "capturedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "designSystem": f"{(m.get('meta') or {}).get('name')}" + (f" (reference: the {ref[0]} guidelines are declared)" if ref else ""),
         "manifestVersion": (m.get("meta") or {}).get("version"),
         "shots": [{"file": s["file"], "viewport": s["viewport"], "textScalePercent": s["textScalePercent"],
                    "method": "root font-size" if s["textScalePercent"] != 100 else "none",
@@ -280,7 +294,7 @@ def main():
     }
     with open(os.path.join(out, "screenshot-set.yaml"), "w") as f:
         yaml.safe_dump(record, f, sort_keys=False, allow_unicode=True)
-    print(f"{record['id']}: {len(shots)} screenshots, {len(findings)} finding(s) → {os.path.relpath(out)}/screenshot-set.yaml")
+    print(f"{record['id']}: {record['designSystem']}, {len(shots)} screenshots, {len(findings)} finding(s) → {os.path.relpath(out)}/screenshot-set.yaml")
     for fd in findings:
         print(f"  [{fd['severity']}] {fd['description']}")
     return 2 if findings else 0

@@ -1,0 +1,111 @@
+id: atari-mention-test-shots
+source: rendered
+target: examples/rendered/atari-mention-test.html
+capturedAt: '2026-09-30T12:24:41Z'
+designSystem: Baseline
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing: []
+  typography:
+  - element: h1
+    style: page-title
+    expected: 33px / 700
+    found:
+    - value: 33px / 700
+      where: h1 "Spring game jam" @ narrow-320.png
+    - value: 33px / 700
+      where: h1 "Spring game jam" @ desktop-1440.png
+    consistent: true
+  - element: p
+    style: body
+    expected: 16px / 400
+    found:
+    - value: 16px / 400
+      where: p "Build a game in a weekend, hosted by the" @ narrow-320.png
+    - value: 16px / 400
+      where: p "Build a game in a weekend, hosted by the" @ desktop-1440.png
+    consistent: true
+findings:
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Serif 4'' (h1 "Spring game jam") renders in the fallback:
+    load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Sans 3'' (p "Build a game in a weekend, hosted by the") renders
+    in the fallback: load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: The Atari logo breaks its rules
+  description: 'svg (Fuji logo): 40px wide; the Atari minimum is 50px.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

@@ -4,9 +4,14 @@
   "title": "Design Index",
   "description": "The living map of every design project and the artifacts that belong to it (PRDs, ticket briefs, design outputs, gap/verification/audit reports). Two jobs: (1) scope placement — before a new brief becomes a new design, it is compared against every project here to catch work that really belongs to an existing design (see scope-overlap-report.schema.json); (2) change propagation — artifacts declare what they depend on, so when one changes, everything downstream is flagged for review instead of silently drifting.",
   "type": "object",
-  "required": ["projects"],
+  "required": [
+    "projects"
+  ],
   "properties": {
-    "updatedAt": { "type": "string", "format": "date-time" },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
     "navigation": {
       "type": "object",
       "description": "The product's navigation map: every link between surfaces, so a new design can see how it connects and what already links where. Updated in generation Step 12 from each design's user flow.",
@@ -15,14 +20,46 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["from", "to", "label", "kind"],
+            "required": [
+              "from",
+              "to",
+              "label",
+              "kind"
+            ],
             "properties": {
-              "from": { "type": "string", "description": "A surface, or an external source like 'email'." },
-              "to": { "type": "string", "description": "A surface." },
-              "label": { "type": "string", "description": "What the user sees or taps." },
-              "kind": { "type": "string", "enum": ["nav", "deep-link", "redirect", "back"] },
-              "projectId": { "type": "string", "description": "The design that added the link." },
-              "status": { "type": "string", "enum": ["proposed", "live"], "default": "live" }
+              "from": {
+                "type": "string",
+                "description": "A surface, or an external source like 'email'."
+              },
+              "to": {
+                "type": "string",
+                "description": "A surface."
+              },
+              "label": {
+                "type": "string",
+                "description": "What the user sees or taps."
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "nav",
+                  "deep-link",
+                  "redirect",
+                  "back"
+                ]
+              },
+              "projectId": {
+                "type": "string",
+                "description": "The design that added the link."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "proposed",
+                  "live"
+                ],
+                "default": "live"
+              }
             }
           }
         }
@@ -32,29 +69,56 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "title", "status", "scopeSummary", "scopeTerms", "surfaces", "artifacts"],
+        "required": [
+          "id",
+          "title",
+          "status",
+          "scopeSummary",
+          "scopeTerms",
+          "surfaces",
+          "artifacts"
+        ],
         "properties": {
-          "id": { "type": "string", "description": "Stable project ID — usually the originating ticket or PRD key, e.g. 'DES-512'." },
-          "title": { "type": "string" },
+          "id": {
+            "type": "string",
+            "description": "Stable project ID — usually the originating ticket or PRD key, e.g. 'DES-512'."
+          },
+          "title": {
+            "type": "string"
+          },
           "status": {
             "type": "string",
-            "enum": ["in-progress", "approved", "shipped", "deprecated"],
+            "enum": [
+              "in-progress",
+              "approved",
+              "shipped",
+              "deprecated"
+            ],
             "description": "Extending an 'approved' or 'shipped' project means a new revision of it, not a silent edit. 'deprecated' projects are still compared against (to catch reintroducing retired work) but are never recommended as a merge target."
           },
-          "scopeSummary": { "type": "string", "description": "One or two sentences: what problem this design owns." },
+          "scopeSummary": {
+            "type": "string",
+            "description": "One or two sentences: what problem this design owns."
+          },
           "scopeTerms": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Normalized domain terms this project owns, lowercase, singular — e.g. ['kpi', 'trend', 'date-range filter']. Compared by Jaccard overlap in the scope check, so keep them specific; generic words ('page', 'user', 'button') dilute the signal."
           },
           "surfaces": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Screens/areas of the product this project changes, e.g. ['dashboard', 'dashboard/toolbar']. Two projects editing the same surface is the strongest sign of overlap."
           },
           "codePaths": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Globs for the code that implements this design, e.g. 'src/app/dashboard/**'. This is how design context reaches development: when someone edits a file under these paths, tools/design_context.py shows this project's decisions, components and open review flags. Required once status is approved or shipped."
           },
           "priorities": {
@@ -62,16 +126,25 @@
             "description": "Copied from the project's ticket brief so new briefs can be compared priority-by-priority.",
             "items": {
               "type": "object",
-              "required": ["id", "statement"],
+              "required": [
+                "id",
+                "statement"
+              ],
               "properties": {
-                "id": { "type": "string" },
-                "statement": { "type": "string" }
+                "id": {
+                  "type": "string"
+                },
+                "statement": {
+                  "type": "string"
+                }
               }
             }
           },
           "componentsUsed": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Component/variant names this project uses, e.g. 'Button/icon-only'. Lets a related project reuse the same pieces rather than re-deciding them."
           },
           "relatedProjects": {
@@ -79,16 +152,33 @@
             "description": "Explicit cross-project relationships, recorded when a scope check routes work between projects.",
             "items": {
               "type": "object",
-              "required": ["projectId", "relation"],
+              "required": [
+                "projectId",
+                "relation"
+              ],
               "properties": {
-                "projectId": { "type": "string" },
+                "projectId": {
+                  "type": "string"
+                },
                 "relation": {
                   "type": "string",
-                  "enum": ["extends", "extended-by", "shares-pattern", "supersedes", "superseded-by", "links-to", "linked-from"],
+                  "enum": [
+                    "extends",
+                    "extended-by",
+                    "shares-pattern",
+                    "supersedes",
+                    "superseded-by",
+                    "links-to",
+                    "linked-from"
+                  ],
                   "description": "'shares-pattern' = separate projects that must stay consistent on a shared interaction (e.g. the same date-range filter). 'links-to' / 'linked-from' = one design is an entry point into the other, so a change to either can break the flow."
                 },
-                "note": { "type": "string" },
-                "scopeOverlapReportId": { "type": "string" }
+                "note": {
+                  "type": "string"
+                },
+                "scopeOverlapReportId": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -97,37 +187,96 @@
             "description": "Every artifact belonging to this project, with its dependencies. This is the integration graph.",
             "items": {
               "type": "object",
-              "required": ["id", "type", "version", "reviewStatus"],
+              "required": [
+                "id",
+                "type",
+                "version",
+                "reviewStatus"
+              ],
               "properties": {
-                "id": { "type": "string", "description": "The artifact's own ID, e.g. 'DES-512-gap-1' or 'audit-report-DES-512-rev1'." },
+                "id": {
+                  "type": "string",
+                  "description": "The artifact's own ID, e.g. 'DES-512-gap-1' or 'audit-report-DES-512-rev1'."
+                },
                 "type": {
                   "type": "string",
-                  "enum": ["prd", "page-brief", "ticket-brief", "brief-optimization-report", "scope-overlap-report", "user-flow", "design-output", "component-gap-report", "component-verification-report", "audit-report", "implementation-review", "screenshot-set"],
+                  "enum": [
+                    "prd",
+                    "page-brief",
+                    "ticket-brief",
+                    "brief-optimization-report",
+                    "scope-overlap-report",
+                    "user-flow",
+                    "design-output",
+                    "component-gap-report",
+                    "component-verification-report",
+                    "audit-report",
+                    "implementation-review",
+                    "screenshot-set"
+                  ],
                   "description": "'implementation-review' = an audit-report with mode: implementation, auditing the built UI against the design (harness stage 'verify')."
                 },
-                "path": { "type": "string", "description": "File path or URL." },
-                "version": { "type": "integer", "minimum": 1, "description": "Bump on every change. A dependent's dependsOn[].version records which version it was built against." },
+                "path": {
+                  "type": "string",
+                  "description": "File path or URL."
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Bump on every change. A dependent's dependsOn[].version records which version it was built against."
+                },
                 "dependsOn": {
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "required": ["artifactId", "version"],
+                    "required": [
+                      "artifactId",
+                      "version"
+                    ],
                     "properties": {
-                      "artifactId": { "type": "string" },
-                      "version": { "type": "integer", "description": "The upstream version this artifact was built from. If the upstream's current version is higher, this artifact is stale." }
+                      "artifactId": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "description": "The upstream version this artifact was built from. If the upstream's current version is higher, this artifact is stale."
+                      }
                     }
                   }
                 },
                 "reviewStatus": {
                   "type": "string",
-                  "enum": ["current", "needs-review"],
+                  "enum": [
+                    "current",
+                    "needs-review"
+                  ],
                   "description": "'needs-review' = an upstream artifact changed after this one was built. Set automatically on propagation; only a human or a fresh re-run clears it."
                 },
-                "reviewReason": { "type": "string", "description": "Required when needs-review: which upstream changed and what changed in it." }
+                "reviewReason": {
+                  "type": "string",
+                  "description": "Required when needs-review: which upstream changed and what changed in it."
+                }
               },
-              "if": { "properties": { "reviewStatus": { "const": "needs-review" } } },
-              "then": { "required": ["reviewReason"] }
+              "if": {
+                "properties": {
+                  "reviewStatus": {
+                    "const": "needs-review"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "reviewReason"
+                ]
+              }
             }
+          },
+          "brandGuidelines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Brand guidelines this work follows, e.g. ['Atari']. Only when the author asks for them: a mention of the brand isn't a request. Declared work is designed, linted and checked against that brand's reference design system (the manifest's brandGuidelines designSystem) instead of the project's."
           }
         }
       }

@@ -269,7 +269,7 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 
 ## 16. Brand Guidelines
 
-*`brandGuidelines` in the manifest, one profile per brand (`schemas/brand-guidelines.schema.json`). Applies when the page or file refers to the brand (a trigger word, alt text, or `<meta name="brand-guidelines">`), or always, for the brand's own product.*
+*`brandGuidelines` in the manifest, one profile per brand (`schemas/brand-guidelines.schema.json`). Applies to work that declares the brand's guidelines (`brandGuidelines` in the brief or design index, `<meta name="brand-guidelines">`, a `brand-guidelines: <name>` comment, or the profile's trigger phrases), or always, for the brand's own product. A mention of the brand isn't a declaration. Declared work is audited against the brand's reference design system instead of the project's. A brand's logo follows its logo rules on any page.*
 
 - [ ] **Major:** A color close to a brand color but not it (ΔE within `nearMissDeltaE`); with `strictPalette`, any non-neutral off-palette color (measured).
 - [ ] **Major:** A font the guidelines don't allow (measured).

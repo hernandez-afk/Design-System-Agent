@@ -103,20 +103,21 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
 
 - **Information said once.** The renderer flags any sentence or figure that appears twice on one screen, like "1,248 votes cast" in a card and "so far 1,248 people have voted" below it. If something matters enough to repeat, it becomes one stronger element. The same button on every card of a list, and one heading across states drawn side by side (`data-screen`, `data-artboard`, `data-state`), don't count. The critic catches the same thing said in different words (check 16).
 - **Chosen type, not defaults.** Inter, Roboto, Arial, Poppins, DM Sans, Space Grotesk and system fonts are flagged in the manifest (`check_compatibility.py`) and on the page. The renderer also flags a font that doesn't load and quietly falls back. A new design system chooses a pair for the product's character from `skills/design-agent/reference/type-pairing.md`. A brand's required fonts are always allowed.
-- **Brand guidelines, checked.** `brandGuidelines` in the manifest lists profiles like `standard/brand/atari.yaml`. Whenever a page or file refers to the brand (its name, logo alt text, or `<meta name="brand-guidelines" content="Atari">`), `tools/brand_check.py`, the post-edit hook and the renderer warn about anything that doesn't match:
-  - a color that's close to a brand color but isn't it
-  - a font the guidelines don't allow
-  - the name written the wrong way
-  - a logo that's too small, stretched, or crowded
+- **Brand guidelines, as a reference.** The project's own design system is always the default. Atari's guidelines are a reference system (`standard/brand/atari/`), used only for work that asks for them:
+  - a brief that says to follow the Atari brand guidelines (`brandGuidelines: ["Atari"]` in the brief and the design index)
+  - a page with `<meta name="brand-guidelines" content="Atari">`
+  - a file with a `brand-guidelines: Atari` comment
 
-  **The Atari profile is filled in** from *ATARI Brand Guidelines V1.1* (June 2023). It covers:
-  - the whole palette (Atari Red, the primaries, greys and spectrum), treated as strict, as the guidelines say
-  - Atari 1972 for headlines and Poppins Medium for everything else
-  - minimum sizes for the Fuji logo (50px) and the wordmark (60px)
-  - clear space for each lockup
-  - logos only in Atari Red, black or white, never in two colors, and never rotated
+  That work is designed, linted and checked against the Atari system instead of the project's. A page that only mentions Atari stays on the project's system. The one exception is an Atari logo, which follows the logo rules on any page.
 
-  Mark each logo with `data-brand-asset="atari-fuji|atari-wordmark|atari-stacked|atari-box|atari-horizontal|atari-vertical"` so its own rule applies. Where the PDF contradicts itself, the profile says which reading it took (`CONFIRM` comments). `examples/rendered/atari-brand-test.html` has nine planted mistakes, and the tools catch all nine. `examples/brand/acme-brand.example.yaml` is a second, smaller example.
+  The **Atari system** is built from *ATARI Brand Guidelines V1.1* (June 2023):
+  - Atari Red for primary actions, and exact palette colors only, since the palette is strict
+  - Atari 1972 for headlines, Poppins Medium for everything else
+  - the Baseline's spacing, components and behavior, which the guidelines don't cover
+
+  It checks Optimal. The **profile** (`standard/brand/atari.yaml`) holds the checkable rules: the full palette, the type roles, the name ("Atari" or "ATARI"), and each logo's minimum size, clear space and colors. Mark each logo with `data-brand-asset="atari-fuji"` (or `-wordmark`, `-stacked`, `-box`, `-horizontal`, `-vertical`). Where the PDF contradicts itself, the profile says which reading it took (`CONFIRM` comments).
+
+  Test pages: `examples/rendered/atari-brand-test.html` declares the guidelines and has nine planted mistakes, all caught. `examples/rendered/atari-mention-test.html` only mentions Atari, so it's checked against the Baseline; only its undersized logo is flagged. `examples/brand/acme-brand.example.yaml` shows a brand that is the product's own (`applies: always`).
 
 ## Edge cases, caught at the brief
 

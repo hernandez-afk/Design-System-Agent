@@ -4,16 +4,44 @@
   "title": "Design System Manifest",
   "description": "Project-specific design system data consumed by a generalized design-principles agent skill. Fixed reasoning rules (decision protocol, contrast math, animation physics) stay in the skill itself; this file supplies the 'what exists / what's allowed' data per project.",
   "type": "object",
-  "required": ["meta", "color", "typography", "spacing", "layout", "components", "accessibility"],
+  "required": [
+    "meta",
+    "color",
+    "typography",
+    "spacing",
+    "layout",
+    "components",
+    "accessibility"
+  ],
   "if": {
-    "properties": { "platform": { "properties": { "targets": { "contains": { "const": "claude-design" } } }, "required": ["targets"] } },
-    "required": ["platform"]
+    "properties": {
+      "platform": {
+        "properties": {
+          "targets": {
+            "contains": {
+              "const": "claude-design"
+            }
+          }
+        },
+        "required": [
+          "targets"
+        ]
+      }
+    },
+    "required": [
+      "platform"
+    ]
   },
   "then": {
-    "properties": { "color": { "required": ["resolved"] } }
+    "properties": {
+      "color": {
+        "required": [
+          "resolved"
+        ]
+      }
+    }
   },
   "properties": {
-
     "antiAiDesign": {
       "type": "object",
       "description": "Checks for what AI-made designs tend to get wrong. The renderer (tools/screenshots.py) measures them; the critic judges the rest (critic.md checks 16-17).",
@@ -22,62 +50,123 @@
           "type": "object",
           "description": "Information is said once. The same sentence or figure twice on one screen is a finding: if it matters that much, make it one stronger element. Repeated list items (the same button on every card) and separate screens or states (data-screen, data-artboard, data-state) don't count.",
           "properties": {
-            "enabled": { "type": "boolean", "default": true },
-            "minWords": { "type": "integer", "default": 3, "description": "Shorter text, like a one- or two-word label, may repeat." },
-            "figures": { "type": "boolean", "default": true, "description": "Also flag a figure (with a separator, decimal, %, currency or 3+ digits) shown twice." }
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "minWords": {
+              "type": "integer",
+              "default": 3,
+              "description": "Shorter text, like a one- or two-word label, may repeat."
+            },
+            "figures": {
+              "type": "boolean",
+              "default": true,
+              "description": "Also flag a figure (with a separator, decimal, %, currency or 3+ digits) shown twice."
+            }
           }
         },
         "typefaces": {
           "type": "object",
           "properties": {
-            "generic": { "type": "array", "items": { "type": "string" }, "description": "Fonts that read as a default choice. Defaults to tools/brand_check.py DEFAULT_GENERIC_FONTS (Inter, Roboto, Arial, Helvetica, Open Sans, Lato, Montserrat, Poppins, system fonts…). A brand profile's typefaces are exempt." },
-            "maxFamilies": { "type": "integer", "default": 2, "description": "Type families on one page, not counting one mono." }
+            "generic": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Fonts that read as a default choice. Defaults to tools/brand_check.py DEFAULT_GENERIC_FONTS (Inter, Roboto, Arial, Helvetica, Open Sans, Lato, Montserrat, Poppins, system fonts…). A brand profile's typefaces are exempt."
+            },
+            "maxFamilies": {
+              "type": "integer",
+              "default": 2,
+              "description": "Type families on one page, not counting one mono."
+            }
           }
         }
       }
     },
-
     "brandGuidelines": {
       "type": "array",
-      "description": "Brand guidelines this system's work may have to follow. Each profile (schemas/brand-guidelines.schema.json) is checked whenever something refers to that brand, and warns when it doesn't match.",
+      "description": "Brand guidelines this system's work may follow. Each profile (schemas/brand-guidelines.schema.json) is checked for the work that declares it, and a reference designSystem replaces this system for that work.",
       "items": {
         "type": "object",
-        "required": ["profile"],
+        "required": [
+          "profile"
+        ],
         "properties": {
-          "profile": { "type": "string", "description": "Path to the profile, relative to the manifest, e.g. 'brand/atari.yaml'." },
-          "applies": { "type": "string", "enum": ["when-referenced", "always"], "default": "when-referenced", "description": "'always': this is that brand's product, so the manifest and every page are checked. 'when-referenced': only what mentions or declares the brand." }
+          "profile": {
+            "type": "string",
+            "description": "Path to the profile, relative to the manifest, e.g. 'brand/atari.yaml'."
+          },
+          "applies": {
+            "type": "string",
+            "enum": [
+              "when-declared",
+              "when-referenced",
+              "always"
+            ],
+            "default": "when-declared",
+            "description": "'always': this is that brand's own product, so the manifest and every page are checked. 'when-declared': only work that declares the guidelines (brandGuidelines in the brief or design, <meta name=\"brand-guidelines\">, a `brand-guidelines: <name>` comment, or one of the profile's trigger phrases). 'when-referenced': the same, with trigger words instead of phrases. A brand's logo follows its logo rules on any page."
+          },
+          "designSystem": {
+            "type": "string",
+            "description": "A reference design system for this brand (path to its manifest, relative to this one), e.g. 'brand/atari/design-system-manifest.yaml'. Declared work uses it instead of this system; everything else uses this system."
+          }
         }
       }
     },
-
     "harness": {
       "type": "object",
       "description": "How much process each design gets. 'lite' (default): the core skill, tool checks, one critic pass with skills/design-agent/critic.md, one human stop per stage. 'full': the complete process in skills/design-agent/reference/design-generation-skill.md, with every record and the full rubric; use it for flagship work. See the README's 'Cost' section.",
       "properties": {
-        "mode": { "type": "string", "enum": ["lite", "full"], "default": "lite" }
+        "mode": {
+          "type": "string",
+          "enum": [
+            "lite",
+            "full"
+          ],
+          "default": "lite"
+        }
       }
     },
-
     "platform": {
       "type": "object",
       "description": "Where this design system is used. The same manifest drives both: Claude Code (a repo with CLAUDE.md and files) and Claude Design (a Design System artifact plus Design canvases on claude.ai). See skills/design-agent/reference/platform-adapters.md.",
       "properties": {
         "targets": {
           "type": "array",
-          "items": { "type": "string", "enum": ["claude-code", "claude-design"] },
+          "items": {
+            "type": "string",
+            "enum": [
+              "claude-code",
+              "claude-design"
+            ]
+          },
           "minItems": 1,
           "uniqueItems": true,
-          "default": ["claude-code"],
+          "default": [
+            "claude-code"
+          ],
           "description": "Including 'claude-design' requires color.resolved, because a Design System needs real color values, not framework class names."
         },
         "claudeDesign": {
           "type": "object",
           "properties": {
-            "designSystemUrl": { "type": "string", "description": "The claude.ai link of the Design System artifact exported from this manifest. Empty until the first export." },
-            "markAsDefault": { "type": "boolean", "default": true, "description": "Keep it as the account's default design system, so every new Design canvas applies it without being asked — the Claude Design equivalent of CLAUDE.md always loading." },
+            "designSystemUrl": {
+              "type": "string",
+              "description": "The claude.ai link of the Design System artifact exported from this manifest. Empty until the first export."
+            },
+            "markAsDefault": {
+              "type": "boolean",
+              "default": true,
+              "description": "Keep it as the account's default design system, so every new Design canvas applies it without being asked — the Claude Design equivalent of CLAUDE.md always loading."
+            },
             "recordStore": {
               "type": "string",
-              "enum": ["repo", "design-system-section"],
+              "enum": [
+                "repo",
+                "design-system-section"
+              ],
               "default": "repo",
               "description": "Where briefs, scope/gap/verification/audit reports and the design index live. 'repo' = a connected repository (full pipeline). 'design-system-section' = the design index only, as a design-index.md section of the Design System; per-run reports are returned in the conversation, not stored, so scope checks and change tracking only see what the index records."
             },
@@ -85,27 +174,69 @@
               "type": "object",
               "description": "Artboard sizes for Design canvases, one per breakpoint the design shows.",
               "properties": {
-                "phone": { "type": "object", "properties": { "w": { "type": "integer", "default": 390 }, "h": { "type": "integer", "default": 844 } } },
-                "desktop": { "type": "object", "properties": { "w": { "type": "integer", "default": 1440 }, "h": { "type": "integer", "default": 900 } } }
+                "phone": {
+                  "type": "object",
+                  "properties": {
+                    "w": {
+                      "type": "integer",
+                      "default": 390
+                    },
+                    "h": {
+                      "type": "integer",
+                      "default": 844
+                    }
+                  }
+                },
+                "desktop": {
+                  "type": "object",
+                  "properties": {
+                    "w": {
+                      "type": "integer",
+                      "default": 1440
+                    },
+                    "h": {
+                      "type": "integer",
+                      "default": 900
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
     },
-
     "meta": {
       "type": "object",
       "description": "Identity and governance for this design system.",
-      "required": ["name", "version"],
+      "required": [
+        "name",
+        "version"
+      ],
       "properties": {
-        "name": { "type": "string", "description": "Human-readable name of the design system, e.g. 'Acme Product UI'." },
-        "version": { "type": "string", "description": "Semver of this manifest, bump whenever tokens/components change." },
-        "framework": { "type": "string", "description": "e.g. 'react', 'vue', 'web-components', 'swiftui'. Informs how components are imported/rendered." },
-        "stylingEngine": { "type": "string", "description": "e.g. 'tailwind', 'css-modules', 'styled-components', 'css-variables'." },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name of the design system, e.g. 'Acme Product UI'."
+        },
+        "version": {
+          "type": "string",
+          "description": "Semver of this manifest, bump whenever tokens/components change."
+        },
+        "framework": {
+          "type": "string",
+          "description": "e.g. 'react', 'vue', 'web-components', 'swiftui'. Informs how components are imported/rendered."
+        },
+        "stylingEngine": {
+          "type": "string",
+          "description": "e.g. 'tailwind', 'css-modules', 'styled-components', 'css-variables'."
+        },
         "decisionProtocol": {
           "type": "string",
-          "enum": ["always-ask", "ask-major-only", "auto-apply"],
+          "enum": [
+            "always-ask",
+            "ask-major-only",
+            "auto-apply"
+          ],
           "default": "always-ask",
           "description": "Mirrors the bencium skill's 'CRITICAL: always ask before design decisions' rule. 'ask-major-only' lets the agent auto-decide low-stakes details (e.g. spacing within an approved scale) but still ask about color/type/layout direction."
         },
@@ -113,66 +244,140 @@
           "type": "object",
           "description": "The project's CLAUDE.md, which Claude Code loads into every session. It carries a summary of this manifest (tokens, brand rules, critique criteria) so even quick edits that don't run the design agent follow the design system. Built from templates/CLAUDE.md.",
           "properties": {
-            "path": { "type": "string", "default": "CLAUDE.md", "description": "Where the file lives, relative to the repo root. Claude Code loads CLAUDE.md from the project root automatically." },
-            "required": { "type": "boolean", "default": true, "description": "If true, the design-generation skill halts when the file is missing or its version stamp doesn't match meta.version, and offers to regenerate it from this manifest." }
+            "path": {
+              "type": "string",
+              "default": "CLAUDE.md",
+              "description": "Where the file lives, relative to the repo root. Claude Code loads CLAUDE.md from the project root automatically."
+            },
+            "required": {
+              "type": "boolean",
+              "default": true,
+              "description": "If true, the design-generation skill halts when the file is missing or its version stamp doesn't match meta.version, and offers to regenerate it from this manifest."
+            }
           }
         },
         "brandExclusions": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Explicit anti-patterns for this project, e.g. ['#3B82F6 SaaS blue', 'glass morphism', 'drop shadows for depth']. Seeds the skill's 'Common Patterns to Avoid' check with project-specific bans."
         }
       }
     },
-
     "color": {
       "type": "object",
       "description": "Color roles, not raw swatches — mirrors the skill's base/accent palette architecture.",
-      "required": ["neutrals", "accents"],
+      "required": [
+        "neutrals",
+        "accents"
+      ],
       "properties": {
         "neutrals": {
           "type": "object",
           "description": "4-5 role-based neutral shades.",
-          "required": ["background", "surface", "border", "textPrimary"],
+          "required": [
+            "background",
+            "surface",
+            "border",
+            "textPrimary"
+          ],
           "properties": {
-            "background": { "type": "string" },
-            "surface": { "type": "string" },
-            "border": { "type": "string" },
-            "textPrimary": { "type": "string" },
-            "textSecondary": { "type": "string" },
-            "temperature": { "type": "string", "enum": ["warm", "cool", "neutral"], "description": "Intent behind the grey undertone." }
+            "background": {
+              "type": "string"
+            },
+            "surface": {
+              "type": "string"
+            },
+            "border": {
+              "type": "string"
+            },
+            "textPrimary": {
+              "type": "string"
+            },
+            "textSecondary": {
+              "type": "string"
+            },
+            "temperature": {
+              "type": "string",
+              "enum": [
+                "warm",
+                "cool",
+                "neutral"
+              ],
+              "description": "Intent behind the grey undertone."
+            }
           }
         },
         "accents": {
           "type": "object",
           "description": "1-3 bold action/emphasis colors plus semantic status colors.",
           "properties": {
-            "primary": { "type": "string" },
-            "onPrimary": { "type": "string", "description": "Text/icon color used on a primary-accent fill. Must meet contrastStandard against accents.primary." },
-            "secondary": { "type": "string" },
-            "success": { "type": "string" },
-            "warning": { "type": "string" },
-            "error": { "type": "string" },
-            "info": { "type": "string" }
+            "primary": {
+              "type": "string"
+            },
+            "onPrimary": {
+              "type": "string",
+              "description": "Text/icon color used on a primary-accent fill. Must meet contrastStandard against accents.primary."
+            },
+            "secondary": {
+              "type": "string"
+            },
+            "success": {
+              "type": "string"
+            },
+            "warning": {
+              "type": "string"
+            },
+            "error": {
+              "type": "string"
+            },
+            "info": {
+              "type": "string"
+            }
           }
         },
         "themes": {
           "type": "array",
           "description": "Color themes, first = primary. Omit for a single light theme.",
-          "items": { "type": "object", "required": ["id", "name"], "properties": { "id": { "type": "string" }, "name": { "type": "string" } } },
-          "default": [{ "id": "light", "name": "Light" }]
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "default": [
+            {
+              "id": "light",
+              "name": "Light"
+            }
+          ]
         },
         "resolved": {
           "type": "object",
           "description": "Real color values for every role, per theme — required for Claude Design, and the only place contrast can actually be computed. Keys are role paths ('neutrals.background', 'accents.primary', 'interactionStates.hover'); values map theme id → a hex/rgb/hsl/oklch value.",
           "additionalProperties": {
             "type": "object",
-            "additionalProperties": { "type": "string" }
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         },
         "contrastStandard": {
           "type": "string",
-          "enum": ["WCAG-AA", "WCAG-AAA"],
+          "enum": [
+            "WCAG-AA",
+            "WCAG-AAA"
+          ],
           "default": "WCAG-AA",
           "description": "Which contrast ratio table the audit step checks colors against."
         },
@@ -180,17 +385,34 @@
           "type": "object",
           "description": "Colors that must visually distinguish an element the user is actively interacting with from the rest of the page — this is what lets hover/focus draw the eye.",
           "properties": {
-            "hover": { "type": "string", "description": "Applied on hover. Must differ from the element's resting color AND from the page background — not just a subtle opacity shift." },
-            "active": { "type": "string", "description": "Applied while pressed/activated." },
-            "focus": { "type": "string", "description": "Applied on keyboard focus — can equal hover but must remain visible without a pointer." }
+            "hover": {
+              "type": "string",
+              "description": "Applied on hover. Must differ from the element's resting color AND from the page background — not just a subtle opacity shift."
+            },
+            "active": {
+              "type": "string",
+              "description": "Applied while pressed/activated."
+            },
+            "focus": {
+              "type": "string",
+              "description": "Applied on keyboard focus — can equal hover but must remain visible without a pointer."
+            }
           }
         },
         "usagePolicy": {
           "type": "object",
           "description": "Governs how the two key action colors are allowed to coexist on one screen.",
           "properties": {
-            "primaryAccentRole": { "type": "string", "default": "accents.primary", "description": "The default action color, used freely." },
-            "secondaryAccentRole": { "type": "string", "default": "accents.secondary", "description": "The contrasting action color, reserved for a single competing action." },
+            "primaryAccentRole": {
+              "type": "string",
+              "default": "accents.primary",
+              "description": "The default action color, used freely."
+            },
+            "secondaryAccentRole": {
+              "type": "string",
+              "default": "accents.secondary",
+              "description": "The contrasting action color, reserved for a single competing action."
+            },
             "maxSimultaneousSecondaryAccents": {
               "type": "integer",
               "default": 1,
@@ -205,53 +427,107 @@
         }
       }
     },
-
     "typography": {
       "type": "object",
-      "required": ["typefaces", "scale"],
+      "required": [
+        "typefaces",
+        "scale"
+      ],
       "properties": {
         "typefaces": {
           "type": "object",
           "description": "Max 2-3 typefaces, role-assigned per the skill's display/text/caption split.",
           "properties": {
-            "display": { "type": "string", "description": "Headlines, hero text." },
-            "body": { "type": "string", "description": "Paragraphs, long-form content." },
-            "ui": { "type": "string", "description": "Labels, buttons, captions. Can equal 'body'." }
+            "display": {
+              "type": "string",
+              "description": "Headlines, hero text."
+            },
+            "body": {
+              "type": "string",
+              "description": "Paragraphs, long-form content."
+            },
+            "ui": {
+              "type": "string",
+              "description": "Labels, buttons, captions. Can equal 'body'."
+            }
           }
         },
         "weights": {
           "type": "array",
-          "items": { "type": "integer" },
+          "items": {
+            "type": "integer"
+          },
           "maxItems": 3,
           "description": "e.g. [400, 500, 700]"
         },
         "scale": {
           "type": "object",
-          "required": ["baseSizePx", "ratio"],
+          "required": [
+            "baseSizePx",
+            "ratio"
+          ],
           "properties": {
-            "baseSizePx": { "type": "number", "default": 16 },
-            "ratio": { "type": "number", "description": "1.25 = major third, 1.333 = perfect fourth, etc." },
+            "baseSizePx": {
+              "type": "number",
+              "default": 16
+            },
+            "ratio": {
+              "type": "number",
+              "description": "1.25 = major third, 1.333 = perfect fourth, etc."
+            },
             "steps": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "description": "Named steps to generate, e.g. ['xs','sm','base','lg','xl','2xl','3xl','4xl','5xl']"
             }
           }
         },
-        "lineHeightRatio": { "type": "number", "default": 1.5 },
+        "lineHeightRatio": {
+          "type": "number",
+          "default": 1.5
+        },
         "styles": {
           "type": "array",
           "description": "Named text styles: which step, weight and typeface each kind of text uses. The same kind of text is always the same style: every section heading uses 'section-heading', never xl on one screen and 2xl on another. Steps must be in scale.steps and weights in weights.",
           "items": {
             "type": "object",
-            "required": ["name", "step", "weight"],
+            "required": [
+              "name",
+              "step",
+              "weight"
+            ],
             "properties": {
-              "name": { "type": "string", "description": "e.g. 'page-title', 'section-heading', 'body', 'label', 'caption'." },
-              "step": { "type": "string", "description": "A scale.steps name." },
-              "weight": { "type": "integer" },
-              "typeface": { "type": "string", "enum": ["display", "body", "ui"] },
-              "appliesTo": { "type": "array", "items": { "type": "string" }, "description": "Elements it applies to, e.g. ['h1'] or ['label']." },
-              "usage": { "type": "string" }
+              "name": {
+                "type": "string",
+                "description": "e.g. 'page-title', 'section-heading', 'body', 'label', 'caption'."
+              },
+              "step": {
+                "type": "string",
+                "description": "A scale.steps name."
+              },
+              "weight": {
+                "type": "integer"
+              },
+              "typeface": {
+                "type": "string",
+                "enum": [
+                  "display",
+                  "body",
+                  "ui"
+                ]
+              },
+              "appliesTo": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Elements it applies to, e.g. ['h1'] or ['label']."
+              },
+              "usage": {
+                "type": "string"
+              }
             }
           }
         },
@@ -278,15 +554,22 @@
         }
       }
     },
-
     "spacing": {
       "type": "object",
-      "required": ["baseUnitPx", "scale"],
+      "required": [
+        "baseUnitPx",
+        "scale"
+      ],
       "properties": {
-        "baseUnitPx": { "type": "number", "default": 4 },
+        "baseUnitPx": {
+          "type": "number",
+          "default": 4
+        },
         "scale": {
           "type": "array",
-          "items": { "type": "number" },
+          "items": {
+            "type": "number"
+          },
           "description": "e.g. [4, 8, 16, 24, 32, 48]"
         },
         "roles": {
@@ -294,19 +577,44 @@
           "description": "Which spacing step each kind of space uses, so the same kind of space is the same everywhere: card padding is always one value, never 16 here and 24 there. Every value must be on spacing.scale. The critic checks every instance against its role (rubric category 3), and tools/consistency_check.py checks the code.",
           "items": {
             "type": "object",
-            "required": ["name", "px"],
+            "required": [
+              "name",
+              "px"
+            ],
             "properties": {
-              "name": { "type": "string", "description": "e.g. 'card-padding', 'control-padding-x', 'stack-related', 'stack-group', 'section'." },
-              "px": { "type": "number" },
-              "appliesTo": { "type": "array", "items": { "type": "string" }, "description": "Components or elements it applies to, e.g. ['Card']. Empty for layout roles like 'stack-related'." },
-              "property": { "type": "string", "enum": ["padding", "padding-x", "padding-y", "gap", "margin"], "description": "Which property the role sets on the elements in appliesTo." },
-              "usage": { "type": "string" }
+              "name": {
+                "type": "string",
+                "description": "e.g. 'card-padding', 'control-padding-x', 'stack-related', 'stack-group', 'section'."
+              },
+              "px": {
+                "type": "number"
+              },
+              "appliesTo": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Components or elements it applies to, e.g. ['Card']. Empty for layout roles like 'stack-related'."
+              },
+              "property": {
+                "type": "string",
+                "enum": [
+                  "padding",
+                  "padding-x",
+                  "padding-y",
+                  "gap",
+                  "margin"
+                ],
+                "description": "Which property the role sets on the elements in appliesTo."
+              },
+              "usage": {
+                "type": "string"
+              }
             }
           }
         }
       }
     },
-
     "radius": {
       "type": "object",
       "description": "Corner radius scale. Optional for Claude Code; exported as radius tokens to a Claude Design system.",
@@ -315,33 +623,58 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "px"],
+            "required": [
+              "name",
+              "px"
+            ],
             "properties": {
-              "name": { "type": "string", "description": "e.g. 'radius-md'." },
-              "px": { "type": "number" },
-              "usage": { "type": "string", "description": "Which components use it." }
+              "name": {
+                "type": "string",
+                "description": "e.g. 'radius-md'."
+              },
+              "px": {
+                "type": "number"
+              },
+              "usage": {
+                "type": "string",
+                "description": "Which components use it."
+              }
             }
           }
         }
       }
     },
-
     "layout": {
       "type": "object",
       "properties": {
-        "gridColumns": { "type": "integer", "default": 12 },
-        "gutterPx": { "type": "number" },
+        "gridColumns": {
+          "type": "integer",
+          "default": 12
+        },
+        "gutterPx": {
+          "type": "number"
+        },
         "breakpoints": {
           "type": "object",
           "description": "Content-driven, not device-driven, per the skill's guidance.",
           "properties": {
-            "sm": { "type": "number" },
-            "md": { "type": "number" },
-            "lg": { "type": "number" },
-            "xl": { "type": "number" }
+            "sm": {
+              "type": "number"
+            },
+            "md": {
+              "type": "number"
+            },
+            "lg": {
+              "type": "number"
+            },
+            "xl": {
+              "type": "number"
+            }
           }
         },
-        "containerMaxWidthPx": { "type": "number" },
+        "containerMaxWidthPx": {
+          "type": "number"
+        },
         "alignmentTolerancePx": {
           "type": "number",
           "default": 0,
@@ -349,7 +682,6 @@
         }
       }
     },
-
     "motion": {
       "type": "object",
       "description": "Optional — omit to have the agent fall back to the skill's default timing table.",
@@ -357,84 +689,172 @@
         "durationsMs": {
           "type": "object",
           "properties": {
-            "micro": { "type": "integer", "default": 150 },
-            "state": { "type": "integer", "default": 300 },
-            "page": { "type": "integer", "default": 500 }
+            "micro": {
+              "type": "integer",
+              "default": 150
+            },
+            "state": {
+              "type": "integer",
+              "default": 300
+            },
+            "page": {
+              "type": "integer",
+              "default": 500
+            }
           }
         },
         "easing": {
           "type": "object",
           "properties": {
-            "entrance": { "type": "string", "default": "ease-out" },
-            "exit": { "type": "string", "default": "ease-in" },
-            "transition": { "type": "string", "default": "ease-in-out" }
+            "entrance": {
+              "type": "string",
+              "default": "ease-out"
+            },
+            "exit": {
+              "type": "string",
+              "default": "ease-in"
+            },
+            "transition": {
+              "type": "string",
+              "default": "ease-in-out"
+            }
           }
         },
-        "respectReducedMotion": { "type": "boolean", "default": true }
+        "respectReducedMotion": {
+          "type": "boolean",
+          "default": true
+        }
       }
     },
-
     "components": {
       "type": "array",
       "description": "The inventory the agent checks against before proposing a layout — this is what powers gap detection at both the component and variant level. Treat this as a living registry: approved proposals get appended here so future tickets reuse them instead of regenerating one-offs.",
       "items": {
         "type": "object",
-        "required": ["name", "category", "status", "variants"],
+        "required": [
+          "name",
+          "category",
+          "status",
+          "variants"
+        ],
         "properties": {
-          "name": { "type": "string", "description": "e.g. 'Button', 'Card', 'StatTile'." },
+          "name": {
+            "type": "string",
+            "description": "e.g. 'Button', 'Card', 'StatTile'."
+          },
           "category": {
             "type": "string",
-            "enum": ["action", "input", "display", "feedback", "navigation", "layout", "overlay", "data-viz"],
+            "enum": [
+              "action",
+              "input",
+              "display",
+              "feedback",
+              "navigation",
+              "layout",
+              "overlay",
+              "data-viz"
+            ],
             "description": "Lets the agent reason generically, e.g. 'need a feedback component here' even for an unfamiliar design system."
           },
           "status": {
             "type": "string",
-            "enum": ["approved", "proposed", "deprecated"],
+            "enum": [
+              "approved",
+              "proposed",
+              "deprecated"
+            ],
             "default": "approved",
             "description": "'approved' = confirmed, reusable, safe for the agent to reach for. 'proposed' = created for a ticket but not yet signed off — the agent should still surface it as an option before building a near-duplicate, but flag it as pending review. 'deprecated' = exists in code but should no longer be proposed for new designs."
           },
-          "importPath": { "type": "string", "description": "e.g. '@/components/ui/button'." },
+          "importPath": {
+            "type": "string",
+            "description": "e.g. '@/components/ui/button'."
+          },
           "variants": {
             "type": "array",
             "description": "Every variant is tracked individually so gap detection can distinguish 'component exists but not in this flavor' from 'component doesn't exist at all'.",
             "items": {
               "type": "object",
-              "required": ["name", "status"],
+              "required": [
+                "name",
+                "status"
+              ],
               "properties": {
-                "name": { "type": "string", "description": "e.g. 'primary', 'destructive', 'compact'." },
+                "name": {
+                  "type": "string",
+                  "description": "e.g. 'primary', 'destructive', 'compact'."
+                },
                 "status": {
                   "type": "string",
-                  "enum": ["approved", "proposed", "deprecated"],
+                  "enum": [
+                    "approved",
+                    "proposed",
+                    "deprecated"
+                  ],
                   "default": "approved"
                 },
-                "props": { "type": "array", "items": { "type": "string" } },
-                "description": { "type": "string" },
-                "addedInTicket": { "type": "string", "description": "Ticket key that originated this variant, e.g. 'DES-482'. Enables traceability and lets a reviewer see why it exists." },
-                "addedDate": { "type": "string", "format": "date" }
+                "props": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "description": {
+                  "type": "string"
+                },
+                "addedInTicket": {
+                  "type": "string",
+                  "description": "Ticket key that originated this variant, e.g. 'DES-482'. Enables traceability and lets a reviewer see why it exists."
+                },
+                "addedDate": {
+                  "type": "string",
+                  "format": "date"
+                }
               }
             }
           },
-          "props": { "type": "array", "items": { "type": "string" }, "description": "Props shared across all variants." },
-          "description": { "type": "string" },
-          "addedInTicket": { "type": "string", "description": "Ticket key that originated this component, if not part of the original library." },
-          "addedDate": { "type": "string", "format": "date" }
+          "props": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Props shared across all variants."
+          },
+          "description": {
+            "type": "string"
+          },
+          "addedInTicket": {
+            "type": "string",
+            "description": "Ticket key that originated this component, if not part of the original library."
+          },
+          "addedDate": {
+            "type": "string",
+            "format": "date"
+          }
         }
       }
     },
-
     "registryPolicy": {
       "type": "object",
       "description": "Controls how the agent handles gaps and how new entries move from 'proposed' to 'approved' in the components registry.",
       "properties": {
         "onMissingComponent": {
           "type": "string",
-          "enum": ["propose-and-wait", "propose-and-continue", "block"],
+          "enum": [
+            "propose-and-wait",
+            "propose-and-continue",
+            "block"
+          ],
           "default": "propose-and-wait",
           "description": "'propose-and-wait' pauses the design for human sign-off before using a net-new component. 'propose-and-continue' drafts using a proposed component but marks it clearly as pending. 'block' refuses to proceed until a human adds it to the manifest manually."
         },
         "onMissingVariant": {
           "type": "string",
-          "enum": ["propose-and-wait", "propose-and-continue", "block"],
+          "enum": [
+            "propose-and-wait",
+            "propose-and-continue",
+            "block"
+          ],
           "default": "propose-and-continue",
           "description": "Missing variants are usually lower-stakes than missing components (e.g. adding a 'compact' size to an existing Card), so this can default less strict than onMissingComponent."
         },
@@ -450,7 +870,11 @@
         },
         "verificationReviewer": {
           "type": "string",
-          "enum": ["human-designer", "agent-self-check-pending-human", "agent-only"],
+          "enum": [
+            "human-designer",
+            "agent-self-check-pending-human",
+            "agent-only"
+          ],
           "default": "human-designer",
           "description": "Who signs off the verification report. 'agent-only' skips human review entirely — only sensible for low-stakes variants, never recommended for a genuinely new component given requireOperationalVerification's purpose."
         },
@@ -476,9 +900,21 @@
               "type": "object",
               "description": "Must sum to 1.0. categoryMatch is a hard gate (0 or 1), not weighted — no comparison proceeds across categories.",
               "properties": {
-                "propOverlap": { "type": "number", "default": 0.5, "description": "Jaccard similarity of required props vs candidate's props." },
-                "variantOverlap": { "type": "number", "default": 0.35, "description": "Jaccard similarity of needed variant traits vs candidate's existing variants." },
-                "semanticNameSimilarity": { "type": "number", "default": 0.15, "description": "Token overlap between suggested name and candidate name — weakest signal, used mainly as a tiebreaker." }
+                "propOverlap": {
+                  "type": "number",
+                  "default": 0.5,
+                  "description": "Jaccard similarity of required props vs candidate's props."
+                },
+                "variantOverlap": {
+                  "type": "number",
+                  "default": 0.35,
+                  "description": "Jaccard similarity of needed variant traits vs candidate's existing variants."
+                },
+                "semanticNameSimilarity": {
+                  "type": "number",
+                  "default": 0.15,
+                  "description": "Token overlap between suggested name and candidate name — weakest signal, used mainly as a tiebreaker."
+                }
               }
             },
             "onlyCompareApprovedStatus": {
@@ -490,33 +926,56 @@
         }
       }
     },
-
     "icons": {
       "type": "object",
       "properties": {
-        "library": { "type": "string", "description": "e.g. '@phosphor-icons/react', 'lucide-react'." },
-        "importPattern": { "type": "string" }
+        "library": {
+          "type": "string",
+          "description": "e.g. '@phosphor-icons/react', 'lucide-react'."
+        },
+        "importPattern": {
+          "type": "string"
+        }
       }
     },
-
     "accessibility": {
       "type": "object",
-      "required": ["level"],
+      "required": [
+        "level"
+      ],
       "properties": {
-        "level": { "type": "string", "enum": ["AA", "AAA"], "default": "AA" },
-        "minTouchTargetPx": { "type": "number", "default": 44 },
-        "requireVisibleFocusStates": { "type": "boolean", "default": true },
-        "requireSemanticHtml": { "type": "boolean", "default": true }
+        "level": {
+          "type": "string",
+          "enum": [
+            "AA",
+            "AAA"
+          ],
+          "default": "AA"
+        },
+        "minTouchTargetPx": {
+          "type": "number",
+          "default": 44
+        },
+        "requireVisibleFocusStates": {
+          "type": "boolean",
+          "default": true
+        },
+        "requireSemanticHtml": {
+          "type": "boolean",
+          "default": true
+        }
       }
     },
-
     "automation": {
       "type": "object",
       "description": "Controls how design-audit-rubric.md is invoked in the pipeline. See audit-report.schema.json for the output this produces.",
       "properties": {
         "auditTrigger": {
           "type": "string",
-          "enum": ["automatic-post-generation", "on-demand"],
+          "enum": [
+            "automatic-post-generation",
+            "on-demand"
+          ],
           "default": "automatic-post-generation",
           "description": "'automatic-post-generation' runs the audit immediately after every draft, before human sign-off is even offered. 'on-demand' only runs when explicitly requested (e.g. before a ticket moves to 'ready for dev')."
         },
@@ -533,7 +992,6 @@
         }
       }
     },
-
     "compositionHeuristics": {
       "type": "object",
       "description": "Density and information-architecture thresholds — one underlying principle (don't show more than a person can scan at once; nest the rest) applied at list, input, and page level. See design-audit-rubric.md category 9 for how these are checked.",
@@ -560,7 +1018,6 @@
         }
       }
     },
-
     "navigationHeuristics": {
       "type": "object",
       "description": "Rules for how related views/elements must visually connect to each other.",
@@ -577,73 +1034,179 @@
         }
       }
     },
-
     "briefPolicy": {
       "type": "object",
       "description": "How briefs (page briefs, PRDs, tickets) are optimized before design. See skills/design-agent/reference/brief-optimization.md.",
       "properties": {
-        "requireOptimization": { "type": "boolean", "default": true, "description": "Every brief goes through brief optimization (generation Step 1) before design." },
-        "approvalBeforeGeneration": { "type": "boolean", "default": true, "description": "The author approves the optimized brief and its report before anything is designed." },
-        "requireAcceptanceCriteria": { "type": "boolean", "default": true, "description": "A brief without testable acceptance criteria is not ready." },
-        "requireEdgeCaseSweep": { "type": "boolean", "default": true, "description": "Every brief goes through skills/design-agent/reference/edge-case-sweep.md: entities with an owner for every operation, every lens covered, no questions open." },
+        "requireOptimization": {
+          "type": "boolean",
+          "default": true,
+          "description": "Every brief goes through brief optimization (generation Step 1) before design."
+        },
+        "approvalBeforeGeneration": {
+          "type": "boolean",
+          "default": true,
+          "description": "The author approves the optimized brief and its report before anything is designed."
+        },
+        "requireAcceptanceCriteria": {
+          "type": "boolean",
+          "default": true,
+          "description": "A brief without testable acceptance criteria is not ready."
+        },
+        "requireEdgeCaseSweep": {
+          "type": "boolean",
+          "default": true,
+          "description": "Every brief goes through skills/design-agent/reference/edge-case-sweep.md: entities with an owner for every operation, every lens covered, no questions open."
+        },
         "edgeCaseLenses": {
           "type": "array",
           "description": "Product-specific lenses added to the standard twelve, e.g. content ratings for a games platform.",
           "items": {
             "type": "object",
-            "required": ["name", "ask"],
-            "properties": { "name": { "type": "string" }, "ask": { "type": "string" } }
+            "required": [
+              "name",
+              "ask"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "ask": {
+                "type": "string"
+              }
+            }
           }
         },
         "vocabulary": {
           "type": "object",
-          "additionalProperties": { "type": "string" },
+          "additionalProperties": {
+            "type": "string"
+          },
           "description": "Your product's own terms mapped to design-system meaning, added to the built-in vocabulary map, e.g. {\"hero\": \"Card/feature at the top of the page\", \"alert\": \"InlineAlert, not Toast\"}."
         }
       }
     },
-
     "mobile": {
       "type": "object",
       "description": "Mobile at all times, and dynamic components (design-principles.md). Every design is verified at a phone width first; every component adapts to its container, content, text size and input. Checked in rubric category 14.",
       "properties": {
-        "minViewportPx": { "type": "integer", "default": 320, "description": "The narrowest width every screen must reflow to without horizontal scrolling (WCAG 1.4.10)." },
-        "maxTextScalePercent": { "type": "integer", "default": 200, "description": "Text scale every screen and component must survive: browser zoom, iOS Dynamic Type, Android font scale (WCAG 1.4.4)." },
-        "minTargetSpacingPx": { "type": "integer", "default": 8, "description": "Minimum gap between adjacent touch targets." },
-        "maxFixedSizePx": { "type": "integer", "default": 64, "description": "Largest fixed width/height allowed (icons, avatars, touch targets). Anything bigger must be fluid, with min/max limits." },
-        "textExpansionPercent": { "type": "integer", "default": 40, "description": "How much longer translated text can be; components must still work." },
-        "thumbZonePrimaryAction": { "type": "boolean", "default": true, "description": "On phones, the primary action must be within thumb reach (lower half or bottom bar) unless a reason is stated." },
-        "orientations": { "type": "array", "items": { "type": "string", "enum": ["portrait", "landscape"] }, "default": ["portrait", "landscape"], "description": "Orientations every screen must define behavior for." },
-        "nativeTargets": { "type": "array", "items": { "type": "string", "enum": ["ios", "android"] }, "description": "Native apps this system also ships to. px values map 1:1 to pt (iOS) and dp (Android)." }
+        "minViewportPx": {
+          "type": "integer",
+          "default": 320,
+          "description": "The narrowest width every screen must reflow to without horizontal scrolling (WCAG 1.4.10)."
+        },
+        "maxTextScalePercent": {
+          "type": "integer",
+          "default": 200,
+          "description": "Text scale every screen and component must survive: browser zoom, iOS Dynamic Type, Android font scale (WCAG 1.4.4)."
+        },
+        "minTargetSpacingPx": {
+          "type": "integer",
+          "default": 8,
+          "description": "Minimum gap between adjacent touch targets."
+        },
+        "maxFixedSizePx": {
+          "type": "integer",
+          "default": 64,
+          "description": "Largest fixed width/height allowed (icons, avatars, touch targets). Anything bigger must be fluid, with min/max limits."
+        },
+        "textExpansionPercent": {
+          "type": "integer",
+          "default": 40,
+          "description": "How much longer translated text can be; components must still work."
+        },
+        "thumbZonePrimaryAction": {
+          "type": "boolean",
+          "default": true,
+          "description": "On phones, the primary action must be within thumb reach (lower half or bottom bar) unless a reason is stated."
+        },
+        "orientations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ]
+          },
+          "default": [
+            "portrait",
+            "landscape"
+          ],
+          "description": "Orientations every screen must define behavior for."
+        },
+        "nativeTargets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          },
+          "description": "Native apps this system also ships to. px values map 1:1 to pt (iOS) and dp (Android)."
+        }
       }
     },
-
     "development": {
       "type": "object",
       "description": "How design context and token rules reach day-to-day development, not just design runs. Used by tools/design_context.py, tools/token_lint.py and the hooks in templates/claude-settings.json.",
       "properties": {
         "uiPaths": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Globs for UI code, e.g. 'src/**/*.tsx'. Only these files are linted and looked up."
         },
         "tokenLint": {
           "type": "object",
           "properties": {
-            "mode": { "type": "string", "enum": ["block", "warn", "off"], "default": "block", "description": "'block' = an off-token value sends the edit back to be fixed. 'warn' = reported, not blocked." },
-            "framework": { "type": "string", "enum": ["tailwind", "css", "both"], "default": "both", "description": "Which syntax to check: Tailwind utility classes, CSS declarations, or both." },
-            "allow": { "type": "array", "items": { "type": "string" }, "description": "Extra values that are allowed, e.g. '1px' for hairline borders." }
+            "mode": {
+              "type": "string",
+              "enum": [
+                "block",
+                "warn",
+                "off"
+              ],
+              "default": "block",
+              "description": "'block' = an off-token value sends the edit back to be fixed. 'warn' = reported, not blocked."
+            },
+            "framework": {
+              "type": "string",
+              "enum": [
+                "tailwind",
+                "css",
+                "both"
+              ],
+              "default": "both",
+              "description": "Which syntax to check: Tailwind utility classes, CSS declarations, or both."
+            },
+            "allow": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Extra values that are allowed, e.g. '1px' for hairline borders."
+            }
           }
         },
         "designContext": {
           "type": "object",
           "properties": {
-            "onUnownedUi": { "type": "string", "enum": ["warn", "off"], "default": "warn", "description": "What to say when a UI file matches no design-index project: 'warn' = remind that new UI needs a scope check and a design before it ships." }
+            "onUnownedUi": {
+              "type": "string",
+              "enum": [
+                "warn",
+                "off"
+              ],
+              "default": "warn",
+              "description": "What to say when a UI file matches no design-index project: 'warn' = remind that new UI needs a scope check and a design before it ships."
+            }
           }
         }
       }
     },
-
     "usabilityHeuristics": {
       "type": "object",
       "description": "Thresholds for the 3-3-3 rule and Wickens' display-design principles (design-principles.md). Checked in rubric categories 12 and 13.",
@@ -651,60 +1214,123 @@
         "threeThreeThree": {
           "type": "object",
           "properties": {
-            "glanceSeconds": { "type": "number", "default": 3, "description": "A first-time user must grasp the screen's purpose and primary action within this long." },
-            "glanceBreakpoint": { "type": "string", "default": "sm", "description": "The layout.breakpoints step the glance test is judged at — the smallest, per Responsive Is the Real Design." },
-            "maxClicksToCoreTask": { "type": "integer", "default": 3, "description": "Max clicks/taps from a core task's entry point to reaching it. Typing doesn't count." },
-            "maxCoreTaskMinutes": { "type": "number", "default": 3, "description": "Max estimated time for a first-time user to complete a core task." }
+            "glanceSeconds": {
+              "type": "number",
+              "default": 3,
+              "description": "A first-time user must grasp the screen's purpose and primary action within this long."
+            },
+            "glanceBreakpoint": {
+              "type": "string",
+              "default": "sm",
+              "description": "The layout.breakpoints step the glance test is judged at — the smallest, per Responsive Is the Real Design."
+            },
+            "maxClicksToCoreTask": {
+              "type": "integer",
+              "default": 3,
+              "description": "Max clicks/taps from a core task's entry point to reaching it. Typing doesn't count."
+            },
+            "maxCoreTaskMinutes": {
+              "type": "number",
+              "default": 3,
+              "description": "Max estimated time for a first-time user to complete a core task."
+            }
           }
         },
         "displayDesign": {
           "type": "object",
           "properties": {
-            "minReadableTextPx": { "type": "number", "default": 12, "description": "Wickens 1 (legibility): no text below this size, including captions and chart labels." },
-            "maxAbsoluteJudgmentLevels": { "type": "integer", "default": 5, "description": "Wickens 2: max number of levels of one visual variable (shade, size, hue) used to encode a value without direct labels." }
+            "minReadableTextPx": {
+              "type": "number",
+              "default": 12,
+              "description": "Wickens 1 (legibility): no text below this size, including captions and chart labels."
+            },
+            "maxAbsoluteJudgmentLevels": {
+              "type": "integer",
+              "default": 5,
+              "description": "Wickens 2: max number of levels of one visual variable (shade, size, hue) used to encode a value without direct labels."
+            }
           }
         }
       }
     },
-
     "scopePolicy": {
       "type": "object",
       "description": "How the agent places incoming briefs against existing designs (design-index) and keeps linked artifacts in sync. See design-generation-skill.md Step 2b and Step 12, and rubric category 11.",
       "properties": {
-        "designIndexPath": { "type": "string", "default": "design-index.yaml", "description": "Where the project's design index lives." },
-        "requireScopeCheck": { "type": "boolean", "default": true, "description": "If true, no design starts until a scope-overlap-report exists for its brief." },
+        "designIndexPath": {
+          "type": "string",
+          "default": "design-index.yaml",
+          "description": "Where the project's design index lives."
+        },
+        "requireScopeCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, no design starts until a scope-overlap-report exists for its brief."
+        },
         "overlapCheck": {
           "type": "object",
           "properties": {
-            "mergeThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.6, "description": "Score at or above this -> the brief (or element) belongs to that existing project." },
-            "relatedThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.3, "description": "Score at or above this (below mergeThreshold) -> related: link the projects and reuse shared decisions/components so they stay consistent." },
+            "mergeThreshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.6,
+              "description": "Score at or above this -> the brief (or element) belongs to that existing project."
+            },
+            "relatedThreshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.3,
+              "description": "Score at or above this (below mergeThreshold) -> related: link the projects and reuse shared decisions/components so they stay consistent."
+            },
             "weights": {
               "type": "object",
               "description": "Must sum to 1.0.",
               "properties": {
-                "termOverlap": { "type": "number", "default": 0.4 },
-                "surfaceOverlap": { "type": "number", "default": 0.35 },
-                "priorityOverlap": { "type": "number", "default": 0.25 }
+                "termOverlap": {
+                  "type": "number",
+                  "default": 0.4
+                },
+                "surfaceOverlap": {
+                  "type": "number",
+                  "default": 0.35
+                },
+                "priorityOverlap": {
+                  "type": "number",
+                  "default": 0.25
+                }
               }
             }
           }
         },
         "onOverlap": {
           "type": "string",
-          "enum": ["ask", "auto-route", "block"],
+          "enum": [
+            "ask",
+            "auto-route",
+            "block"
+          ],
           "default": "ask",
           "description": "'ask' = present the scope-overlap-report and wait for a human to accept or override before designing. 'auto-route' = follow the recommendation and log it. 'block' = stop until a human re-scopes the brief."
         },
         "changePropagation": {
           "type": "object",
           "properties": {
-            "flagDependentsOnChange": { "type": "boolean", "default": true, "description": "When an artifact's version bumps, mark every artifact that directly depends on an older version of it as needs-review in the design index. The flag cascades further only when a flagged artifact is actually revised (its own version bumps) — this keeps one upstream edit from flagging the whole project." },
-            "flagSharedPatternProjects": { "type": "boolean", "default": true, "description": "When a decision marked as shared (relation: shares-pattern) changes, also flag the design-output of every project sharing it." }
+            "flagDependentsOnChange": {
+              "type": "boolean",
+              "default": true,
+              "description": "When an artifact's version bumps, mark every artifact that directly depends on an older version of it as needs-review in the design index. The flag cascades further only when a flagged artifact is actually revised (its own version bumps) — this keeps one upstream edit from flagging the whole project."
+            },
+            "flagSharedPatternProjects": {
+              "type": "boolean",
+              "default": true,
+              "description": "When a decision marked as shared (relation: shares-pattern) changes, also flag the design-output of every project sharing it."
+            }
           }
         }
       }
     },
-
     "motionUsagePolicy": {
       "type": "object",
       "description": "When motion.durationsMs/easing tokens (already defined) are required to be applied, not just available.",

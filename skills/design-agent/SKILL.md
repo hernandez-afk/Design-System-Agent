@@ -27,6 +27,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
   - vague words become rules: "pop" → the one primary action; "easy/fast" → 3-3-3; "clean" → fewer elements; "modern", "like X" → ask
   - solutions become needs: "a dropdown" → "choose one of N"
   - each criterion becomes testable
+- **Design system:** the project's, unless the author asks for a brand's guidelines ("follow the Atari brand guidelines"). Then set `brandGuidelines: ["Atari"]` in the brief and use `brand/atari/CLAUDE.md` instead of `CLAUDE.md`'s tokens and type. A page that only mentions the brand isn't a request.
 - Run `T/harness.py check --project <ID>`, and `T/scope_check.py <brief> --index design-index.yaml` if the index has designs.
 - **Stop once.** Send one message: your rewrites, conflicts with the design system, new briefs, work that belongs to another design, and every question. Wait for the answers.
 
@@ -42,7 +43,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 - **Say each thing once.** No sentence, figure or status twice on a screen: if it matters that much, make it one stronger element.
 - Real content or `[PLACEHOLDER]`, never filler copy or invented numbers.
 - Type is the manifest's pair. A new design system gets a chosen pair, never a default font: offer 2 or 3 from `reference/type-pairing.md` at the brief's stop.
-- A page that uses a brand's name or logo follows its profile in `brand/`. The tools warn on anything that doesn't match. If the profile is empty, say so; don't guess the brand's values.
+- Declared brand work follows that brand's reference system and profile in `brand/`, and the tools check it against them. Mark its HTML with `<meta name="brand-guidelines" content="Atari">`. A brand's logo follows the logo rules on any page. If a profile is empty, say so; don't guess the brand's values.
 - Loading, empty and error states wherever data or waiting is involved.
 - Output a renderable HTML page (or a Design canvas in Claude Design).
 - A needed component that doesn't exist gets one line as a gap in the design output. Don't build a look-alike.

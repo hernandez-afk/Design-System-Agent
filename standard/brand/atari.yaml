@@ -16,7 +16,7 @@
 name: "Atari"
 source: "ATARI Brand Guidelines V1.1, June 2023 (short edition), Atari Creative Studio"
 version: "1.1"
-triggers: ["Atari"]
+triggers: ["Atari brand guidelines", "Atari guidelines"]   # phrases that ask for these guidelines; a plain mention of Atari doesn't
 
 # "Using color for the identity is not subjective" (p. 21): the palette is strict, so any
 # non-neutral color outside it is flagged, and any color near a brand color must be exact.

@@ -128,16 +128,24 @@ def post_edit(data):
     if not manifest:
         return 0
     messages = []
-    mode, report = lint_files([os.path.join(ROOT, rel)], ROOT, manifest)
+    import brand_check
+    from design_context import matches
+    body = open(os.path.join(ROOT, rel), errors="replace").read() if os.path.exists(os.path.join(ROOT, rel)) else ""
+    # A file declares brand guidelines itself (a `brand-guidelines: Atari` comment), or through the
+    # design that owns it (brandGuidelines in the design index). Declared work follows that brand's
+    # reference design system instead of the project's; everything else follows the project's.
+    declared = [b for p in index.get("projects", []) if matches(rel, p.get("codePaths")) for b in p.get("brandGuidelines", [])]
+    mbase = os.path.dirname(os.path.join(ROOT, MANIFEST))
+    ref = brand_check.reference_system(manifest, mbase, body, declared, phrases=False)
+    system, sbase = (brand_check.load(ref[1]), os.path.dirname(ref[1])) if ref else (manifest, mbase)
+    mode, report = lint_files([os.path.join(ROOT, rel)], ROOT, system)
     if report:
         messages.append(report)
-    import brand_check  # the edited file against any brand guidelines it's meant to follow
-    for entry, prof, path in brand_check.profiles(manifest, os.path.dirname(os.path.join(ROOT, MANIFEST))):
-        body = open(os.path.join(ROOT, rel), errors="replace").read() if os.path.exists(os.path.join(ROOT, rel)) else ""
-        if prof and brand_check.referenced(body, prof, entry):
+    for entry, prof, path in brand_check.profiles(system, sbase):
+        if prof and brand_check.referenced(body, prof, entry, declared, phrases=False):
             warns = [brand_check.unfilled_warning(prof, entry['profile'], rel)] if not brand_check.filled(prof) else brand_check.check_text(body, rel, prof)
             if warns and not (not brand_check.filled(prof) and seen(data.get("session_id", "default"), "brand-unfilled-" + prof.get("name", ""))):
-                messages.append(f"{prof.get('name')} guidelines (this file refers to {prof.get('name')}):\n" + "\n".join("• " + w for w in warns))
+                messages.append(f"{prof.get('name')} guidelines (this work declares them):\n" + "\n".join("• " + w for w in warns))
     owners, text = context_for(rel, ROOT, manifest, index)
     if owners:  # the edited file against every other file of the same design
         from design_context import globmatch

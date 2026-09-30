@@ -29,7 +29,7 @@ Judge only what needs eyes. Look at the page, the 320px screenshot and the 320px
 | 15 | Nothing from `CLAUDE.md`'s "Never" list | major |
 | 16 | Nothing is said twice, even in different words: a badge and a sentence giving the same status, a subtitle restating the title, a summary repeating the table below it. Merge them into one stronger element | major |
 | 17 | No AI tropes: filler copy or invented numbers (use `[PLACEHOLDER]`), gradient washes, a row of three identical icon cards, emoji as icons, accent-border cards, everything centered, decoration with no job | major |
-| 18 | When the page refers to a brand, nothing breaks its profile's `never` rules | major |
+| 18 | When the work declares a brand's guidelines, nothing breaks its profile's `never` rules | major |
 
 **Rules:**
 - A value you read off a screenshot is an estimate, never a blocker on its own.

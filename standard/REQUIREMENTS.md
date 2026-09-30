@@ -66,7 +66,7 @@ The agent has a default for everything below. Leaving one out works, but the age
 | Spacing roles are on the scale and step up (related < group < section); text styles use existing steps and weights | Consistency by role: the same kind of element is the same everywhere, and grouping is visible (Wickens 9) | 8 < 24 < 48 |
 | Designs verified at 360px or narrower; text scale ≥ 200%; target spacing ≥ 8px; a breakpoint at or below 640px | Mobile at all times (rubric category 14) | 320px, 200%, 8px, sm 640 |
 | Typefaces aren't default fonts (Inter, Roboto, Arial, Poppins, system fonts…), unless a brand profile requires them | A default font is the quickest tell of a design nobody chose (rubric category 15). New systems choose a pair (`skills/design-agent/reference/type-pairing.md`) | Source Serif 4 + Source Sans 3 |
-| Every `brandGuidelines` profile exists; a brand's own system (`applies: always`) matches its guidelines' colors and fonts | Anything meant to follow the brand is checked against it (rubric category 16) | Atari profile (from the V1.1 guidelines), `when-referenced` |
+| Every `brandGuidelines` profile and reference `designSystem` exists; a brand's own system (`applies: always`) matches its guidelines' colors and fonts | Work that declares the brand is checked against it (rubric category 16) | Atari profile and reference system (from the V1.1 guidelines), `when-declared` |
 | Similarity and overlap weights each sum to 1, with reuse > extend and merge > related | Otherwise the reuse and scope checks route work wrongly | Defaults |
 
 ### Dynamic components
