@@ -1,0 +1,237 @@
+id: atari-brand-test-shots
+source: rendered
+target: examples/rendered/atari-brand-test.html
+capturedAt: '2026-09-30T12:15:53Z'
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: button
+    property: padding-x
+    found:
+    - px: 16
+      where: button "Get tickets" @ narrow-320.png
+    - px: 16
+      where: button "Get tickets" @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-y
+    found:
+    - px: 8
+      where: button "Get tickets" @ narrow-320.png
+    - px: 8
+      where: button "Get tickets" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: button
+    found:
+    - value: 16px / 500
+      where: button "Get tickets" @ narrow-320.png
+    - value: 16px / 500
+      where: button "Get tickets" @ desktop-1440.png
+    consistent: true
+  - element: h1
+    style: page-title
+    expected: 33px / 700
+    found:
+    - value: 40px / 400
+      where: h1 "Arcade night" @ narrow-320.png
+    - value: 40px / 400
+      where: h1 "Arcade night" @ desktop-1440.png
+    consistent: false
+  - element: p
+    style: body
+    expected: 16px / 400
+    found:
+    - value: 16px / 500
+      where: p "Doors open at 6pm." @ narrow-320.png
+    - value: 16px / 500
+      where: p "Doors open at 6pm." @ desktop-1440.png
+    consistent: false
+  - element: p.intro
+    found:
+    - value: 16px / 400
+      where: p.intro "Play the classics on the new atari conso" @ narrow-320.png
+    - value: 16px / 400
+      where: p.intro "Play the classics on the new atari conso" @ desktop-1440.png
+    consistent: true
+findings:
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h1>: 40px / 400; style ''page-title'' is 33px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<p>: 16px / 500; style ''body'' is 16px / 400.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Atari 1972'' (h1 "Arcade night") renders in the fallback: load it
+    (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Poppins'' (p.intro "Play the classics on the new atari conso") renders
+    in the fallback: load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: colors'
+  description: 'button "Get tickets": #e3202c is close to Atari Red #E01E2B but isn''t
+    it (ΔE 1); use the exact value.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: colors'
+  description: 'span.tag "New": #22c55e isn''t in the Atari palette (nearest: Atari
+    Spectrum PMS 7491 C #7F9339); the palette is strict.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: the logo'
+  description: 'svg (Box lockup): 8px of clear space; the Atari minimum is 25% of
+    its 100px height (25px).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: the logo'
+  description: 'svg (Fuji logo): 40px wide; the Atari minimum is 50px.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: the logo'
+  description: 'svg (Fuji logo): drawn in #ff0000; allowed: #E01E2B, #FFFFFF, #171717.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: the logo'
+  description: 'svg.tilted (Horizontal lockup): 15px of clear space; the Atari minimum
+    is 50% of its 57px height (28px).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: the logo'
+  description: 'svg.tilted (Horizontal lockup): rotated; the Atari guidelines don''t
+    allow it.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: how the name
+    is written'
+  description: 'page text: the name is written ''atari''; the Atari guidelines allow
+    ''Atari'', ''ATARI''.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: type roles'
+  description: 'h1 "Arcade night": Atari headline text is set in text-transform none,
+    not uppercase.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: brand-guidelines
+  rubricItem: 'Meant to follow the Atari guidelines, and doesn''t match: type roles'
+  description: 'p.intro "Play the classics on the new atari conso": Atari subhead,
+    body, caption and legal text is set in weight 400, not 500.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

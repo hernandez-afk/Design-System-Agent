@@ -1,6 +1,6 @@
 # Example brand guidelines profile for the fictional Acme, filled in so the
 # tools have something to check against. standard/brand/atari.yaml is the
-# same shape, left empty until it's filled from the official guidelines.
+# same shape, filled from the Atari guidelines V1.1.
 
 name: "Acme"
 source: "Acme brand book v3 (fictional example)"

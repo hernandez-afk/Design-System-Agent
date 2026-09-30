@@ -47,10 +47,10 @@ def config(m, target, out, manifest_path):
             vps.append({"name": name, "w": bps[name], "h": 900, "textScales": [100], "inventory": False})
     vps.append({"name": "desktop", "w": desktop, "h": 900, "textScales": [100], "inventory": True})
     base = os.path.dirname(os.path.abspath(manifest_path))
-    logos = [(p.get("logo", {}) or {}).get("selector") for _, p, _ in brand_check.profiles(m, base) if p]
+    logos = sorted({r["selector"] for _, p, _ in brand_check.profiles(m, base) if p for r in brand_check.logo_rules(p) if r.get("selector")})
     return {"target": target, "outDir": out, "viewports": vps,
             "repetition": (m.get("antiAiDesign", {}) or {}).get("repetition", {}) or {},
-            "logoSelector": ", ".join(s for s in logos if s),
+            "logoSelectors": logos,
             "minTouch": (m.get("accessibility", {}) or {}).get("minTouchTargetPx", 44),
             "minTextPx": (m.get("usabilityHeuristics", {}) or {}).get("displayDesign", {}).get("minReadableTextPx", 12)}
 
@@ -156,7 +156,7 @@ def anti_ai_findings(m, shots, manifest_path):
                         "evidence": {"kind": "rendered-measurement", "ref": shot["file"], "measured": True}})
     tf = (m.get("typography", {}) or {}).get("typefaces", {}) or {}
     ours = {v.lower() for v in tf.values() if isinstance(v, str)}
-    generic, required = set(brand_check.generic_fonts(m)), brand_check.brand_fonts(m, base)
+    generic = set(brand_check.generic_fonts(m))
     max_fam = ((m.get("antiAiDesign", {}) or {}).get("typefaces", {}) or {}).get("maxFamilies", 2)
     for s in shots:
         a = s.get("antiAi")
@@ -168,12 +168,13 @@ def anti_ai_findings(m, shots, manifest_path):
         for r in a["repeatedFigures"]:
             add("major", "anti-ai-design", "The same figure appears twice on one screen: show it once, where it matters most",
                 f"{r['value']} appears in {', '.join(r['where'])}.", s)
+        required = brand_check.brand_fonts(m, base, a["brand"]["text"])
         fams = {f: v for f, v in a["fonts"].items() if f.lower() not in brand_check.GENERIC_FAMILIES}
         for fam, v in fams.items():
             if not v["renders"]:
                 add("major", "anti-ai-design", "A font the page asks for doesn't load, so it renders in a fallback",
                     f"'{fam}' ({v['where']}) renders in the fallback: load it (@font-face or a font link).", s)
-            elif ours and fam.lower() not in ours:
+            elif ours and fam.lower() not in ours and fam.lower() not in required:
                 add("major", "token-and-scale-consistency", "Text uses a font that isn't one of the manifest's typefaces",
                     f"'{fam}' ({v['where']}); the typefaces are {', '.join(sorted(set(tf.values())))}.", s)
             if fam.lower() in generic and fam.lower() not in required:
@@ -190,7 +191,7 @@ def anti_ai_findings(m, shots, manifest_path):
             if not brand_check.filled(p):
                 add("minor", "brand-guidelines", item, brand_check.unfilled_warning(p, entry['profile'], "The page"), s)
                 continue
-            kinds = {"color": "colors", "font": "fonts", "name": "how the name is written", "logo": "the logo"}
+            kinds = {"color": "colors", "font": "fonts", "name": "how the name is written", "logo": "the logo", "type": "type roles"}
             for kind, w in brand_check.check_rendered(a["brand"], p):
                 add("major", "brand-guidelines", f"{item}: {kinds[kind]}", w, s)
     return out

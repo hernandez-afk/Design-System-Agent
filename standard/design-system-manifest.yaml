@@ -37,7 +37,7 @@ meta:
     - "color as the only signal for a state"
 
 brandGuidelines:          # checked whenever a page, file or design refers to the brand
-  - profile: "brand/atari.yaml"     # empty until filled from the official guidelines; until then it warns, it can't check
+  - profile: "brand/atari.yaml"     # from ATARI Brand Guidelines V1.1 (June 2023)
     applies: "when-referenced"      # "always" for a system that is an Atari product's own
 
 antiAiDesign:             # what AI-made designs tend to get wrong; the renderer measures these

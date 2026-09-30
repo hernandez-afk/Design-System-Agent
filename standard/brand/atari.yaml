@@ -1,30 +1,135 @@
 # Atari brand guidelines profile: what the tools compare against when a page,
 # file or design system is meant to follow Atari's guidelines.
+# Filled from "ATARI Brand Guidelines V1.1, June 2023" (Atari Creative Studio,
+# the short edition). Page numbers refer to that PDF.
+# Schema: schemas/brand-guidelines.schema.json.
 #
-# NOT FILLED IN YET. The values must come from Atari's official brand
-# guidelines, not from memory or from the web, so they're left empty here.
-# Until they're filled in, anything that refers to Atari gets one warning:
-# "refers to Atari, but this profile has no values yet". Nothing is checked.
-# Schema: schemas/brand-guidelines.schema.json. Worked example:
-# examples/brand/acme-brand.example.yaml.
+# Where the PDF contradicts itself, the choice made here is marked CONFIRM:
+#   - Grey 60 is listed as R112 G112 B112 but #7A7A7A (p. 24). The hex is used.
+#   - Black 100 is R24 G24 B24 but #171717 (p. 22/24). The hex is used; they're visually identical.
+#   - White is written "#FFFFF" (p. 22). Read as #FFFFFF.
+#   - The contents page names the typefaces "Harry Fat" and "Apax"; the type pages
+#     show "Atari 1972 Regular" and "Poppins Medium" (p. 27-29). The type pages are used.
+#   - Clear space: the text says 50% of the logo height for every lockup; the
+#     diagram shows 25% for Stacked and Box, 50% for Horizontal (p. 15). The diagram is used.
 
 name: "Atari"
-source: ""               # the guidelines document this was filled from (link or file, and its date or version)
-version: ""
-triggers: ["Atari"]      # words, alt text or aria-labels that mean something is meant to follow these guidelines
+source: "ATARI Brand Guidelines V1.1, June 2023 (short edition), Atari Creative Studio"
+version: "1.1"
+triggers: ["Atari"]
 
-colors: []               # - { name: "…", hex: "#RRGGBB", use: "where it's allowed" }
-nearMissDeltaE: 10       # a color within this distance of a brand color, but not it, is flagged (ΔE 2 ≈ barely visible)
-strictPalette: false     # true: any non-neutral color outside the palette is flagged too
+# "Using color for the identity is not subjective" (p. 21): the palette is strict, so any
+# non-neutral color outside it is flagged, and any color near a brand color must be exact.
+strictPalette: true
+nearMissDeltaE: 10
+colors:
+  # Atari Red palette (p. 22)
+  - { name: "Atari Red", hex: "#E01E2B", use: "The brand color, and the only color for the logos besides black and white" }
+  - { name: "Black 100", hex: "#171717" }
+  - { name: "White", hex: "#FFFFFF" }
+  # Primary colors (p. 23)
+  - { name: "Yellow 100", hex: "#FCCE01" }
+  - { name: "Orange 100", hex: "#FF6B00" }
+  - { name: "Bright Red 100", hex: "#FF0000", use: "Never for the logo: logos are Atari Red" }
+  - { name: "Pink 100", hex: "#FF008D" }
+  - { name: "Purple 100", hex: "#A4009F" }
+  - { name: "Blue 100", hex: "#0065B9" }
+  # Greys (p. 24)
+  - { name: "Black 90", hex: "#2D2D2D" }
+  - { name: "Dark Grey 80", hex: "#464646" }
+  - { name: "Dark Grey 70", hex: "#616161" }
+  - { name: "Grey 60", hex: "#7A7A7A" }        # CONFIRM: the RGB given is 112/112/112 (#707070)
+  - { name: "Grey 45", hex: "#979797" }
+  - { name: "Grey 45", hex: "#AEAEAE" }        # the PDF names two greys "Grey 45"
+  - { name: "Light Grey 25", hex: "#C5C5C5" }
+  - { name: "Light Grey 15", hex: "#E0E0E0" }
+  - { name: "White 5", hex: "#F5F5F5" }
+  # Atari Spectrum (p. 25)
+  - { name: "Spectrum PMS 7631 C", hex: "#4C2625" }
+  - { name: "Spectrum PMS 5555 C", hex: "#608154" }
+  - { name: "Spectrum PMS 689 C", hex: "#8D3373" }
+  - { name: "Spectrum PMS 4625 C", hex: "#492B20" }
+  - { name: "Spectrum PMS 7491 C", hex: "#7F9339" }
+  - { name: "Spectrum PMS 674 C", hex: "#C4458F" }
+  - { name: "Spectrum PMS 504 C", hex: "#572B28" }
+  - { name: "Spectrum PMS 7743 C", hex: "#4D6A31" }
+  - { name: "Spectrum PMS 7425 C", hex: "#BD1E56" }
+  - { name: "Spectrum PMS 175 C", hex: "#6C302E" }
+  - { name: "Spectrum PMS 5467 C", hex: "#1C3430" }
+  - { name: "Spectrum PMS 191 C", hex: "#EB397A" }
+  - { name: "Spectrum PMS 7690 C", hex: "#096AA7" }
+  - { name: "Spectrum PMS 646 C", hex: "#4B7ABA" }
+  - { name: "Spectrum PMS 7686 C", hex: "#273C89" }
+  - { name: "Spectrum PMS 274 C", hex: "#25215A" }
+  - { name: "Spectrum PMS 682 C", hex: "#9E4A97" }
+  - { name: "Spectrum PMS 1685 C", hex: "#8E3C27" }
+  - { name: "Spectrum PMS 1605 C", hex: "#AD582A" }
+  - { name: "Spectrum PMS 7584 C", hex: "#BE5229" }
+  - { name: "Spectrum PMS 7597 C", hex: "#CF472D" }
+  - { name: "Spectrum PMS 7578 C", hex: "#DB6D41" }
+  - { name: "Spectrum PMS 7576 C", hex: "#DD9058" }
+  - { name: "Spectrum PMS 485 C", hex: "#DD2128" }
+  - { name: "Spectrum PMS 7580 C", hex: "#CC5748" }
+  - { name: "Spectrum PMS 180 C", hex: "#C14340" }
 
-typefaces: []            # the families the guidelines allow; any other is flagged
+# Type (p. 27-29). "Atari 1972" is the CSS family name the tools expect; add the real
+# @font-face name here if it differs. Comfortaa is for Google Slides only (p. 30), not product UI.
+typefaces: ["Atari 1972", "Poppins"]
+typeRoles:
+  - role: "headline"
+    typeface: "Atari 1972"
+    weight: 400                 # Regular
+    transform: "uppercase"      # CONFIRM: every headline sample is set in capitals (p. 29); no written rule
+    appliesTo: ["h1", "h2"]     # CONFIRM: which heading levels count as headlines is this profile's reading
+  - role: "subhead, body, caption and legal"
+    typeface: "Poppins"
+    weight: 500                 # Medium
+    appliesTo: ["h3", "h4", "h5", "h6", "p", "label", "button", "a", "li", "td", "th", "figcaption", "small"]
 
-nameForms: []            # the allowed ways to write the name; any other casing of a trigger is flagged
+# The name is "Atari" in running text and "ATARI" in capitals (p. 1, 5-7); "atari" is wrong.
+nameForms: ["Atari", "ATARI"]
 
-logo:
-  selector: "img[alt*='Atari' i], svg[aria-label*='Atari' i], [data-brand-asset='atari-logo']"
-  aspectRatio: null      # width ÷ height of the mark; null = compare with the image's own proportions
-  minWidthPx: null
-  minClearSpacePx: null
+# Logos (p. 12-19). Mark each logo on a page with data-brand-asset so the right rule applies.
+# Logos are Atari Red, white or black only, never palette colors, and never two colors (p. 17-18).
+logos:
+  - name: "Fuji logo"
+    selector: "[data-brand-asset='atari-fuji']"
+    minWidthPx: 50              # digital minimum (p. 16); print: 0.25in
+    allowedColors: ["#E01E2B", "#FFFFFF", "#171717"]
+    maxColors: 1
+  - name: "Atari wordmark"
+    selector: "[data-brand-asset='atari-wordmark']"
+    minWidthPx: 60              # digital minimum (p. 16); print: 0.35in. Never recreated by typesetting (p. 13)
+    allowedColors: ["#E01E2B", "#FFFFFF", "#171717"]
+    maxColors: 1
+  - name: "Stacked lockup"
+    selector: "[data-brand-asset='atari-stacked']"
+    clearSpaceRatio: 0.25       # of the logo height (p. 15 diagram)
+    allowedColors: ["#E01E2B", "#FFFFFF", "#171717"]
+    maxColors: 1
+  - name: "Box lockup"
+    selector: "[data-brand-asset='atari-box']"
+    clearSpaceRatio: 0.25
+    allowedColors: ["#E01E2B", "#FFFFFF"]   # always Atari Red: a red box with the mark knocked out (p. 17)
+  - name: "Horizontal lockup"
+    selector: "[data-brand-asset='atari-horizontal']"
+    clearSpaceRatio: 0.5
+    allowedColors: ["#E01E2B", "#FFFFFF", "#171717"]
+    maxColors: 1
+  - name: "Vertical lockup"
+    selector: "[data-brand-asset='atari-vertical']"
+    allowedColors: ["#E01E2B", "#FFFFFF", "#171717"]
+    maxColors: 1
+  - name: "Atari logo (unmarked)"
+    selector: "img[alt*='Atari' i]:not([data-brand-asset]), svg[aria-label*='Atari' i]:not([data-brand-asset])"
+    minWidthPx: 50              # the smallest any Atari logo may be; mark it with data-brand-asset for its own rules
+    allowedColors: ["#E01E2B", "#FFFFFF", "#171717"]
 
-never: []                # rules only a person can judge (e.g. "don't place the logo on busy imagery"); the critic reads these
+# What only a person can judge (p. 13, 17-19). The critic reads these.
+never:
+  - "Distort, outline, rotate, redraw or reposition the logo, or set it in another typeface"
+  - "Recreate the Atari logotype by typesetting"
+  - "Color the logo with palette colors, textures or unspecified gradients, or in two colors"
+  - "Crop photos or patterns through the logo"
+  - "Use black or white logos when Atari Red works: they're for technical limits, low contrast, or competing visuals"
+  - "Use Comfortaa outside Google Slides"

@@ -109,7 +109,14 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
   - the name written the wrong way
   - a logo that's too small, stretched, or crowded
 
-  **The Atari profile is empty on purpose.** Its values have to come from Atari's official guidelines. Until someone fills it in, anything that refers to Atari gets one warning saying it couldn't be checked, never a silent pass. `examples/brand/acme-brand.example.yaml` is a filled-in example. `examples/rendered/voting-anti-ai.html` is a test page with six planted problems, and the tools catch all six.
+  **The Atari profile is filled in** from *ATARI Brand Guidelines V1.1* (June 2023). It covers:
+  - the whole palette (Atari Red, the primaries, greys and spectrum), treated as strict, as the guidelines say
+  - Atari 1972 for headlines and Poppins Medium for everything else
+  - minimum sizes for the Fuji logo (50px) and the wordmark (60px)
+  - clear space for each lockup
+  - logos only in Atari Red, black or white, never in two colors, and never rotated
+
+  Mark each logo with `data-brand-asset="atari-fuji|atari-wordmark|atari-stacked|atari-box|atari-horizontal|atari-vertical"` so its own rule applies. Where the PDF contradicts itself, the profile says which reading it took (`CONFIRM` comments). `examples/rendered/atari-brand-test.html` has nine planted mistakes, and the tools catch all nine. `examples/brand/acme-brand.example.yaml` is a second, smaller example.
 
 ## Edge cases, caught at the brief
 

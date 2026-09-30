@@ -73,7 +73,7 @@ async function measure(page, cfg, withInventory) {
 // Anti-AI-design and brand measurements, on the inventory shots only.
 async function antiAi(page, cfg) {
   await page.evaluate(() => document.fonts.ready);
-  return page.evaluate(({ rep, logoSelector }) => {
+  return page.evaluate(({ rep, logoSelectors }) => {
     const kind = (el) => el.getAttribute("data-component") ||
       (el.tagName.toLowerCase() + (el.classList.length ? "." + el.classList[0] : ""));
     const label = (el) => kind(el) + ` "${el.textContent.replace(/\s+/g, " ").trim().slice(0, 40)}"`;
@@ -148,18 +148,36 @@ async function antiAi(page, cfg) {
     const meta = document.querySelector('meta[name="brand-guidelines"]');
     const text = [document.body.innerText, ...[...document.querySelectorAll("img[alt], [aria-label]")]
       .map((e) => e.getAttribute("alt") || e.getAttribute("aria-label")), meta ? `<meta name="brand-guidelines" content="${meta.content}">` : ""].join("\n");
-    const logos = logoSelector ? [...document.querySelectorAll(logoSelector)].filter(visible).map((el) => {
+    const others = [...document.querySelectorAll("body *")].filter((o) => visible(o) &&
+      ([...o.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) || o.matches("img, svg, button, input, a")));
+    const logos = logoSelectors.flatMap((selector) => [...document.querySelectorAll(selector)].filter(visible).map((el) => {
       const r = el.getBoundingClientRect();
-      const others = [...document.querySelectorAll("body *")].filter((o) => visible(o) && !o.contains(el) && !el.contains(o) &&
-        ([...o.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) || o.matches("img, svg, button, input, a")));
       const gap = (o) => { const q = o.getBoundingClientRect();
         return Math.max(q.left - r.right, r.left - q.right, q.top - r.bottom, r.top - q.bottom); };
-      const clear = others.length ? Math.round(Math.min(...others.map(gap))) : null;
-      return { where: kind(el) + (el.getAttribute("alt") ? ` "${el.getAttribute("alt")}"` : ""), w: Math.round(r.width), h: Math.round(r.height),
-        naturalW: el.naturalWidth || null, naturalH: el.naturalHeight || null, clearPx: clear };
-    }) : [];
-    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos } };
-  }, { rep: cfg.repetition || {}, logoSelector: cfg.logoSelector || "" });
+      const near = others.filter((o) => !o.contains(el) && !el.contains(o));
+      // Colors an inline SVG logo is drawn in; an <img> logo's colors can't be read.
+      const fills = [...new Set([...el.querySelectorAll("path, rect, circle, ellipse, polygon, polyline, text, use")]
+        .flatMap((sh) => { const cs = getComputedStyle(sh); return [cs.fill, cs.stroke]; })
+        .map((c) => c && c.startsWith("rgb") ? hex(c) : null).filter(Boolean))];
+      const t = getComputedStyle(el).transform;
+      const mtx = t && t !== "none" ? t.match(/matrix\(([^)]+)\)/) : null;
+      return { selector, where: kind(el) + (el.getAttribute("alt") ? ` "${el.getAttribute("alt")}"` : ""),
+        w: Math.round(r.width), h: Math.round(r.height), naturalW: el.naturalWidth || null, naturalH: el.naturalHeight || null,
+        clearPx: near.length ? Math.round(Math.min(...near.map(gap))) : null, fills,
+        rotated: mtx ? Math.abs(parseFloat(mtx[1].split(",")[1])) > 1e-3 : false };
+    }));
+    // The type each kind of text is set in, for a brand's type roles.
+    const seenType = new Set(), type = [];
+    for (const el of texty.filter((e) => e.matches("h1, h2, h3, h4, h5, h6, p, label, button, a, li, td, th, figcaption, small"))) {
+      const cs = getComputedStyle(el);
+      const t = { tag: el.tagName.toLowerCase(), family: cs.fontFamily.split(",")[0].replace(/["']/g, "").trim(),
+        weight: parseInt(cs.fontWeight, 10), transform: cs.textTransform, where: label(el),
+        caps: el.textContent === el.textContent.toUpperCase() };
+      const k = [t.tag, t.family, t.weight, t.transform].join("|");
+      if (!seenType.has(k)) { seenType.add(k); type.push(t); }
+    }
+    return { repeatedText, repeatedFigures, fonts, brand: { text, colors, logos, type } };
+  }, { rep: cfg.repetition || {}, logoSelectors: cfg.logoSelectors || [] });
 }
 
 (async () => {

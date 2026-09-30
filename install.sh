@@ -32,7 +32,7 @@ if [ "${2:-}" = "--with-baseline" ]; then
   done
   mkdir -p "$DEST/brand"
   for f in "$SRC/standard/brand/"*.yaml; do
-    [ -f "$DEST/brand/$(basename "$f")" ] || { cp "$f" "$DEST/brand/"; echo "✓ brand/$(basename "$f") (fill it from the official guidelines)"; }
+    [ -f "$DEST/brand/$(basename "$f")" ] || { cp "$f" "$DEST/brand/"; echo "✓ brand/$(basename "$f") (Atari Brand Guidelines V1.1)"; }
   done
 fi
 for f in design-system-manifest.yaml CLAUDE.md; do

@@ -41,9 +41,11 @@ def generic_fonts(m):
     return [f.lower() for f in ((m.get("antiAiDesign", {}) or {}).get("typefaces", {}) or {}).get("generic", DEFAULT_GENERIC_FONTS)]
 
 
-def brand_fonts(m, base):
-    """Fonts some applicable brand's guidelines require, which the generic-font warning then allows."""
-    return {f.lower() for _, p, _ in profiles(m, base) if p for f in p.get("typefaces", []) or []}
+def brand_fonts(m, base, text=None):
+    """Fonts an applicable brand's guidelines require, which the generic-font warning then allows:
+    a brand the product always follows, or (given a page's text) one the page refers to."""
+    return {f.lower() for e, p, _ in profiles(m, base) if p and (e.get("applies") == "always" or (text and referenced(text, p)))
+            for f in p.get("typefaces", []) or []}
 
 
 def load(p):
@@ -63,10 +65,15 @@ def profiles(m, base):
     return out
 
 
+def logo_rules(p):
+    """Each kind of logo the guidelines size and space separately (a symbol, a wordmark, lockups…)."""
+    return p.get("logos") or ([p["logo"]] if p.get("logo") else [])
+
+
 def filled(p):
-    logo = p.get("logo", {}) or {}
-    return bool(p.get("colors") or p.get("typefaces") or p.get("nameForms")
-                or any(logo.get(k) for k in ("aspectRatio", "minWidthPx", "minClearSpacePx")))
+    keys = ("aspectRatio", "minWidthPx", "minClearSpacePx", "clearSpaceRatio", "allowedColors")
+    return bool(p.get("colors") or p.get("typefaces") or p.get("nameForms") or p.get("typeRoles")
+                or any(r.get(k) for r in logo_rules(p) for k in keys))
 
 
 # --- color distance (CIE76 in Lab: ~2 is barely visible, ~10 is "a different red") ---------
@@ -105,13 +112,13 @@ def color_findings(color, where, p):
     dists = sorted((delta_e(color, h), n, h) for n, h in pal)
     d, name, h = dists[0]
     near = p.get("nearMissDeltaE", 10)
-    if d < 1.5:
+    if d < 0.3:  # the exact value (allowing for rounding); even a one-step difference is off-brand
         return []
     full = name if name.lower().startswith(p["name"].lower()) else f"{p['name']} {name}"
     if d <= near:
         return [f"{where}: {color} is close to {full} {h.upper()} but isn't it (ΔE {d:.0f}); use the exact value."]
     if p.get("strictPalette") and not neutral(color):
-        return [f"{where}: {color} isn't a {p['name']} color (nearest: {full} {h.upper()}); the palette is strict."]
+        return [f"{where}: {color} isn't in the {p['name']} palette (nearest: {full} {h.upper()}); the palette is strict."]
     return []
 
 
@@ -183,15 +190,39 @@ def check_rendered(brand, p):
         out += [("color", w) for w in color_findings(color, where, p)]
     for fam, where in (brand.get("fonts") or {}).items():
         out += [("font", w) for w in font_findings(fam, where, p)]
-    logo = p.get("logo", {}) or {}
-    for lg in brand.get("logos") or []:
-        if logo.get("minWidthPx") and lg["w"] < logo["minWidthPx"]:
-            out.append(("logo", f"{lg['where']}: the logo is {lg['w']}px wide; the {p['name']} minimum is {logo['minWidthPx']}px."))
-        want = logo.get("aspectRatio") or (lg["naturalW"] / lg["naturalH"] if lg.get("naturalW") and lg.get("naturalH") else None)
-        if want and lg["h"] and abs(lg["w"] / lg["h"] - want) / want > 0.03:
-            out.append(("logo", f"{lg['where']}: the logo is drawn at {lg['w']}×{lg['h']}px, which stretches it (ratio {lg['w'] / lg['h']:.2f}, should be {want:.2f})."))
-        if logo.get("minClearSpacePx") and lg.get("clearPx") is not None and lg["clearPx"] < logo["minClearSpacePx"]:
-            out.append(("logo", f"{lg['where']}: {lg['clearPx']}px of clear space around the logo; the {p['name']} minimum is {logo['minClearSpacePx']}px."))
+    for rule in logo_rules(p):
+        name = rule.get("name", "logo")
+        for lg in [x for x in brand.get("logos") or [] if x.get("selector") == rule.get("selector")]:
+            at = f"{lg['where']} ({name})"
+            if rule.get("minWidthPx") and lg["w"] < rule["minWidthPx"]:
+                out.append(("logo", f"{at}: {lg['w']}px wide; the {p['name']} minimum is {rule['minWidthPx']}px."))
+            want = rule.get("aspectRatio") or (lg["naturalW"] / lg["naturalH"] if lg.get("naturalW") and lg.get("naturalH") else None)
+            if want and lg["h"] and abs(lg["w"] / lg["h"] - want) / want > 0.03:
+                out.append(("logo", f"{at}: drawn at {lg['w']}×{lg['h']}px, which distorts it (ratio {lg['w'] / lg['h']:.2f}, should be {want:.2f})."))
+            need = max(rule.get("minClearSpacePx") or 0, (rule.get("clearSpaceRatio") or 0) * lg["h"])
+            if need and lg.get("clearPx") is not None and lg["clearPx"] < need:
+                how = f"{rule['clearSpaceRatio']:.0%} of its {lg['h']}px height" if rule.get("clearSpaceRatio") else f"{need:g}px"
+                out.append(("logo", f"{at}: {lg['clearPx']}px of clear space; the {p['name']} minimum is {how} ({need:.0f}px)."))
+            if lg.get("rotated"):
+                out.append(("logo", f"{at}: rotated; the {p['name']} guidelines don't allow it."))
+            fills = lg.get("fills") or []
+            allowed = rule.get("allowedColors") or []
+            bad = [f for f in fills if allowed and min(delta_e(f, a) for a in allowed) >= 0.3]
+            if bad:
+                out.append(("logo", f"{at}: drawn in {', '.join(bad)}; allowed: {', '.join(allowed)}."))
+            if rule.get("maxColors") and len(fills) > rule["maxColors"]:
+                out.append(("logo", f"{at}: drawn in {len(fills)} colors ({', '.join(fills)}); the {p['name']} guidelines allow {rule['maxColors']}."))
+    for role in p.get("typeRoles", []) or []:
+        for t in [x for x in brand.get("type") or [] if x["tag"] in role.get("appliesTo", [])]:
+            wrong = []
+            if role.get("typeface") and t["family"].lower() != role["typeface"].lower():
+                wrong.append(f"font {t['family']}, not {role['typeface']}")
+            if role.get("weight") and t["weight"] != role["weight"]:
+                wrong.append(f"weight {t['weight']}, not {role['weight']}")
+            if role.get("transform") and t["transform"] != role["transform"] and not (role["transform"] == "uppercase" and t.get("caps")):
+                wrong.append(f"text-transform {t['transform']}, not {role['transform']}")
+            if wrong:
+                out.append(("type", f"{t['where']}: {p['name']} {role['role']} text is set in {', '.join(wrong)}."))
     return sorted(set(out))
 
 

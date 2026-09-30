@@ -21,7 +21,7 @@ All UI follows this, even quick edits. New pages and features: use the **design-
 - Only these tokens, roles, styles and components. The same kind of element looks the same everywhere.
 - One primary action per screen.
 - Say each thing once: no sentence, figure or status appears twice on a screen. If it matters that much, make it one stronger element.
-- Brand: Atari (`brand/atari.yaml`). Anything that uses that name or logo follows those guidelines, and the tools warn when it doesn't match.
+- Brand: Atari (`brand/atari.yaml`). Anything that uses that name or logo follows those guidelines, and the tools warn when it doesn't match: Atari's palette only, Atari 1972 headlines and Poppins Medium text, and logos in Atari Red, black or white, marked `data-brand-asset="atari-fuji"` (or `-wordmark`, `-stacked`, `-box`, `-horizontal`, `-vertical`).
 - Touch targets ≥ 44px, text ≥ 12px, WCAG-AA contrast, and never color alone for a state.
 - Every core task is understood in 3 s, reached in ≤ 3 taps, and done in ≤ 3 min.
 - Before editing UI, `python3 .claude/design-agent/tools/design_context.py <file>` shows the design that owns it, and the hook shows it on the first edit. Contradicting that design's decision is a design change: raise it, don't just edit.
