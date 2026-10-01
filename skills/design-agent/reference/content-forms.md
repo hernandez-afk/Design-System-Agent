@@ -57,3 +57,12 @@ A front-facing card (a game, a product, a person, a report in a list) shows at m
 - **Easy to customize.** Settings and filters people change often sit where they're used, one tap away. The current choice is always visible (a chip, a label on the control), and one control resets it. Personal choices, like pinned items or a saved view, are kept.
 
 The renderer measures the first four. The critic judges the order and the customization.
+
+## Show as little as possible at a time
+
+What's on screen is what this moment needs. Everything else is one tap away, in the place it's used.
+
+- **Persistent bars hold only what every screen needs.** The top bar, sidebars, and anything fixed or sticky keep the logo, the page title, navigation and controls. Nothing else, unless every screen truly needs it (a live countdown during an event): mark that `data-essential`. The renderer flags the rest.
+- **Account details live in the account menu.** A role ("Admin"), a plan ("Pro"), an environment ("Production"), or "Signed in as…" isn't shown on every screen. Where it changes what someone can do, mark that action instead ("Admin only" on the one admin action), or show the admin tools themselves, which say it already.
+- **No notices restating who you are** ("You are an admin, so…"). The tools that only admins see are the signal.
+- **Context appears where it's used:** a filter's current value on the filter, a deadline next to the action it limits, a status on the item it describes.

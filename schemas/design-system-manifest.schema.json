@@ -90,6 +90,24 @@
               "default": 3
             }
           }
+        },
+        "persistentChrome": {
+          "type": "object",
+          "description": "What may stay on screen everywhere: the app's top bar, sidebars, anything fixed or sticky. Only what every screen needs (logo, page title, navigation, controls). Account, role, plan and environment details go in the account menu, and show only where they change what the user can do. Measured by the renderer.",
+          "properties": {
+            "maxInfoItems": {
+              "type": "integer",
+              "default": 0,
+              "description": "Other pieces of information allowed in persistent chrome. Mark a real exception data-essential."
+            },
+            "ambientTerms": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Regex words that mark account or context information (roles, plans, environments). Default: AMBIENT_TERMS in tools/screenshots.py."
+            }
+          }
         }
       }
     },

@@ -1,0 +1,266 @@
+id: chrome-test-shots
+source: rendered
+target: examples/rendered/chrome-test.html
+capturedAt: '2026-10-01T07:01:33Z'
+designSystem: Baseline
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 14
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: button
+    property: padding-x
+    found:
+    - px: 6
+      where: button "Sam (Admin)" @ narrow-320.png
+    - px: 6
+      where: button "Add a game" @ narrow-320.png
+    - px: 6
+      where: button "Sam (Admin)" @ desktop-1440.png
+    - px: 6
+      where: button "Add a game" @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-y
+    found:
+    - px: 1
+      where: button "Sam (Admin)" @ narrow-320.png
+    - px: 1
+      where: button "Add a game" @ narrow-320.png
+    - px: 1
+      where: button "Sam (Admin)" @ desktop-1440.png
+    - px: 1
+      where: button "Add a game" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: button
+    found:
+    - value: 16px / 400
+      where: button "Sam (Admin)" @ narrow-320.png
+    - value: 13.3333px / 400
+      where: button "Add a game" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Sam (Admin)" @ desktop-1440.png
+    - value: 13.3333px / 400
+      where: button "Add a game" @ desktop-1440.png
+    consistent: false
+  - element: h1
+    style: page-title
+    expected: 33px / 700
+    found:
+    - value: 32px / 700
+      where: h1 "Hackathon games" @ narrow-320.png
+    - value: 32px / 700
+      where: h1 "Hackathon games" @ desktop-1440.png
+    consistent: false
+  - element: p
+    style: body
+    expected: 16px / 400
+    found:
+    - value: 16px / 400
+      where: p "Pro plan" @ narrow-320.png
+    - value: 16px / 400
+      where: p "You are an admin, so you can edit every " @ narrow-320.png
+    - value: 16px / 400
+      where: p "Pro plan" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "You are an admin, so you can edit every " @ desktop-1440.png
+    consistent: true
+findings:
+- severity: blocker
+  category: accessibility
+  rubricItem: Interactive targets smaller than accessibility.minTouchTargetPx
+  description: button "Add a game" is 88×21px at 320px.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: blocker
+  category: mobile-and-dynamic-components
+  rubricItem: Content scrolls sideways at minViewportPx
+  description: 'Scrolls sideways by 14px at 320px at 200% text; widest: the page.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: mobile-and-dynamic-components
+  rubricItem: 'Text doesn''t grow with the text scale (WCAG 1.4.4): it''s set in fixed
+    px'
+  description: button "Add a game" stays 13.3333px at 320px at 200% text.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320-text200.png
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<button>: 13px / 400; 16px / 400.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text of the same kind uses different styles, or isn't its style
+  description: '<h1>: 32px / 700; style ''page-title'' is 33px / 700.'
+  evidence:
+    kind: rendered-measurement
+    ref: computed styles
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Sans 3'' (a "Arcade Hub") renders in the fallback: load it
+    (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Serif 4'' (h1 "Hackathon games") renders in the fallback:
+    load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: token-and-scale-consistency
+  rubricItem: Text uses a font that isn't one of the manifest's typefaces
+  description: '''Arial'' (button "Add a game"); the typefaces are Source Sans 3,
+    Source Serif 4.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'A default font: choose a pairing for this product (reference/type-pairing.md)'
+  description: '''Arial'' (button "Add a game") is a default font.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: anti-ai-design
+  rubricItem: More than 2 type families (plus one mono)
+  description: Source Sans 3, Source Serif 4, Arial.
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'Account, role, plan or environment shown on every screen: put it in
+    the account menu, and mark only the actions it changes (e.g. ''Admin only'' on
+    that action)'
+  description: '''Admin'' in the header.topbar.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'Account, role, plan or environment shown on every screen: put it in
+    the account menu, and mark only the actions it changes (e.g. ''Admin only'' on
+    that action)'
+  description: '''Production'' in the header.topbar.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'Account, role, plan or environment shown on every screen: put it in
+    the account menu, and mark only the actions it changes (e.g. ''Admin only'' on
+    that action)'
+  description: '''Signed in as sam@example.com'' in the header.topbar.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: minor
+  category: anti-ai-design
+  rubricItem: 'A control in the always-visible bar repeats the account''s role or
+    plan in its label: keep the label to the name or an icon'
+  description: '''Sam (Admin)'' in the header.topbar.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'Account, role, plan or environment shown on every screen: put it in
+    the account menu, and mark only the actions it changes (e.g. ''Admin only'' on
+    that action)'
+  description: '''Pro plan'' in the aside.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: 'A notice restating who you are or which mode you''re in: the account
+    menu already says it; show it only where it changes what you can do'
+  description: '''You are an admin, so you can edit every game.''.'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

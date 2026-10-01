@@ -161,6 +161,12 @@ def content_findings(m, shots):
     return out
 
 
+# Words that describe the account or its context rather than the task: roles, plans, environments.
+AMBIENT_TERMS = ["admin", "administrator", "superuser", "owner", "moderator", "editor", "viewer", "member", "staff",
+                 "pro plan", "premium", "free plan", "enterprise", "trial", "production", "staging", "sandbox", "beta",
+                 "signed in as", "logged in as", "welcome back", "welcome", r"v\d+(?:\.\d+)+"]
+
+
 def structure_findings(m, shots):
     """Cards with too many pieces of information, and navigation that's crowded, deep or hard to search."""
     comp = {"maxCardInformationAreas": 5, **((m.get("compositionHeuristics") or {}))}
@@ -179,7 +185,9 @@ def structure_findings(m, shots):
         f["_descs"] = {desc}
         seen[key] = f
         out.append(f)
-    N = "navigation-color-and-motion-feedback"
+    N, C2 = "navigation-color-and-motion-feedback", "anti-ai-design"
+    pc = {"maxInfoItems": 0, **((m.get("contentPolicy") or {}).get("persistentChrome") or {})}
+    ambient = re.compile(r"\b(" + "|".join(pc.get("ambientTerms") or AMBIENT_TERMS) + r")\b", re.I)
     for s in shots:
         st = (s.get("antiAi") or {}).get("structure")
         if not st:
@@ -208,6 +216,20 @@ def structure_findings(m, shots):
             for h in n["unlabelledHidden"]:
                 add("major", N, "Hidden options with no labelled control to open them: they can't be found",
                     ("nav-hidden", h), f"{h} in {n['where']}.", s)
+        for ch in st.get("chrome") or []:
+            if len(ch["info"]) > pc["maxInfoItems"]:
+                for t in ch["info"]:
+                    what = ambient.search(t)
+                    item = ("Account, role, plan or environment shown on every screen: put it in the account menu, and mark only the actions it changes (e.g. 'Admin only' on that action)"
+                            if what else "Information that stays on every screen: the bar holds only what every screen needs, so move this to where it's used (or mark it data-essential if it truly is)")
+                    add("major", C2, item, ("chrome", ch["where"], t), f"'{t}' in the {ch['where']}.", s)
+            for t in ch["controls"]:
+                if ambient.search(t):
+                    add("minor", C2, "A control in the always-visible bar repeats the account's role or plan in its label: keep the label to the name or an icon",
+                        ("chrome-control", t), f"'{t}' in the {ch['where']}.", s)
+        for t in st.get("identity") or []:
+            add("major", C2, "A notice restating who you are or which mode you're in: the account menu already says it; show it only where it changes what you can do",
+                ("identity", t), f"'{t}'.", s)
         if s["viewport"]["name"] == "narrow" and s["textScalePercent"] == 100 and st["controlsOnFirstScreen"] > nh["maxVisibleControls"]:
             add("major", N, f"More than {nh['maxVisibleControls']} controls on the first screen: nest the less-used ones behind one labelled control",
                 ("controls", w), f"{st['controlsOnFirstScreen']} controls in the first screen at {w}.", s)

@@ -263,6 +263,7 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** A default font (`antiAiDesign.typefaces.generic`) that no brand guidelines require, or a font that doesn't load and renders in its fallback (measured). New systems choose a pair (`type-pairing.md`).
 - [ ] **Minor:** More than `antiAiDesign.typefaces.maxFamilies` type families, not counting one mono (measured).
 - [ ] **Major:** Filler copy or invented numbers where real content or a `[PLACEHOLDER]` belongs.
+- [ ] **Major:** Information that stays on every screen without being needed there (measured): a role, plan, environment or "signed in as" in the top bar or a sidebar, or a notice restating who the user is. It belongs in the account menu, or next to the one action it changes.
 - [ ] **Major:** Template tropes: gradient washes, a row of three identical icon cards, emoji as icons, accent-border cards, everything centered, decoration with no job.
 
 ---

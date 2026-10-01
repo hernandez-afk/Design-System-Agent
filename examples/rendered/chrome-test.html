@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arcade Hub admin: always-on-screen test page</title>
+<!-- A test page for the persistent-chrome check (tools/screenshots.py with standard/design-system-manifest.yaml).
+     Planted problems: an "Admin" badge, a "Production" label and "Signed in as sam@example.com" in the
+     top bar; an account button labelled "Sam (Admin)"; a "Pro plan" line in the sidebar; and a notice in
+     the page saying "You are an admin". Not problems: the logo link, the navigation, and the voting countdown,
+     which every screen needs during the event (marked data-essential). -->
+<style>
+  body { margin: 0; background: #fafafa; color: #18181b; font-family: "Source Sans 3", sans-serif; font-size: 1rem; line-height: 1.5; }
+  .topbar { position: sticky; top: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #ffffff; border-bottom: 1px solid #d4d4d8; }
+  .topbar a, .topbar button { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; font: inherit; }
+  .badge { padding: 0 0.5rem; border-radius: 4px; background: #e4e4e7; }
+  aside { padding: 1rem; }
+  main { padding: 1rem; }
+  h1 { font-family: "Source Serif 4", serif; margin: 0; }
+</style>
+</head>
+<body>
+<header class="topbar" role="banner">
+  <a href="#" aria-label="Arcade Hub home">Arcade Hub</a>
+  <nav aria-label="Main"><a href="#">Games</a> <a href="#">Events</a></nav>
+  <span class="badge">Admin</span>
+  <span class="badge">Production</span>
+  <span>Signed in as sam@example.com</span>
+  <span data-essential>Voting closes in 2:14</span>
+  <button aria-haspopup="menu">Sam (Admin)</button>
+</header>
+<aside aria-label="Account"><p>Pro plan</p></aside>
+<main>
+  <h1>Hackathon games</h1>
+  <p>You are an admin, so you can edit every game.</p>
+  <button>Add a game</button>
+</main>
+</body>
+</html>

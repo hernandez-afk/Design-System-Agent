@@ -243,7 +243,28 @@ async function antiAi(page, cfg) {
     const search = !!document.querySelector("input[type=search], [role=search], [data-command-palette], input[aria-label*='search' i], input[placeholder*='search' i]");
     const onScreen = [...document.querySelectorAll("a[href], button, input:not([type=hidden]), select, textarea, [role=button], [role=switch], [role=tab], summary")]
       .filter((el) => visible(el) && el.getBoundingClientRect().top < vh && el.getBoundingClientRect().bottom > 0).length;
-    const structure = { cards, nav, search, controlsOnFirstScreen: onScreen };
+    // Persistent chrome: what stays on screen everywhere (the app's top bar, sidebars, anything fixed or
+    // sticky). It should hold only what every screen needs: the logo, the page title, navigation, controls.
+    // Any other information in it is ambient: on screen all the time, needed rarely.
+    const fixed = (el) => ["fixed", "sticky"].includes(getComputedStyle(el).position);
+    const chromeRoots = [...document.querySelectorAll("body *")].filter((el) => visible(el) && (
+      el.matches("[role=banner], [data-chrome], aside") ||
+      (el.matches("header") && !el.parentElement.closest("main, article, section, [role=main]")) || fixed(el)))
+      .filter((el, _, all) => !all.some((o) => o !== el && o.contains(el)));
+    const chrome = chromeRoots.map((r) => {
+      const info = [...r.querySelectorAll("*")].filter((el) => visible(el) &&
+        [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) &&
+        !el.closest("nav, [role=navigation], a, button, [role=button], input, select, textarea, label, summary, h1, [data-essential], [data-brand-asset], [class*='logo' i]"))
+        .map((el) => el.textContent.replace(/\s+/g, " ").trim().slice(0, 50));
+      const controls = [...r.querySelectorAll("a, button, [role=button], summary")].filter(visible)
+        .map((el) => (el.getAttribute("aria-label") || el.textContent).replace(/\s+/g, " ").trim().slice(0, 50));
+      return { where: label(r).split(' "')[0], info, controls };
+    });
+    // Notices that restate who you are or where you are ("You're signed in as an admin").
+    const identity = texty.filter((el) => !el.closest("[data-essential]") && !chromeRoots.some((r) => r.contains(el))).map((el) => el.textContent.replace(/\s+/g, " ").trim())
+      .filter((t) => /\b(logged|signed) in as\b|\byou are (an? )?(admin|administrator|owner|moderator|editor)\b|\b(admin|editor|viewer) (mode|view)\b|\bviewing as\b/i.test(t))
+      .map((t) => t.slice(0, 70));
+    const structure = { cards, nav, search, controlsOnFirstScreen: onScreen, chrome, identity: [...new Set(identity)] };
     const content = { viewportH: vh, blocks: contentBlocks, firstScreenWords, totalWords,
       glance: { h1: h1 ? { where: label(h1), top: Math.round(h1.getBoundingClientRect().top) } : null, primaries },
       effort: { words: totalWords, fields, choices, actions: actions.length }, tables };

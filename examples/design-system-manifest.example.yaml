@@ -41,6 +41,9 @@ contentPolicy:            # say less: every block short, and a first screen that
   maxWordsPerScreen: 250
   maxNumbersInProse: 2     # more figures than this in a sentence become stats, a table or a chart
   taskTime: { readingWordsPerMinute: 200, secondsPerField: 8, secondsPerChoice: 3 }   # the 3-minute estimate
+  persistentChrome:        # the top bar, sidebars, anything fixed or sticky: on every screen, so it holds only what every screen needs
+    maxInfoItems: 0        # beyond the logo, page title, navigation and controls; mark a real exception data-essential (e.g. a live countdown)
+    # ambientTerms: roles, plans, environments, "signed in as": default list in tools/screenshots.py
   # Long-form text (articles, legal, help) sits in [data-longform] and is exempt.
 
 antiAiDesign:

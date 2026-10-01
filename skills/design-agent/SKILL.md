@@ -43,6 +43,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 - One primary action per screen.
 - **Say little.** A text block is one or two short sentences (`contentPolicy`). Numbers are stats, steps are a stepper, a state is a badge, and help is the control's label. The first screen at 320px shows the title and the primary action, with little to read.
 - **Cards show at most 5 pieces of information**; the rest is in the detail view. **Navigation:** most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and the less-used controls nested behind one labelled control, so the screen is never crowded and everything can be found.
+- **Show as little as possible at a time.** Persistent bars hold only the logo, title, navigation and controls. Account role, plan and environment go in the account menu, and only actions they change are marked ("Admin only").
 - **Say each thing once.** No sentence, figure or status twice on a screen: if it matters that much, make it one stronger element.
 - Real content or `[PLACEHOLDER]`, never filler copy or invented numbers.
 - Type is the manifest's pair. A new design system gets a chosen pair, never a default font: offer 2 or 3 from `reference/type-pairing.md` at the brief's stop.
