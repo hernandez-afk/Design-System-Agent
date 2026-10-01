@@ -138,7 +138,7 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
   - **3 minutes:** estimated per screen from its words, fields and choices.
 
 - **Cards and navigation.**
-  - A front-facing card shows at most 5 pieces of information; the rest goes in its detail view.
+  - A card or box shows at most 5 pieces of information, and at most 3 buttons when it repeats on screen (5 on a single box). The rest go in a "⋯" menu or the detail view, since 10 cards with 4 buttons each is 40 buttons on one screen.
   - Navigation keeps the most-used options at the top, at most 7 a level.
   - Every option is within 2 clicks.
   - Past 15 options, there must be a search.
@@ -155,7 +155,7 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
 
   The layout follows the pattern: a minimal builder like Google Forms, where only the selected question shows its tools, and questions move by dragging or by Move up / Move down. The renderer flags drag-only reordering (WCAG 2.5.7) and tools shown on every item. See `skills/design-agent/reference/page-patterns.md`, the brief `examples/ticket-brief-questionnaire.example.yaml`, and the reference page `examples/rendered/questionnaire-builder.html`.
 
-`examples/rendered/content-test.html` has ten planted text and 3-3-3 problems, `examples/rendered/structure-test.html` six card and navigation problems, and `examples/rendered/builder-test.html` two builder problems. The renderer catches all of them.
+`examples/rendered/content-test.html` has ten planted text and 3-3-3 problems, `examples/rendered/structure-test.html` eight card and navigation problems, and `examples/rendered/builder-test.html` two builder problems. The renderer catches all of them.
 
 ## Edge cases, caught at the brief
 

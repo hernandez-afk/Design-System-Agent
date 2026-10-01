@@ -44,9 +44,13 @@ Set each required element's `infoType` and `form` in the brief. A form that does
 
 Long-form text that is the purpose (an article, legal terms, a help page) goes in `[data-longform]` and is exempt.
 
-## Cards: at most 5 pieces of information
+## Cards and boxes: at most 5 pieces of information, and few buttons
 
-A front-facing card (a game, a product, a person, a report in a list) shows at most `compositionHeuristics.maxCardInformationAreas` (5) separate pieces of information. Count text, images and badges; a table or list inside counts once; actions don't count. Keep the ones that serve the page's purpose and help someone choose. The rest goes in the detail view the card opens. The renderer counts them.
+A front-facing card (a game, a product, a person, a report in a list) shows at most `compositionHeuristics.maxCardInformationAreas` (5) separate pieces of information. Count text, images and badges; a table or list inside counts once; actions don't count. Keep the ones that serve the page's purpose and help someone choose. The rest goes in the detail view the card opens.
+
+**Buttons:** at most `maxRepeatedCardActions` (3) on a card that repeats on screen, and `maxCardActions` (5) on any single box. Repeated cards multiply their buttons: 10 cards with 4 buttons is 40 buttons on one screen. Keep the main one or two on the card ("Open", "Vote"), and put the rest (share, archive, delete) in its "⋯" menu or the detail view. A selected item being edited may show its full tools.
+
+The renderer counts both, for anything named a card or tile and anything drawn as a box (a border all round, or a shaded, rounded panel).
 
 ## Navigation and controls: few on screen, everything findable
 

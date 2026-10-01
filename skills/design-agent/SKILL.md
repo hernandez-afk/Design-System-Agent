@@ -43,7 +43,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 - Only the components in `CLAUDE.md`. Spacing by role, text by style.
 - One primary action per screen.
 - **Say little.** A text block is one or two short sentences (`contentPolicy`). Numbers are stats, steps are a stepper, a state is a badge, and help is the control's label. The first screen at 320px shows the title and the primary action, with little to read.
-- **Cards show at most 5 pieces of information**; the rest is in the detail view. **Navigation:** most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and the less-used controls nested behind one labelled control, so the screen is never crowded and everything can be found.
+- **Cards and boxes show at most 5 pieces of information, and few buttons:** 3 on a card repeated on screen, 5 on a single box; the rest go in a "⋯" menu or the detail view. **Navigation:** most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and the less-used controls nested behind one labelled control, so the screen is never crowded and everything can be found.
 - **Show as little as possible at a time.** Persistent bars hold only the logo, title, navigation and controls. Account role, plan and environment go in the account menu, and only actions they change are marked ("Admin only").
 - **Say each thing once.** No sentence, figure or status twice on a screen: if it matters that much, make it one stronger element.
 - Real content or `[PLACEHOLDER]`, never filler copy or invented numbers.

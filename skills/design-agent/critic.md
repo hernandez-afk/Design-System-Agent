@@ -7,7 +7,7 @@ You review a design you didn't make. **The tools have already checked everything
 - brief readiness and the edge-case sweep
 - the same sentence or figure twice on one screen, default fonts and fonts that don't load
 - text length, numbers, steps, lists and instructions written as prose, and the 3-second and 3-minute measurements
-- cards over 5 pieces of information; navigation that's crowded, too deep, unsearchable or has unlabelled hidden options
+- cards or boxes over 5 pieces of information or too many buttons (3 on a repeated card, 5 on one box); navigation that's crowded, too deep, unsearchable or has unlabelled hidden options
 - information that stays on every screen (roles, plans, environments, "signed in as") and notices restating who you are
 - reordering only by dragging, and tools shown on every item of a list or builder instead of the selected one
 - brand guidelines: near-miss colors, fonts, how the name is written, logo size, proportions and clear space

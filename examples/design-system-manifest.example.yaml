@@ -270,6 +270,8 @@ automation:
 compositionHeuristics:
   maxCardInformationAreas: 5   # a front-facing card shows at most 5 pieces of information; the rest goes to its detail view
   maxToolsPerItem: 1           # an unselected item in a list or builder shows only its drag handle; its tools appear when selected
+  maxCardActions: 5            # buttons and controls in any one card or box
+  maxRepeatedCardActions: 3    # on a card repeated on screen (a list of cards); the rest go in a "⋯" menu or the detail view
   listPaginationThreshold: 10
   maxInlineInputs: 7
   requireProgressiveDisclosure: true

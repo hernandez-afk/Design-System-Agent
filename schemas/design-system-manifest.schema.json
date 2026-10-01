@@ -1088,12 +1088,22 @@
         "maxCardInformationAreas": {
           "type": "integer",
           "default": 5,
-          "description": "Most separate pieces of information a front-facing card shows (text, images; a table or list inside counts once; actions don't count). The rest belongs in the card's detail view. Measured by the renderer."
+          "description": "Most separate pieces of information a card or box shows (text, images; a table or list inside counts once; actions don't count). The rest belongs in the card's detail view. Measured by the renderer."
         },
         "maxToolsPerItem": {
           "type": "integer",
           "default": 1,
           "description": "Controls an unselected item in a list or builder may show (usually its drag handle). The rest appear on the selected item only. Measured by the renderer."
+        },
+        "maxCardActions": {
+          "type": "integer",
+          "default": 5,
+          "description": "Buttons and controls in any one card or box (anything named a card or tile, or drawn as a box). Measured by the renderer."
+        },
+        "maxRepeatedCardActions": {
+          "type": "integer",
+          "default": 3,
+          "description": "Buttons and controls on a card that repeats on screen. Keep the main one or two; the rest go in a '⋯' menu or the detail view. A selected item (being edited) may show up to maxCardActions."
         }
       }
     },

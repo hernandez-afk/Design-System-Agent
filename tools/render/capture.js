@@ -208,15 +208,29 @@ async function antiAi(page, cfg) {
       rows: [...t.querySelectorAll("tr")].filter((r) => r.querySelector("td")).length,
       cols: Math.max(0, ...[...t.querySelectorAll("tr")].map((r) => r.children.length)) }));
     // Cards: how many separate pieces of information each one shows (actions aren't counted).
+    const selected = (el) => el.matches("[aria-selected=true], [aria-current], [data-selected], .is-selected, .selected") || el.contains(document.activeElement) && document.activeElement !== document.body;
+    // Cards and boxes: anything named a card or tile, or drawn as a box (a border all round, or a shaded,
+    // rounded panel). Each shows a limited amount of information and a limited number of controls.
     const cardSel = "[data-component*='Card'], [data-component*='Tile'], .card, article";
-    const cards = [...document.querySelectorAll(cardSel)].filter((c) => visible(c) && !c.querySelector(cardSel)).map((c) => {
+    const notBox = "body, main, nav, header, footer, aside, button, a, input, select, textarea, summary, table, thead, tbody, tr, td, th, label, details > ul, [role=menu], dialog";
+    const boxy = (el) => { if (el.matches(notBox)) return false; const cs = getComputedStyle(el), pr = el.parentElement && getComputedStyle(el.parentElement);
+      const bordered = ["Top", "Right", "Bottom", "Left"].every((k) => parseFloat(cs["border" + k + "Width"]) > 0 && cs["border" + k + "Style"] !== "none");
+      const shaded = pr && hex(cs.backgroundColor) && hex(cs.backgroundColor) !== hex(pr.backgroundColor) && parseFloat(cs.borderTopLeftRadius) > 0;
+      return (bordered || shaded) && el.getBoundingClientRect().height > 48; };
+    const boxes = [...document.querySelectorAll("body *")].filter((el) => visible(el) && (el.matches(cardSel) || boxy(el)));
+    const leafBoxes = boxes.filter((b) => !boxes.some((o) => o !== b && b.contains(o)));
+    const boxKind = (el) => el.getAttribute("data-component") || el.tagName.toLowerCase() + (el.classList.length ? "." + el.classList[0] : "");
+    const kindCount = leafBoxes.reduce((m, b) => (m[boxKind(b)] = (m[boxKind(b)] || 0) + 1, m), {});
+    const cards = leafBoxes.map((c) => {
       // A table or list inside a card is one area; its cells and items aren't counted one by one.
       const units = [...c.querySelectorAll("*")].filter((el) => visible(el) && !el.closest("button, a, [role=button], input, select, textarea") && (
         el.matches("table, ul, ol, dl") && !el.parentElement.closest("table, ul, ol, dl") ||
         !el.closest("table, ul, ol, dl") && [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) ||
         (el.matches("img, svg, video, canvas, picture") && el.getBoundingClientRect().width > 24 && !el.parentElement.closest("img, svg, picture"))));
-      return { where: label(c), areas: units.length, parts: units.slice(0, 8).map((u) => u.tagName.toLowerCase() +
-        (u.textContent.trim() ? ` "${u.textContent.replace(/\s+/g, " ").trim().slice(0, 20)}"` : "")) };
+      const actions = [...c.querySelectorAll("button, a[href], [role=button], [role=switch], summary, select, input:not([type=hidden])")].filter(visible);
+      return { where: label(c), kind: boxKind(c), repeated: kindCount[boxKind(c)], selected: selected(c), areas: units.length,
+        actions: actions.length, actionNames: actions.slice(0, 6).map((a) => (a.getAttribute("aria-label") || a.textContent || a.tagName).replace(/\s+/g, " ").trim().slice(0, 16)),
+        parts: units.slice(0, 8).map((u) => u.tagName.toLowerCase() + (u.textContent.trim() ? ` "${u.textContent.replace(/\s+/g, " ").trim().slice(0, 20)}"` : "")) };
     });
     // Navigation: items per level, clicks to reach each option, search, and how hidden options open.
     const navs = [...document.querySelectorAll("nav, [role=navigation], [role=menubar]")].filter((n) => !n.parentElement.closest("nav, [role=navigation], [role=menubar]"));
@@ -272,7 +286,6 @@ async function antiAi(page, cfg) {
       .filter((el) => /\bmove (up|down|to|earlier|later|before|after)\b|\breorder\b/i.test((el.getAttribute("aria-label") || "") + " " + el.textContent));
     const lists = [...new Set([...document.querySelectorAll("[data-sortable]"), ...draggables.map((d) => (d.closest("li, [role=listitem], [data-builder-item]") || d).parentElement)])]
       .filter((l) => l && visible(l));
-    const selected = (el) => el.matches("[aria-selected=true], [aria-current], [data-selected], .is-selected, .selected") || el.contains(document.activeElement) && document.activeElement !== document.body;
     const sortable = lists.map((l) => {
       const items = [...l.children].filter(visible);
       const tools = items.filter((it) => !selected(it)).map((it) => [...it.querySelectorAll("button, select, input, [role=button], [role=switch], summary, a[href]")].filter(visible).length);

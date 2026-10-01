@@ -21,7 +21,7 @@ All UI follows this, even quick edits. New pages and features: use the **design-
 - Only these tokens, roles, styles and components. The same kind of element looks the same everywhere.
 - One primary action per screen.
 - Show as little as possible at a time. The top bar and sidebars hold only the logo, title, navigation and controls; a role ("Admin"), plan or environment goes in the account menu, and only the actions it changes are marked.
-- Cards show at most 5 pieces of information. Navigation keeps the most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and less-used controls nested behind one labelled control (≤ 12 controls on the first screen at 320px).
+- Cards and boxes show at most 5 pieces of information, and at most 3 buttons on a card repeated on screen (5 on a single box); the rest go in a "⋯" menu or the detail view. Navigation keeps the most-used options at the top (≤ 7 a level), every option within 2 clicks, a search past 15 options, and less-used controls nested behind one labelled control (≤ 12 controls on the first screen at 320px).
 - Every page has one purpose, and everything on it serves it; what doesn't goes elsewhere. Say little: a text block is ≤ 30 words, an intro ≤ 20, and the first screen at 320px ≤ 60 words, with the title and primary action in view. Numbers are stats, change over time a chart, steps a stepper, a state a badge, help the control's label.
 - Say each thing once: no sentence, figure or status appears twice on a screen. If it matters that much, make it one stronger element.
 - Brand: Acme (`brand/acme-brand.example.yaml`). Anything that uses that name or logo follows those guidelines, and the tools warn when it doesn't match.

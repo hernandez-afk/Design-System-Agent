@@ -169,7 +169,7 @@ AMBIENT_TERMS = ["admin", "administrator", "superuser", "owner", "moderator", "e
 
 def structure_findings(m, shots):
     """Cards with too many pieces of information, and navigation that's crowded, deep or hard to search."""
-    comp = {"maxCardInformationAreas": 5, "maxToolsPerItem": 1, **((m.get("compositionHeuristics") or {}))}
+    comp = {"maxCardInformationAreas": 5, "maxToolsPerItem": 1, "maxCardActions": 5, "maxRepeatedCardActions": 3, **((m.get("compositionHeuristics") or {}))}
     nh = {"maxItemsPerLevel": 7, "maxClicksToAnyOption": 2, "searchWhenOptionsOver": 15, "maxVisibleControls": 12,
           **((m.get("navigationHeuristics") or {}))}
     out, seen = [], {}
@@ -194,10 +194,16 @@ def structure_findings(m, shots):
             continue
         w = f"{s['viewport']['w']}px"
         for c in st["cards"]:
+            limit = comp["maxRepeatedCardActions"] if c.get("repeated", 1) > 1 and not c.get("selected") else comp["maxCardActions"]
+            if c.get("actions", 0) > limit:
+                rep = f"one of {c['repeated']} like it on the screen" if c.get("repeated", 1) > 1 else "a single box"
+                add("major", "composition-and-density",
+                    f"Too many buttons in a box: at most {comp['maxRepeatedCardActions']} on a card repeated on screen, {comp['maxCardActions']} on a single box. Keep the main one or two, and put the rest in a '⋯' menu or the detail view",
+                    ("card-actions", c.get("kind")), f"{c['where']} ({rep}): {c['actions']} controls ({', '.join(c['actionNames'])}).", s)
             if c["areas"] > comp["maxCardInformationAreas"]:
                 kind = c["where"].split(' "')[0]
                 add("major", "composition-and-density",
-                    f"A card shows more than {comp['maxCardInformationAreas']} pieces of information: keep the ones that serve the page's purpose, and move the rest to the detail view",
+                    f"A card or box shows more than {comp['maxCardInformationAreas']} pieces of information: keep the ones that serve the page's purpose, and move the rest to the detail view",
                     ("card", kind), f"{c['where']}: {c['areas']} ({', '.join(c['parts'][:6])}).", s)
         for n in st["nav"]:
             if not n["visible"] and not n["hasOpener"]:

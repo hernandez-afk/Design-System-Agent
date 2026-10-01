@@ -1,7 +1,7 @@
 id: structure-test-shots
 source: rendered
 target: examples/rendered/structure-test.html
-capturedAt: '2026-10-01T07:01:29Z'
+capturedAt: '2026-10-01T10:01:53Z'
 designSystem: Baseline
 manifestVersion: 1.0.0
 shots:
@@ -87,6 +87,30 @@ computedInventory:
     - px: 16
       where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ desktop-1440.png
     consistent: true
+  - element: ExportPanel
+    property: gap
+    found:
+    - px: 4
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ narrow-320.png
+    - px: 4
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ desktop-1440.png
+    consistent: true
+  - element: ExportPanel
+    property: padding-x
+    found:
+    - px: 16
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ narrow-320.png
+    - px: 16
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ desktop-1440.png
+    consistent: true
+  - element: ExportPanel
+    property: padding-y
+    found:
+    - px: 16
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ narrow-320.png
+    - px: 16
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ desktop-1440.png
+    consistent: true
   - element: GameCard
     property: gap
     found:
@@ -123,6 +147,54 @@ computedInventory:
     - px: 16
       where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ desktop-1440.png
     consistent: true
+  - element: TeamCard
+    property: gap
+    found:
+    - px: 4
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ narrow-320.png
+    - px: 4
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ narrow-320.png
+    - px: 4
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ narrow-320.png
+    - px: 4
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ desktop-1440.png
+    - px: 4
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ desktop-1440.png
+    - px: 4
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ desktop-1440.png
+    consistent: true
+  - element: TeamCard
+    property: padding-x
+    found:
+    - px: 16
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ narrow-320.png
+    - px: 16
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ narrow-320.png
+    - px: 16
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ narrow-320.png
+    - px: 16
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ desktop-1440.png
+    - px: 16
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ desktop-1440.png
+    - px: 16
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ desktop-1440.png
+    consistent: true
+  - element: TeamCard
+    property: padding-y
+    found:
+    - px: 16
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ narrow-320.png
+    - px: 16
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ narrow-320.png
+    - px: 16
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ narrow-320.png
+    - px: 16
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ desktop-1440.png
+    - px: 16
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ desktop-1440.png
+    - px: 16
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ desktop-1440.png
+    consistent: true
   - element: button
     property: padding-x
     found:
@@ -143,6 +215,42 @@ computedInventory:
     - px: 6
       where: button "Play" @ narrow-320.png
     - px: 6
+      where: button "Open" @ narrow-320.png
+    - px: 6
+      where: button "Share" @ narrow-320.png
+    - px: 6
+      where: button "Archive" @ narrow-320.png
+    - px: 6
+      where: button "Delete" @ narrow-320.png
+    - px: 6
+      where: button "Open" @ narrow-320.png
+    - px: 6
+      where: button "Share" @ narrow-320.png
+    - px: 6
+      where: button "Archive" @ narrow-320.png
+    - px: 6
+      where: button "Delete" @ narrow-320.png
+    - px: 6
+      where: button "Open" @ narrow-320.png
+    - px: 6
+      where: button "Share" @ narrow-320.png
+    - px: 6
+      where: button "Archive" @ narrow-320.png
+    - px: 6
+      where: button "Delete" @ narrow-320.png
+    - px: 6
+      where: button "CSV" @ narrow-320.png
+    - px: 6
+      where: button "PDF" @ narrow-320.png
+    - px: 6
+      where: button "Excel" @ narrow-320.png
+    - px: 6
+      where: button "JSON" @ narrow-320.png
+    - px: 6
+      where: button "Print" @ narrow-320.png
+    - px: 6
+      where: button "Email" @ narrow-320.png
+    - px: 6
       where: button "Play" @ narrow-320.png
     - px: 6
       where: button "All" @ desktop-1440.png
@@ -160,6 +268,42 @@ computedInventory:
       where: button "Play" @ desktop-1440.png
     - px: 6
       where: button "Play" @ desktop-1440.png
+    - px: 6
+      where: button "Open" @ desktop-1440.png
+    - px: 6
+      where: button "Share" @ desktop-1440.png
+    - px: 6
+      where: button "Archive" @ desktop-1440.png
+    - px: 6
+      where: button "Delete" @ desktop-1440.png
+    - px: 6
+      where: button "Open" @ desktop-1440.png
+    - px: 6
+      where: button "Share" @ desktop-1440.png
+    - px: 6
+      where: button "Archive" @ desktop-1440.png
+    - px: 6
+      where: button "Delete" @ desktop-1440.png
+    - px: 6
+      where: button "Open" @ desktop-1440.png
+    - px: 6
+      where: button "Share" @ desktop-1440.png
+    - px: 6
+      where: button "Archive" @ desktop-1440.png
+    - px: 6
+      where: button "Delete" @ desktop-1440.png
+    - px: 6
+      where: button "CSV" @ desktop-1440.png
+    - px: 6
+      where: button "PDF" @ desktop-1440.png
+    - px: 6
+      where: button "Excel" @ desktop-1440.png
+    - px: 6
+      where: button "JSON" @ desktop-1440.png
+    - px: 6
+      where: button "Print" @ desktop-1440.png
+    - px: 6
+      where: button "Email" @ desktop-1440.png
     - px: 6
       where: button "Play" @ desktop-1440.png
     consistent: true
@@ -183,6 +327,42 @@ computedInventory:
     - px: 1
       where: button "Play" @ narrow-320.png
     - px: 1
+      where: button "Open" @ narrow-320.png
+    - px: 1
+      where: button "Share" @ narrow-320.png
+    - px: 1
+      where: button "Archive" @ narrow-320.png
+    - px: 1
+      where: button "Delete" @ narrow-320.png
+    - px: 1
+      where: button "Open" @ narrow-320.png
+    - px: 1
+      where: button "Share" @ narrow-320.png
+    - px: 1
+      where: button "Archive" @ narrow-320.png
+    - px: 1
+      where: button "Delete" @ narrow-320.png
+    - px: 1
+      where: button "Open" @ narrow-320.png
+    - px: 1
+      where: button "Share" @ narrow-320.png
+    - px: 1
+      where: button "Archive" @ narrow-320.png
+    - px: 1
+      where: button "Delete" @ narrow-320.png
+    - px: 1
+      where: button "CSV" @ narrow-320.png
+    - px: 1
+      where: button "PDF" @ narrow-320.png
+    - px: 1
+      where: button "Excel" @ narrow-320.png
+    - px: 1
+      where: button "JSON" @ narrow-320.png
+    - px: 1
+      where: button "Print" @ narrow-320.png
+    - px: 1
+      where: button "Email" @ narrow-320.png
+    - px: 1
       where: button "Play" @ narrow-320.png
     - px: 1
       where: button "All" @ desktop-1440.png
@@ -201,6 +381,42 @@ computedInventory:
     - px: 1
       where: button "Play" @ desktop-1440.png
     - px: 1
+      where: button "Open" @ desktop-1440.png
+    - px: 1
+      where: button "Share" @ desktop-1440.png
+    - px: 1
+      where: button "Archive" @ desktop-1440.png
+    - px: 1
+      where: button "Delete" @ desktop-1440.png
+    - px: 1
+      where: button "Open" @ desktop-1440.png
+    - px: 1
+      where: button "Share" @ desktop-1440.png
+    - px: 1
+      where: button "Archive" @ desktop-1440.png
+    - px: 1
+      where: button "Delete" @ desktop-1440.png
+    - px: 1
+      where: button "Open" @ desktop-1440.png
+    - px: 1
+      where: button "Share" @ desktop-1440.png
+    - px: 1
+      where: button "Archive" @ desktop-1440.png
+    - px: 1
+      where: button "Delete" @ desktop-1440.png
+    - px: 1
+      where: button "CSV" @ desktop-1440.png
+    - px: 1
+      where: button "PDF" @ desktop-1440.png
+    - px: 1
+      where: button "Excel" @ desktop-1440.png
+    - px: 1
+      where: button "JSON" @ desktop-1440.png
+    - px: 1
+      where: button "Print" @ desktop-1440.png
+    - px: 1
+      where: button "Email" @ desktop-1440.png
+    - px: 1
       where: button "Play" @ desktop-1440.png
     consistent: true
   typography:
@@ -210,6 +426,13 @@ computedInventory:
       where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ narrow-320.png
     - value: 16px / 400
       where: CompactCard "Neon DriftTeam FluxRacingRated 4.8 Play" @ desktop-1440.png
+    consistent: true
+  - element: ExportPanel
+    found:
+    - value: 16px / 400
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ narrow-320.png
+    - value: 16px / 400
+      where: ExportPanel "ExportCSVPDFExcelJSONPrintEmail" @ desktop-1440.png
     consistent: true
   - element: GameCard
     found:
@@ -221,6 +444,21 @@ computedInventory:
       where: GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa" @ desktop-1440.png
     - value: 16px / 400
       where: GameCard "Crater RunTeam OrbitRacing1 playerRated " @ desktop-1440.png
+    consistent: true
+  - element: TeamCard
+    found:
+    - value: 16px / 400
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ narrow-320.png
+    - value: 16px / 400
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ narrow-320.png
+    - value: 16px / 400
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ narrow-320.png
+    - value: 16px / 400
+      where: TeamCard "Team NovaOpenShareArchiveDelete" @ desktop-1440.png
+    - value: 16px / 400
+      where: TeamCard "Team OrbitOpenShareArchiveDelete" @ desktop-1440.png
+    - value: 16px / 400
+      where: TeamCard "Team FluxOpenShareArchiveDelete" @ desktop-1440.png
     consistent: true
   - element: button
     found:
@@ -241,6 +479,42 @@ computedInventory:
     - value: 16px / 400
       where: button "Play" @ narrow-320.png
     - value: 16px / 400
+      where: button "Open" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Share" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Archive" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Delete" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Open" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Share" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Archive" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Delete" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Open" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Share" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Archive" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Delete" @ narrow-320.png
+    - value: 16px / 400
+      where: button "CSV" @ narrow-320.png
+    - value: 16px / 400
+      where: button "PDF" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Excel" @ narrow-320.png
+    - value: 16px / 400
+      where: button "JSON" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Print" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Email" @ narrow-320.png
+    - value: 16px / 400
       where: button "Play" @ narrow-320.png
     - value: 16px / 400
       where: button "All" @ desktop-1440.png
@@ -258,6 +532,42 @@ computedInventory:
       where: button "Play" @ desktop-1440.png
     - value: 16px / 400
       where: button "Play" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Open" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Share" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Archive" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Delete" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Open" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Share" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Archive" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Delete" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Open" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Share" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Archive" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Delete" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "CSV" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "PDF" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Excel" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "JSON" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Print" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Email" @ desktop-1440.png
     - value: 16px / 400
       where: button "Play" @ desktop-1440.png
     consistent: true
@@ -279,11 +589,27 @@ computedInventory:
     - value: 24px / 700
       where: h2 "Crater Run" @ narrow-320.png
     - value: 24px / 700
+      where: h2 "Team Nova" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Team Orbit" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Team Flux" @ narrow-320.png
+    - value: 24px / 700
+      where: h2 "Export" @ narrow-320.png
+    - value: 24px / 700
       where: h2 "Neon Drift" @ narrow-320.png
     - value: 24px / 700
       where: h2 "Pixel Pilots" @ desktop-1440.png
     - value: 24px / 700
       where: h2 "Crater Run" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Team Nova" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Team Orbit" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Team Flux" @ desktop-1440.png
+    - value: 24px / 700
+      where: h2 "Export" @ desktop-1440.png
     - value: 24px / 700
       where: h2 "Neon Drift" @ desktop-1440.png
     consistent: false
@@ -324,11 +650,33 @@ findings:
     measured: true
 - severity: major
   category: composition-and-density
-  rubricItem: 'A card shows more than 5 pieces of information: keep the ones that
-    serve the page''s purpose, and move the rest to the detail view'
+  rubricItem: 'A card or box shows more than 5 pieces of information: keep the ones
+    that serve the page''s purpose, and move the rest to the detail view'
   description: 'GameCard "Pixel PilotsTeam NovaArcade2–4 playersRa": 8 (svg, h2 "Pixel
     Pilots", span "Team Nova", span "Arcade", span "2–4 players", span "Rated 4.6").
     (and 1 more like it)'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: composition-and-density
+  rubricItem: 'Too many buttons in a box: at most 3 on a card repeated on screen,
+    5 on a single box. Keep the main one or two, and put the rest in a ''⋯'' menu
+    or the detail view'
+  description: 'TeamCard "Team NovaOpenShareArchiveDelete" (one of 3 like it on the
+    screen): 4 controls (Open, Share, Archive, Delete). (and 2 more like it)'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: composition-and-density
+  rubricItem: 'Too many buttons in a box: at most 3 on a card repeated on screen,
+    5 on a single box. Keep the main one or two, and put the rest in a ''⋯'' menu
+    or the detail view'
+  description: 'ExportPanel "ExportCSVPDFExcelJSONPrintEmail" (a single box): 6 controls
+    (CSV, PDF, Excel, JSON, Print, Email).'
   evidence:
     kind: rendered-measurement
     ref: narrow-320.png

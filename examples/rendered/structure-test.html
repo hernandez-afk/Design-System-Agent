@@ -7,7 +7,7 @@
 <!-- A test page for the card and navigation checks (tools/screenshots.py with standard/design-system-manifest.yaml).
      Planted problems: game cards with 8 pieces of information, a top menu with 9 items at one level, an
      option 3 clicks deep, 16 options and no search, a submenu hidden with no labelled control, and more than
-     12 controls on the first screen at 320px. Not a problem: the compact card with 4 pieces. -->
+     12 controls on the first screen at 320px, team cards repeated three times with 4 buttons each, and one export box with 6 buttons. Not a problem: the compact card with 4 pieces and 1 button. -->
 <style>
   body { margin: 0; background: #fafafa; color: #18181b; font-family: "Source Sans 3", sans-serif; font-size: 1rem; line-height: 1.5; }
   nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
@@ -49,6 +49,10 @@
     <h2>Crater Run</h2><span>Team Orbit</span><span>Racing</span><span>1 player</span><span>Rated 4.2</span><span>877 plays</span><span>Updated today</span>
     <button>Play</button>
   </article>
+  <div class="card" data-component="TeamCard"><h2>Team Nova</h2><button>Open</button><button>Share</button><button>Archive</button><button>Delete</button></div>
+  <div class="card" data-component="TeamCard"><h2>Team Orbit</h2><button>Open</button><button>Share</button><button>Archive</button><button>Delete</button></div>
+  <div class="card" data-component="TeamCard"><h2>Team Flux</h2><button>Open</button><button>Share</button><button>Archive</button><button>Delete</button></div>
+  <section class="card" data-component="ExportPanel"><h2>Export</h2><button>CSV</button><button>PDF</button><button>Excel</button><button>JSON</button><button>Print</button><button>Email</button></section>
   <article class="card" data-component="CompactCard">
     <h2>Neon Drift</h2><span>Team Flux</span><span>Racing</span><span>Rated 4.8</span>
     <button>Play</button>

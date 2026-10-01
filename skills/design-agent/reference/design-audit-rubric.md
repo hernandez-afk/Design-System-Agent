@@ -293,7 +293,8 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** The brief has no `pagePattern`, or leaves a capability its pattern implies undecided (`tools/pattern_check.py`); or the design misses one decided in scope.
 - [ ] **Major:** Items can be reordered only by dragging (measured; WCAG 2.5.7), or every item in a list or builder shows its tools instead of the selected one (measured: over `compositionHeuristics.maxToolsPerItem`).
 - [ ] **Minor:** A small page reached from one place, with no `pageJustification`: it may fit where it's reached from.
-- [ ] **Major:** A front-facing card shows more than `compositionHeuristics.maxCardInformationAreas` pieces of information (measured). The rest goes to its detail view.
+- [ ] **Major:** A card or box shows more than `compositionHeuristics.maxCardInformationAreas` pieces of information (measured). The rest goes to its detail view.
+- [ ] **Major:** A card repeated on screen has more than `compositionHeuristics.maxRepeatedCardActions` buttons, or any box more than `maxCardActions` (measured). The rest go in a "⋯" menu or the detail view.
 - [ ] **Major:** Navigation with more than `navigationHeuristics.maxItemsPerLevel` items at a level, an option more than `maxClicksToAnyOption` clicks deep, more than `searchWhenOptionsOver` options with no search, hidden options with no labelled control, or navigation that vanishes at a width with nothing to open it (measured).
 - [ ] **Major:** More than `navigationHeuristics.maxVisibleControls` controls on the first screen at the narrowest width (measured); the less-used ones belong behind one labelled control.
 - [ ] **Major:** The top level isn't the most-used options in order of use, or settings and filters aren't where they're used, don't show the current choice, or can't be reset in one tap.

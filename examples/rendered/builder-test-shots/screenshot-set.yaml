@@ -1,7 +1,7 @@
 id: builder-test-shots
 source: rendered
 target: examples/rendered/builder-test.html
-capturedAt: '2026-10-01T08:27:04Z'
+capturedAt: '2026-10-01T10:02:05Z'
 designSystem: Baseline
 manifestVersion: 1.0.0
 shots:
@@ -293,6 +293,18 @@ findings:
   rubricItem: A font the page asks for doesn't load, so it renders in a fallback
   description: '''Source Sans 3'' (span "How would you rate the event?") renders in
     the fallback: load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: composition-and-density
+  rubricItem: 'Too many buttons in a box: at most 3 on a card repeated on screen,
+    5 on a single box. Keep the main one or two, and put the rest in a ''⋯'' menu
+    or the detail view'
+  description: 'li "How would you rate the event?TypeRequire" (one of 3 like it on
+    the screen): 4 controls (Type, Required, Duplicate, Delete). (and 2 more like
+    it)'
   evidence:
     kind: rendered-measurement
     ref: narrow-320.png
