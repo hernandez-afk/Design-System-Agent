@@ -169,7 +169,7 @@ AMBIENT_TERMS = ["admin", "administrator", "superuser", "owner", "moderator", "e
 
 def structure_findings(m, shots):
     """Cards with too many pieces of information, and navigation that's crowded, deep or hard to search."""
-    comp = {"maxCardInformationAreas": 5, **((m.get("compositionHeuristics") or {}))}
+    comp = {"maxCardInformationAreas": 5, "maxToolsPerItem": 1, **((m.get("compositionHeuristics") or {}))}
     nh = {"maxItemsPerLevel": 7, "maxClicksToAnyOption": 2, "searchWhenOptionsOver": 15, "maxVisibleControls": 12,
           **((m.get("navigationHeuristics") or {}))}
     out, seen = [], {}
@@ -227,6 +227,15 @@ def structure_findings(m, shots):
                 if ambient.search(t):
                     add("minor", C2, "A control in the always-visible bar repeats the account's role or plan in its label: keep the label to the name or an icon",
                         ("chrome-control", t), f"'{t}' in the {ch['where']}.", s)
+        dr = st.get("dragging") or {}
+        if dr.get("count") and not dr.get("moveControls"):
+            add("major", "accessibility", "Reordering only by dragging: add Move up / Move down (in the item's menu) for keyboard and touch (WCAG 2.5.7)",
+                ("drag",), f"{dr['count']} draggable item(s), and no move controls.", s)
+        for so in st.get("sortable") or []:
+            busy = [n for n in so["unselectedTools"] if n > comp.get("maxToolsPerItem", 1)]
+            if len(busy) >= 3:
+                add("major", "composition-and-density", f"Every item shows its tools: show them on the selected item only, so the list stays calm (more than {comp.get('maxToolsPerItem', 1)} per unselected item)",
+                    ("tools", so["where"]), f"{so['where']}: {len(busy)} of {so['items']} items show {max(busy)} tools each.", s)
         for t in st.get("identity") or []:
             add("major", C2, "A notice restating who you are or which mode you're in: the account menu already says it; show it only where it changes what you can do",
                 ("identity", t), f"'{t}'.", s)

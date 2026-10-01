@@ -20,6 +20,12 @@ connections:
 scopeTerms: ["notification preference", "email notification", "digest frequency", "test email"]
 surfaces: ["settings/notifications"]
 
+pagePattern: "settings"
+patternDecisions:          # save-model is open question 1 (instant or Save button); defaults: no reset, every event has one obvious off
+  current-value: "in-scope"
+  save-model: "question"
+  defaults: "out-of-scope"
+  permission: "in-scope"
 priorities:
   - id: "P1"
     statement: "Admins can turn off the emails they don't want without contacting support."

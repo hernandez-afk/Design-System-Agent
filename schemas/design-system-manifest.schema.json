@@ -1089,6 +1089,11 @@
           "type": "integer",
           "default": 5,
           "description": "Most separate pieces of information a front-facing card shows (text, images; a table or list inside counts once; actions don't count). The rest belongs in the card's detail view. Measured by the renderer."
+        },
+        "maxToolsPerItem": {
+          "type": "integer",
+          "default": 1,
+          "description": "Controls an unselected item in a list or builder may show (usually its drag handle). The rest appear on the selected item only. Measured by the renderer."
         }
       }
     },

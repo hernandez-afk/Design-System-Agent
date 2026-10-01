@@ -28,6 +28,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
   - solutions become needs: "a dropdown" → "choose one of N"
   - each criterion becomes testable
 - **Purpose:** one sentence in `purpose`: what's true once the user leaves. If the page has no core task, or is small and reached from one place, it's probably not a page: propose the section, panel, dialog or tooltip it should be, unless a `pageJustification` holds. Give each required element an `infoType` and `form`. `T/purpose_check.py <brief>` checks all of this, and the brief gate runs it.
+- **Pattern:** name the kind of page (`pagePattern`: builder, voting, wizard, list, settings, dashboard) and decide what it implies. "Build a questionnaire" is a builder: whose is it (one per what?), add, edit in place, reorder (drag plus Move up / Move down), duplicate, delete with undo, preview, autosave and publish, and what happens to answers already collected. `T/pattern_check.py <brief>` lists them and prints a `patternDecisions` block to fill in.
 - **Design system:** the project's, unless the author asks for a brand's guidelines ("follow the Atari brand guidelines"). Then set `brandGuidelines: ["Atari"]` in the brief and use `brand/atari/CLAUDE.md` instead of `CLAUDE.md`'s tokens and type. A page that only mentions the brand isn't a request.
 - Run `T/harness.py check --project <ID>`, and `T/scope_check.py <brief> --index design-index.yaml` if the index has designs.
 - **Stop once.** Send one message: your rewrites, conflicts with the design system, new briefs, work that belongs to another design, and every question. Wait for the answers.
@@ -86,6 +87,7 @@ Goal: the product stays consistent as it's built. **Tools check, you decide and 
 | `platform-adapters.md` | working in Claude Design |
 | `type-pairing.md` | choosing fonts for a new design system |
 | `content-forms.md` | is it a page, which form fits the information, cards and navigation |
+| `page-patterns.md` | the layout a pattern implies (e.g. a minimal builder) |
 | `design-generation-skill.md` (and `HARNESS.md` at the repo root) | full mode only |
 
 **Full mode** (`harness.mode: full` in the manifest) runs the complete process in `reference/design-generation-skill.md`: every record, the full rubric and the presentation template. Use it for flagship work, not everyday pages.

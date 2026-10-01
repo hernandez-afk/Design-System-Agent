@@ -1,0 +1,268 @@
+id: questionnaire-builder-shots
+source: rendered
+target: examples/rendered/questionnaire-builder.html
+capturedAt: '2026-10-01T08:27:46Z'
+designSystem: Baseline
+manifestVersion: 1.0.0
+shots:
+- file: narrow-320.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: narrow-320-text200.png
+  viewport:
+    name: narrow
+    w: 320
+    h: 640
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: phone-390.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: phone-390-text200.png
+  viewport:
+    name: phone
+    w: 390
+    h: 844
+  textScalePercent: 200
+  method: root font-size
+  overflowPx: 0
+- file: md-768.png
+  viewport:
+    name: md
+    w: 768
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: lg-1024.png
+  viewport:
+    name: lg
+    w: 1024
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+- file: desktop-1440.png
+  viewport:
+    name: desktop
+    w: 1440
+    h: 900
+  textScalePercent: 100
+  method: none
+  overflowPx: 0
+computedInventory:
+  spacing:
+  - element: button
+    property: padding-x
+    found:
+    - px: 16
+      where: button "Preview" @ narrow-320.png
+    - px: 16
+      where: button "Required" @ narrow-320.png
+    - px: 16
+      where: button "Add question" @ narrow-320.png
+    - px: 16
+      where: button "Preview" @ desktop-1440.png
+    - px: 16
+      where: button "Required" @ desktop-1440.png
+    - px: 16
+      where: button "Add question" @ desktop-1440.png
+    consistent: true
+  - element: button
+    property: padding-y
+    found:
+    - px: 12
+      where: button "Preview" @ narrow-320.png
+    - px: 12
+      where: button "Required" @ narrow-320.png
+    - px: 12
+      where: button "Add question" @ narrow-320.png
+    - px: 12
+      where: button "Preview" @ desktop-1440.png
+    - px: 12
+      where: button "Required" @ desktop-1440.png
+    - px: 12
+      where: button "Add question" @ desktop-1440.png
+    consistent: true
+  - element: button.primary
+    property: padding-x
+    found:
+    - px: 16
+      where: button.primary "Publish" @ narrow-320.png
+    - px: 16
+      where: button.primary "Publish" @ desktop-1440.png
+    consistent: true
+  - element: button.primary
+    property: padding-y
+    found:
+    - px: 12
+      where: button.primary "Publish" @ narrow-320.png
+    - px: 12
+      where: button.primary "Publish" @ desktop-1440.png
+    consistent: true
+  - element: input
+    property: padding-x
+    found:
+    - px: 12
+      where: input#q1 @ narrow-320.png
+    - px: 12
+      where: input#q1 @ desktop-1440.png
+    consistent: true
+  - element: input
+    property: padding-y
+    found:
+    - px: 0
+      where: input#q1 @ narrow-320.png
+    - px: 0
+      where: input#q1 @ desktop-1440.png
+    consistent: true
+  - element: select
+    property: padding-x
+    found:
+    - px: 12
+      where: select "1 to 5 scaleShort answerParagraphOne cho" @ narrow-320.png
+    - px: 12
+      where: select "1 to 5 scaleShort answerParagraphOne cho" @ desktop-1440.png
+    consistent: true
+  - element: select
+    property: padding-y
+    found:
+    - px: 0
+      where: select "1 to 5 scaleShort answerParagraphOne cho" @ narrow-320.png
+    - px: 0
+      where: select "1 to 5 scaleShort answerParagraphOne cho" @ desktop-1440.png
+    consistent: true
+  typography:
+  - element: button
+    found:
+    - value: 16px / 400
+      where: button "Preview" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Required" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Add question" @ narrow-320.png
+    - value: 16px / 400
+      where: button "Preview" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Required" @ desktop-1440.png
+    - value: 16px / 400
+      where: button "Add question" @ desktop-1440.png
+    consistent: true
+  - element: button.handle
+    found:
+    - value: 16px / 400
+      where: button.handle "⠿" @ narrow-320.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ narrow-320.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ narrow-320.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ narrow-320.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ desktop-1440.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ desktop-1440.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ desktop-1440.png
+    - value: 16px / 400
+      where: button.handle "⠿" @ desktop-1440.png
+    consistent: true
+  - element: button.primary
+    found:
+    - value: 16px / 400
+      where: button.primary "Publish" @ narrow-320.png
+    - value: 16px / 400
+      where: button.primary "Publish" @ desktop-1440.png
+    consistent: true
+  - element: h1
+    style: page-title
+    expected: 33px / 700
+    found:
+    - value: 33px / 700
+      where: h1 "Feedback questionnaire" @ narrow-320.png
+    - value: 33px / 700
+      where: h1 "Feedback questionnaire" @ desktop-1440.png
+    consistent: true
+  - element: input
+    found:
+    - value: 16px / 400
+      where: input#q1 @ narrow-320.png
+    - value: 16px / 400
+      where: input#q1 @ desktop-1440.png
+    consistent: true
+  - element: label.sr
+    found:
+    - value: 16px / 400
+      where: label.sr "Question" @ narrow-320.png
+    - value: 16px / 400
+      where: label.sr "Question" @ desktop-1440.png
+    consistent: true
+  - element: p
+    style: body
+    expected: 16px / 400
+    found:
+    - value: 16px / 400
+      where: p "What should we keep for next time?" @ narrow-320.png
+    - value: 16px / 400
+      where: p "Which talk was most useful?" @ narrow-320.png
+    - value: 16px / 400
+      where: p "Would you come back?" @ narrow-320.png
+    - value: 16px / 400
+      where: p "What should we keep for next time?" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "Which talk was most useful?" @ desktop-1440.png
+    - value: 16px / 400
+      where: p "Would you come back?" @ desktop-1440.png
+    consistent: true
+  - element: p.type
+    found:
+    - value: 13px / 400
+      where: p.type "Paragraph" @ narrow-320.png
+    - value: 13px / 400
+      where: p.type "One choice" @ narrow-320.png
+    - value: 13px / 400
+      where: p.type "One choice" @ narrow-320.png
+    - value: 13px / 400
+      where: p.type "Paragraph" @ desktop-1440.png
+    - value: 13px / 400
+      where: p.type "One choice" @ desktop-1440.png
+    - value: 13px / 400
+      where: p.type "One choice" @ desktop-1440.png
+    consistent: true
+  - element: select
+    found:
+    - value: 16px / 400
+      where: select "1 to 5 scaleShort answerParagraphOne cho" @ narrow-320.png
+    - value: 16px / 400
+      where: select "1 to 5 scaleShort answerParagraphOne cho" @ desktop-1440.png
+    consistent: true
+findings:
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Sans 3'' (a "Spring Hackathon 2026") renders in the fallback:
+    load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true
+- severity: major
+  category: anti-ai-design
+  rubricItem: A font the page asks for doesn't load, so it renders in a fallback
+  description: '''Source Serif 4'' (h1 "Feedback questionnaire") renders in the fallback:
+    load it (@font-face or a font link).'
+  evidence:
+    kind: rendered-measurement
+    ref: narrow-320.png
+    measured: true

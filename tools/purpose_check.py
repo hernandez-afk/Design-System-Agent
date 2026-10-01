@@ -35,7 +35,7 @@ FORMS = {
     "explanation": (["helper-text", "tooltip", "disclosure", "link"], ["paragraph", "card-grid"],
                     "the interface should explain itself; the rest waits until asked for"),
     "reference": (["disclosure", "link", "secondary-page"], ["paragraph", "card-grid"], "rarely needed, so out of the way"),
-    "choice-few": (["radio-group", "segmented-control"], ["select", "paragraph"], "up to 5 options are compared visibly"),
+    "choice-few": (["radio-group", "segmented-control"], ["paragraph"], "up to 5 options are compared visibly; a select only where space is tight"),
     "choice-many": (["select", "combobox"], ["radio-group", "segmented-control"], "many options would crowd the screen"),
     "toggle": (["switch", "checkbox"], ["select", "radio-group"], "on or off is one control"),
     "action": (["button", "link"], ["paragraph"], "an action is a control, not a sentence about one"),

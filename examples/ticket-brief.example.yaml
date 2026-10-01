@@ -10,6 +10,12 @@ rawDescription: >
   showing 4 key metrics with trend indicators, plus a toolbar for
   filtering the dashboard by date range.
 
+pagePattern: "dashboard"
+patternDecisions:          # drill-down: KPI details are DES-470's job (links-to)
+  range: "in-scope"
+  freshness: "in-scope"
+  no-data: "in-scope"
+  drill-down: "out-of-scope"
 priorities:
   - id: "P1"
     statement: "User can see the 4 core KPIs and their trend at a glance without scrolling."

@@ -12,6 +12,12 @@ rawDescription: >
 scopeTerms: ["date-range filter", "report", "report filter", "csv export", "kpi", "revenue"]
 surfaces: ["reports/toolbar", "reports/detail", "dashboard"]
 
+pagePattern: "dashboard"
+patternDecisions:          # freshness: the dashboard's existing 'updated' line covers it (DES-512)
+  range: "in-scope"
+  freshness: "out-of-scope"
+  no-data: "in-scope"
+  drill-down: "in-scope"
 priorities:
   - id: "P1"
     statement: "User can filter the report list by date range."

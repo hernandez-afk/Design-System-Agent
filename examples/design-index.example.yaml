@@ -203,6 +203,27 @@ projects:
         dependsOn: [{ artifactId: "DES-530", version: 2 }]
         reviewStatus: "current"
 
+  - id: "DES-610"
+    title: "Build a questionnaire"
+    status: "in-progress"
+    scopeSummary: "Where organizers build each hackathon edition's feedback questionnaire: a minimal builder, like Google Forms."
+    scopeTerms: ["questionnaire", "question", "feedback", "builder"]
+    surfaces: ["hackathon/admin/questionnaire"]
+    codePaths: ["src/app/hackathon/admin/questionnaire/**"]
+    relatedProjects:
+      - { projectId: "DES-600", relation: "links-to", note: "The questionnaire belongs to a hackathon edition and closes with its voting window." }
+    artifacts:
+      - id: "DES-610-page-brief"
+        type: "page-brief"
+        path: "examples/page-brief-questionnaire.example.md"
+        version: 1
+        reviewStatus: "current"
+      - id: "DES-610"
+        type: "ticket-brief"
+        path: "examples/ticket-brief-questionnaire.example.yaml"
+        version: 1
+        reviewStatus: "current"
+
   - id: "DES-600"
     title: "Hackathon voting"
     status: "in-progress"

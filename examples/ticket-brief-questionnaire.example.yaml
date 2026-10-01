@@ -1,0 +1,109 @@
+# The questionnaire brief after brief optimization. The author's page brief
+# (page-brief-questionnaire.example.md) says "build a questionnaire" and "like Google Forms".
+# The agent recognizes a builder (tools/pattern_check.py) and works out what a builder
+# implies that the brief doesn't say: whose questionnaire it is (one per hackathon
+# edition, so each edition builds its own), editing in place, reordering with a keyboard
+# and touch alternative to dragging, duplicate, delete with undo, preview, autosave and
+# publish, and what happens to answers already collected. Each is decided below.
+# Check:  python3 tools/pattern_check.py examples/ticket-brief-questionnaire.example.yaml
+#         python3 tools/purpose_check.py examples/ticket-brief-questionnaire.example.yaml
+ticketKey: "DES-610"
+title: "Build a questionnaire"
+purpose: "An organizer leaves with this edition's feedback questionnaire built, in order, and published."
+sourceType: "page-brief"
+sourceRef: "examples/page-brief-questionnaire.example.md"
+
+scopeTerms: ["questionnaire", "question", "feedback", "builder"]
+surfaces: ["hackathon/admin/questionnaire"]
+
+connections:
+  arrivesFrom: ["the hackathon's admin page"]
+  goesNext: ["the hackathon's admin page"]
+  mustLinkHere: ["the hackathon's admin page"]
+
+pagePattern: "builder"
+patternDecisions:
+  ownership: "in-scope"         # one questionnaire per hackathon edition; any organizer of that edition can edit it
+  add-items: "in-scope"
+  edit-in-place: "in-scope"
+  reorder: "in-scope"           # drag handle, plus Move up / Move down in each question's menu
+  duplicate: "in-scope"
+  delete-undo: "in-scope"
+  item-types: "in-scope"        # short answer, paragraph, one choice, several choices, 1-5 scale
+  required: "in-scope"
+  preview: "in-scope"
+  save-publish: "in-scope"      # autosaves as a draft; attendees see it once published
+  after-responses: "question"
+  start-from: "in-scope"        # blank, or a copy of the previous edition's questionnaire
+  empty-state: "in-scope"
+  limits: "out-of-scope"        # no limit for a hackathon-sized questionnaire
+
+priorities:
+  - { id: "P1", statement: "An organizer can build this edition's questionnaire in a few minutes.", source: "explicit" }
+  - { id: "P2", statement: "Reordering, editing and removing questions is as easy as in Google Forms.", source: "explicit" }
+  - { id: "P3", statement: "Attendees only see a questionnaire once it's published.", source: "inferred" }
+
+coreTasks:
+  - { id: "T1", statement: "Add questions and publish the questionnaire.", linkedPriority: "P1", entryPoint: "the hackathon's admin page" }
+  - { id: "T2", statement: "Move a question to another place.", linkedPriority: "P2", entryPoint: "the builder" }
+  - { id: "T3", statement: "Start from last edition's questionnaire.", linkedPriority: "P1", entryPoint: "the empty builder" }
+
+requiredElements:
+  - { description: "The questions, one card each, in order", targetCategory: "input", linkedPriority: "P1", infoType: "list", form: "list", states: ["empty", "loading"] }
+  - { description: "A question's tools (type, required, duplicate, delete, move up and down), shown only on the selected question", targetCategory: "action", linkedPriority: "P2", infoType: "action", form: "button" }
+  - { description: "Add a question, at the end or after the selected one", targetCategory: "action", linkedPriority: "P1", infoType: "action", form: "button" }
+  - { description: "Question type", targetCategory: "input", linkedPriority: "P1", infoType: "choice-few", form: "select", note: "5 types: a select keeps the card compact" }
+  - { description: "Saved / draft / published state", targetCategory: "feedback", linkedPriority: "P3", infoType: "status", form: "badge", states: ["loading", "error", "success"] }
+  - { description: "Preview and Publish", targetCategory: "action", linkedPriority: "P3", infoType: "action", form: "button" }
+
+acceptanceCriteria:
+  - { id: "AC1", statement: "An organizer can add 5 questions and publish in under 3 minutes.", linkedTask: "T1", source: "explicit" }
+  - { id: "AC2", statement: "A question can be moved by dragging, or with Move up / Move down from the keyboard or a phone.", linkedTask: "T2", source: "inferred" }
+  - { id: "AC3", statement: "Deleting a question can be undone for 10 seconds.", linkedPriority: "P2", source: "inferred" }
+  - { id: "AC4", statement: "Every change saves within 2 seconds; the page says when it last saved, and when saving fails.", linkedPriority: "P1", source: "inferred" }
+  - { id: "AC5", statement: "Attendees see nothing until it's published; changes after publishing reach them at once.", linkedPriority: "P3", source: "inferred" }
+
+nonEntityTerms: ["feedback", "builder"]   # what the questionnaire is for, and the page itself
+
+entities:
+  - name: "questionnaire"
+    description: "One per hackathon edition, so each edition builds its own."
+    operations:
+      create:  { handledBy: "this-project", note: "Blank, or a copy of the previous edition's." }
+      source:  { handledBy: "this-project" }
+      update:  { handledBy: "this-project" }
+      publish: { handledBy: "this-project" }
+      close:   { handledBy: "existing-design", ref: "DES-600", note: "Closes with the hackathon's voting window." }
+      delete:  { handledBy: "out-of-scope", ref: "A questionnaire is kept with its edition." }
+  - name: "question"
+    operations:
+      create:  { handledBy: "this-project" }
+      source:  { handledBy: "this-project" }
+      update:  { handledBy: "this-project" }
+      delete:  { handledBy: "this-project", note: "With undo (AC3)." }
+  - name: "answer"
+    operations:
+      create:  { handledBy: "new-brief", ref: "Hackathon feedback: answer the questionnaire" }
+      source:  { handledBy: "new-brief", ref: "Hackathon feedback: answer the questionnaire" }
+
+edgeCases:
+  - { id: "EC1", lens: "roles", case: "Two organizers edit the same questionnaire at once.", disposition: "in-scope", action: "AC4: last save wins per question; the page shows who else is editing" }
+  - { id: "EC2", lens: "setup", case: "A new edition with no questionnaire yet.", disposition: "in-scope", action: "empty state: start blank or copy last edition's (T3)" }
+  - { id: "EC3", lens: "integrity", case: "Changing or deleting a question after attendees have answered it.", disposition: "question", action: "Keep old answers under the old wording, or block edits once answers exist?" }
+  - { id: "EC4", lens: "failure", case: "Saving fails on a dropped connection.", disposition: "in-scope", action: "AC4" }
+  - { id: "EC5", lens: "scale", case: "A questionnaire with 30 questions.", disposition: "in-scope", action: "element: the questions, one card each; tools only on the selected question" }
+  - { id: "EC6", lens: "ending", case: "The edition ends.", disposition: "in-scope", action: "state: read-only once the edition ends (closes with DES-600's voting window)" }
+  - { id: "EC7", lens: "access", case: "Reordering without a mouse.", disposition: "in-scope", action: "AC2" }
+  - { id: "EC8", lens: "ecosystem", case: "Attendees answering the questionnaire.", disposition: "new-brief", action: "Hackathon feedback: answer the questionnaire" }
+  - { id: "EC9", lens: "time", case: "Publishing before the hackathon starts.", disposition: "not-applicable", action: "Publishing is allowed any time; attendees reach it from the closing session." }
+  - { id: "EC10", lens: "concurrency", case: "Covered by EC1.", disposition: "not-applicable", action: "See EC1." }
+  - { id: "EC11", lens: "communication", case: "Telling attendees the questionnaire is open.", disposition: "out-of-scope", action: "Announced at the closing session." }
+  - { id: "EC12", lens: "privacy", case: "Who can see the answers.", disposition: "out-of-scope", action: "Analysing answers is out of scope (page brief)." }
+
+outOfScope:
+  - "Analysing the answers (page brief)."
+  - "A limit on questions or text length."
+  - "Telling attendees the questionnaire is open: announced at the closing session."
+
+openQuestions:
+  - "Editing a question after attendees have answered it: keep old answers under the old wording, or block edits once answers exist?"

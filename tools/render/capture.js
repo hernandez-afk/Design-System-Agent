@@ -26,7 +26,7 @@ async function measure(page, cfg, withInventory) {
     const label = (el) => kind(el) +
       (el.id ? `#${el.id}` : "") + (el.textContent.trim() ? ` "${el.textContent.replace(/\s+/g, " ").trim().slice(0, 40)}"` : "");
     const visible = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el);
-      return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none"; };
+      return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && !el.closest("details:not([open]) > :not(summary)"); };
     const scrollsX = (el) => { for (let p = el.parentElement; p; p = p.parentElement) {
       const o = getComputedStyle(p).overflowX; if (o === "auto" || o === "scroll") return true; } return false; };
     const all = [...document.querySelectorAll("body *")].filter(visible);
@@ -51,7 +51,8 @@ async function measure(page, cfg, withInventory) {
     const texty = all.filter((el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()));
     const smallText = texty.map((el) => ({ el, fs: parseFloat(getComputedStyle(el).fontSize) }))
       .filter(({ fs }) => fs < minText).map(({ el, fs }) => ({ element: label(el), fontSizePx: fs }));
-    const clipped = texty.filter((el) => { const s = getComputedStyle(el);
+    const srOnly = (el) => { const r = el.getBoundingClientRect(); return r.width <= 2 || r.height <= 2; };  // visually hidden on purpose
+    const clipped = texty.filter((el) => !srOnly(el)).filter((el) => { const s = getComputedStyle(el);
       const hides = [s.overflow, s.overflowX, s.overflowY].some((o) => o === "hidden" || o === "clip");
       return hides && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1); })
       .map((el) => ({ element: label(el) }));
@@ -78,7 +79,7 @@ async function antiAi(page, cfg) {
       (el.tagName.toLowerCase() + (el.classList.length ? "." + el.classList[0] : ""));
     const label = (el) => kind(el) + ` "${el.textContent.replace(/\s+/g, " ").trim().slice(0, 40)}"`;
     const visible = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el);
-      return r.width > 1 && r.height > 1 && s.visibility !== "hidden" && s.display !== "none" && s.clipPath === "none" && s.clip === "auto"; };
+      return r.width > 1 && r.height > 1 && s.visibility !== "hidden" && s.display !== "none" && !el.closest("details:not([open]) > :not(summary)") && s.clipPath === "none" && s.clip === "auto"; };
     const texty = [...document.querySelectorAll("body *")].filter((el) => visible(el) &&
       [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()));
     // Each screen is compared with itself: a design file showing several screens or states side by
@@ -264,7 +265,21 @@ async function antiAi(page, cfg) {
     const identity = texty.filter((el) => !el.closest("[data-essential]") && !chromeRoots.some((r) => r.contains(el))).map((el) => el.textContent.replace(/\s+/g, " ").trim())
       .filter((t) => /\b(logged|signed) in as\b|\byou are (an? )?(admin|administrator|owner|moderator|editor)\b|\b(admin|editor|viewer) (mode|view)\b|\bviewing as\b/i.test(t))
       .map((t) => t.slice(0, 70));
-    const structure = { cards, nav, search, controlsOnFirstScreen: onScreen, chrome, identity: [...new Set(identity)] };
+    // Builders and sortable lists: dragging needs a single-pointer alternative (WCAG 2.5.7), and each item's
+    // tools show on the selected item only, so a long list stays calm (like Google Forms).
+    const draggables = [...document.querySelectorAll("[draggable=true], [data-drag-handle], .drag-handle, [aria-roledescription*='sortable' i]")];
+    const moveControls = [...document.querySelectorAll("button, [role=menuitem], [role=button], a, option")]
+      .filter((el) => /\bmove (up|down|to|earlier|later|before|after)\b|\breorder\b/i.test((el.getAttribute("aria-label") || "") + " " + el.textContent));
+    const lists = [...new Set([...document.querySelectorAll("[data-sortable]"), ...draggables.map((d) => (d.closest("li, [role=listitem], [data-builder-item]") || d).parentElement)])]
+      .filter((l) => l && visible(l));
+    const selected = (el) => el.matches("[aria-selected=true], [aria-current], [data-selected], .is-selected, .selected") || el.contains(document.activeElement) && document.activeElement !== document.body;
+    const sortable = lists.map((l) => {
+      const items = [...l.children].filter(visible);
+      const tools = items.filter((it) => !selected(it)).map((it) => [...it.querySelectorAll("button, select, input, [role=button], [role=switch], summary, a[href]")].filter(visible).length);
+      return { where: label(l).split(' "')[0], items: items.length, unselectedTools: tools };
+    });
+    const structure = { cards, nav, search, controlsOnFirstScreen: onScreen, chrome, identity: [...new Set(identity)],
+      dragging: { count: draggables.filter(visible).length, moveControls: moveControls.length }, sortable };
     const content = { viewportH: vh, blocks: contentBlocks, firstScreenWords, totalWords,
       glance: { h1: h1 ? { where: label(h1), top: Math.round(h1.getBoundingClientRect().top) } : null, primaries },
       effort: { words: totalWords, fields, choices, actions: actions.length }, tables };

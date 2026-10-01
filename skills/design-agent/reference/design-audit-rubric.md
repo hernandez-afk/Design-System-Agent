@@ -290,6 +290,8 @@ Each category below produces a `pass` / `minor-issues` / `major-issues` / `block
 - [ ] **Major:** Information in a form that doesn't fit it (`content-forms.md`): figures in a sentence, steps as prose, a trend as a table, a status as a sentence. The finding names the form that fits.
 - [ ] **Major:** A text block over `maxWordsPerBlock` or `maxSentencesPerBlock`, an intro over `maxIntroWords`, or a screen over `maxWordsPerScreen` (measured), outside `[data-longform]`.
 - [ ] **Minor:** Instructions for the interface, a list written as a sentence, or a one-row table (measured).
+- [ ] **Major:** The brief has no `pagePattern`, or leaves a capability its pattern implies undecided (`tools/pattern_check.py`); or the design misses one decided in scope.
+- [ ] **Major:** Items can be reordered only by dragging (measured; WCAG 2.5.7), or every item in a list or builder shows its tools instead of the selected one (measured: over `compositionHeuristics.maxToolsPerItem`).
 - [ ] **Minor:** A small page reached from one place, with no `pageJustification`: it may fit where it's reached from.
 - [ ] **Major:** A front-facing card shows more than `compositionHeuristics.maxCardInformationAreas` pieces of information (measured). The rest goes to its detail view.
 - [ ] **Major:** Navigation with more than `navigationHeuristics.maxItemsPerLevel` items at a level, an option more than `maxClicksToAnyOption` clicks deep, more than `searchWhenOptionsOver` options with no search, hidden options with no labelled control, or navigation that vanishes at a width with nothing to open it (measured).

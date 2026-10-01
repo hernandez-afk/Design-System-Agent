@@ -147,7 +147,15 @@ Three things AI-made designs get wrong, each checked by a tool so it costs no ex
 
   The renderer measures all of these. The critic judges the order of the options, and whether settings and filters sit where they're used, show the current choice, and reset in one tap.
 
-`examples/rendered/content-test.html` has ten planted text and 3-3-3 problems, and `examples/rendered/structure-test.html` six card and navigation problems. The renderer catches all of them.
+- **What the kind of page implies.** "Build a questionnaire" is a builder, and a builder needs more than its brief says. `tools/pattern_check.py` recognizes the pattern (builder, voting, wizard, list, settings, dashboard), and the brief gate makes each implied capability a decision. For a builder:
+  - **Whose is it?** One per what: each edition builds its own.
+  - **Editing:** add, edit in place, reorder, duplicate, and delete with undo.
+  - **Publishing:** preview, autosave and publish.
+  - **Answers already collected:** what happens to them when a question changes.
+
+  The layout follows the pattern: a minimal builder like Google Forms, where only the selected question shows its tools, and questions move by dragging or by Move up / Move down. The renderer flags drag-only reordering (WCAG 2.5.7) and tools shown on every item. See `skills/design-agent/reference/page-patterns.md`, the brief `examples/ticket-brief-questionnaire.example.yaml`, and the reference page `examples/rendered/questionnaire-builder.html`.
+
+`examples/rendered/content-test.html` has ten planted text and 3-3-3 problems, `examples/rendered/structure-test.html` six card and navigation problems, and `examples/rendered/builder-test.html` two builder problems. The renderer catches all of them.
 
 ## Edge cases, caught at the brief
 
@@ -194,7 +202,7 @@ Baseline reports **Optimal**. The Acme example reports **Minimum**, listing its 
 - **schemas/** — the JSON Schemas defining every data contract that passes between steps.
 - **personas/** — the Designer and Critic personas: Claude Code subagents, and claude.ai Project instructions.
 - **standard/** — Baseline, the reference design system, REQUIREMENTS.md, and `brand/` (brand guidelines profiles, starting with Atari's).
-- **tools/** — `harness.py` (stages, gates, next steps, learning), `screenshots.py` + `render/capture.js` (render, screenshot and measure a page; record provided screenshots), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `brand_check.py` (warns when something meant to follow brand guidelines doesn't), `purpose_check.py` (is it a page, does everything serve its purpose, is each thing in the right form), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
+- **tools/** — `harness.py` (stages, gates, next steps, learning), `screenshots.py` + `render/capture.js` (render, screenshot and measure a page; record provided screenshots), `consistency_check.py` (same element, same spacing and type, across files), `edge_case_check.py` (is the edge-case sweep complete?), `brief_lint.py` (is a page brief ready?), `flow_check.py` (user flow: dead ends, entry points, integration changes; `--mermaid`), `check_compatibility.py` (Not compatible / Minimum / Optimal, with the gaps), `brand_check.py` (warns when something meant to follow brand guidelines doesn't), `purpose_check.py` (is it a page, does everything serve its purpose, is each thing in the right form), `pattern_check.py` (what kind of page it is, and what that implies), `design_context.py` (which design owns a file, and what it decided), `token_lint.py` (off-token values in UI code), `hooks.py` (runs both inside Claude Code), and `export_claude_design.py` (manifest → Claude Design System tokens).
 - **templates/** — `page-brief.md`, the document you write for a new page; `claude-settings.json`, the hook config for your app repo, and `CLAUDE.md`, the required project file, with `{{…}}` placeholders the skill fills from your manifest.
 - **examples/** — filled, working examples of every schema, all following one continuous scenario (ticket `DES-512`, a dashboard KPI summary) so you can trace one request through the whole pipeline.
 

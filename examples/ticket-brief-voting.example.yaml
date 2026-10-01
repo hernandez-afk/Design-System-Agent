@@ -18,6 +18,13 @@ connections:
   goesNext: ["a thank-you", "results, once announced"]
   mustLinkHere: ["the hackathon page"]
 
+pagePattern: "voting"
+patternDecisions:          # results are their own page (EC1)
+  eligibility: "in-scope"
+  vote-limits: "in-scope"
+  change-vote: "in-scope"
+  closing: "in-scope"
+  results: "new-brief"
 priorities:
   - { id: "P1", statement: "Every attendee can vote for their favourite games in under a minute.", source: "explicit" }
   - { id: "P2", statement: "Organizers can trust the result: one person, three votes.", source: "explicit" }

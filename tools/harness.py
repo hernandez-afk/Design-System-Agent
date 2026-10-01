@@ -51,6 +51,8 @@ approvedBy: ""           # set once the author approves (after their questions a
 title: ""
 purpose: ""              # one sentence: what's true once the user leaves this page
 pageJustification: ""    # only if it has no task, or is small and reached from one place: why it's a page
+pagePattern: ""          # builder | voting | wizard | list | settings | dashboard (pattern_check.py suggests one)
+patternDecisions: {}     # pattern_check.py prints the capabilities to decide: in-scope | out-of-scope | new-brief | question
 sourceType: "page-brief"
 scopeTerms: []           # specific nouns: ["hackathon", "vote"]
 surfaces: []             # ["hackathon/vote"]
@@ -206,6 +208,18 @@ class Harness:
                 first = next((l.strip()[2:] for l in res.stdout.splitlines() if l.strip().startswith("✗")), "")
                 n = sum(1 for l in res.stdout.splitlines() if l.strip().startswith("✗"))
                 g["brief"] = ("fail", f"purpose check: {first}" + (f" (+{n - 1} more: purpose_check.py)" if n > 1 else ""))
+        if g["brief"][0] in OK and brief and brief.get("path") and brief["path"].endswith((".yaml", ".yml")) \
+                and self.resolve(brief["path"]):
+            res = subprocess.run([sys.executable, os.path.join(HERE, "pattern_check.py"), self.resolve(brief["path"])],
+                                 capture_output=True, text=True)
+            out_lines = [l.strip() for l in res.stdout.splitlines()]
+            undecided = [l[2:].split(":")[0] for l in out_lines if l.startswith("✗")]
+            asks = [l[2:].split(":")[0] for l in out_lines if l.startswith("?")]
+            if res.returncode == 2:
+                g["brief"] = ("fail", f"page pattern: {out_lines[0].split('pattern: ', 1)[-1]}"
+                              + (f"; decide {', '.join(undecided)} (pattern_check.py)" if undecided else ""))
+            elif asks:
+                g["brief"] = ("fail", f"page pattern question(s) for the author: {', '.join(asks)}")
         # scope
         a = self.artifact(p, "scope-overlap-report")
         if not a and lite and brief and brief.get("path") and self.resolve(brief["path"]):

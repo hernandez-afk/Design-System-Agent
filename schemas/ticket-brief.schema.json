@@ -475,6 +475,49 @@
     "pageJustification": {
       "type": "string",
       "description": "Why this is a page and not a section, panel, tooltip or notification: people come back to it on its own, other pages link to it, or it's too big to fit where it's reached from. Needed when the page has no core task, or is small and reached from one place."
+    },
+    "pagePattern": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "builder",
+            "voting",
+            "wizard",
+            "list",
+            "settings",
+            "dashboard"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "builder",
+              "voting",
+              "wizard",
+              "list",
+              "settings",
+              "dashboard"
+            ]
+          }
+        }
+      ],
+      "description": "The kind of page this is. tools/pattern_check.py suggests it from the brief's words, and lists what that kind of page implies (skills/design-agent/reference/page-patterns.md)."
+    },
+    "patternDecisions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": [
+          "in-scope",
+          "out-of-scope",
+          "new-brief",
+          "question"
+        ]
+      },
+      "description": "A decision for each capability the page pattern implies, e.g. {ownership: in-scope, reorder: in-scope, after-responses: question}. Questions go to the author at the brief's one stop."
     }
   }
 }
